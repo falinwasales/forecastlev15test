@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_fce_voyage_form" model="ir.ui.view">
+        <field name="name">view_fce_vessel_form</field>
+        <field name="model">fce.voyage</field>
+        <field name="arch" type="xml">
+            <form string="Schedule">
+                <header>
+                    <button class="btn-primary" type="object" attrs="{'invisible': [('active', '=', True)]}" name="action_approve" string="Approve"/>
+                </header>
+                <sheet string="Schedule">
+                    <group>
+                        <field name="vessel_id"/>
+                        <field name="active" invisible='1'/>
+                    </group>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Voyage"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="terminal_id"/>
+                            <field name="carrier_id" string="Vessel Operator" domain="[('is_carrier', '=', True)]" invisible="1"/>
+                            <field name="re_port_code_id"/>
+                            <field name="need_connecting_vessel"/>
+                        </group>
+                        <group>
+                            <label for="pol_id" string="PoL - PoD" invisible="1"/>
+                            <div invisible="1">
+                                <field name="pol_id"/>
+                                <span> - </span>
+                                <field name="pod_id"/>
+                            </div>
+                            <label for="date_etd" string="ETD - ETA" invisible="1"/>
+                            <div invisible="1">
+                                <field name="date_etd"/>
+                                <span> - </span>
+                                <field name="date_eta"/>
+                            </div>
+                            <label for="date_td" string="ATD - ATA" invisible="1"/>
+                            <div invisible="1">
+                                <field name="date_td"/>
+                                <span> - </span>
+                                <field name="date_ta"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Port Of Call" name="port_of_call_id">
+                            <field name="port_of_call_ids" widget="section_and_note_one2many">
+                                <tree string="Port Of Call" editable="bottom">
+                                    <field name="port_type"/>
+                                    <field name="port_code_id"/>
+                                    <field name="opening_date"/>
+                                    <field name="closing_date"/>
+                                    <field name="closing_document"/>
+                                    <field name="date_eta" attrs="{'invisible': [('port_type', '!=', 'pod'), ('port_type', '!=', 'pot')]}"/>
+                                    <field name="date_etd" attrs="{'invisible': [('port_type', '!=', 'pol'), ('port_type', '!=', 'pot'),]}"/>
+                                    <field name="date_ta"/>
+                                    <field name="date_td"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Feeder Slot" name="slot_owner">
+                            <field name="slot_owner_ids" widget="section_and_note_one2many" required="1">
+                                <tree string="Feeder Slot" editable="bottom">
+                                    <field name="vendor_ids" domain="[('is_vendor', '=', True)]" required="1"/>
+                                    <field name="capacity" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_fce_voyage_chatter" model="ir.ui.view">
+        <field name="name">fce.voyage.chatter</field>
+        <field name="model">fce.voyage</field>
+        <field name="inherit_id" ref="view_fce_voyage_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="fce_voyage_tree_view">
+        <field name="name">Schedule</field>
+        <field name="model">fce.voyage</field>
+        <field name="arch" type="xml">
+            <tree string="Schedule">
+                <field name="vessel_id"/>
+                <field name="name"/>
+                <field name="pol_id"/>
+                <field name="date_etd"/>
+                <field name="date_td"/>
+                <field name="pod_id"/>
+                <field name="date_eta"/>
+                <field name="date_ta"/>
+                <field name="date_etd" string="Opening Stack"/>
+                <field name="date_eta" string="Closing Date"/>
+                <field name="terminal_id"/>
+                <field name="slot_owner_ids" widget="many2many_tags" invisible="1"/>
+                <!-- <field name="carrier_id"/> -->
+                <field name="port_of_call_ids" widget="many2many_tags" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_voyage_tree_search">
+        <field name="name">Schedule</field>
+        <field name="model">fce.voyage</field>
+        <field name="arch" type="xml">
+            <search string="Schedule">
+                <field name="name"/>
+                <field name="vessel_id"/>
+                <field name="pol_id"/>
+                <field name="pod_id"/>
+                <field name="terminal_id"/>
+                <field name="carrier_id"/>
+                <separator/>
+                <filter name="filter_date_etd" date="date_etd"/>
+                <filter name="filter_date_eta" date="date_eta"/>
+                <separator/>
+                <filter name="filter_date_td" date="date_td"/>
+                <filter name="filter_date_ta" date="date_ta"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Vessel" name='vessel_id' context="{'group_by':'vessel_id'}"/>
+                    <filter string="Port of Landing" name='pol_id' context="{'group_by':'pol_id'}"/>
+                    <filter string="Port of Destination" name='pod_id' context="{'group_by':'pod_id'}"/>
+                    <filter string="Terminal" name='terminal_id' context="{'group_by':'terminal_id'}"/>
+                    <filter string="Carrier" name='carrier_id' context="{'group_by':'carrier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_voyage_action" model="ir.actions.act_window">
+        <field name="name">Schedule</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.voyage</field>
+        <field name="search_view_id" ref="fce_voyage_tree_search"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new
+          </p>
+        </field>
+    </record>
+    <record id="fce_voyage_action_draft" model="ir.actions.act_window">
+        <field name="name">Schedule Draft</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.voyage</field>
+        <field name="search_view_id" ref="fce_voyage_tree_search"/>
+        <field name="context">{'search_default_active':0}</field>
+        <field name="domain">[('active', '=', False)]</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new
+          </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,288 @@
+<odoo>
+    <!-- Location -->
+
+    <record id="depo_location_tree" model="ir.ui.view">
+        <field name="name">stock.location.tree</field>
+        <field name="model">stock.location</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <tree string="Stock Location" decoration-info="usage=='view'" decoration-danger="usage=='internal'" create="false">
+                <field name="active" invisible="1"/>
+                <field name="complete_name" string="Depo Location"/>
+                <field name="usage"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name='current_user' invisible='1'/>
+                <field name='fal_user_depo_id' invisible='1'/>
+                <field name='depot_id' invisible='1'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="depo_location_form" model="ir.ui.view">
+        <field name="name">stock.location.form</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <field name='depot_id' position='after'>
+                <field name='fal_user_depo_id' invisible='1'></field>
+                <field name='member_ids' widget="many2many_tags" invisible='1'></field>
+            </field>
+        </field>
+    </record>
+
+    <record id="depo_location_view_tree2_editable" model="ir.ui.view">
+        <field name="name">stock.location.tree2.editable</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="forecastle_depo.depo_location_tree"/>
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_multi_locations'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">false</attribute>
+                <!-- <attribute name="domain">[('usage','=','internal')]</attribute> -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_depo_location_tree" model="ir.actions.act_window">
+        <field name="name">Depo Location</field>
+        <field name="res_model">stock.location</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="depo_location_tree"/>
+        <field name="domain">[('usage','=', 'internal')]</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Define a new Depo
+          </p>
+        </field>
+    </record>
+
+    <!-- Picking Type -->
+    <record id="view_picking_type_form_inherit_depo" model="ir.ui.view">
+        <field name="name">stock.picking.type.form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <field name='warehouse_id' position='after'>
+                <field name='fal_user_depo_id'></field>
+                <field name='member_ids' widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- <record id="depo_type_kanban" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban</field>
+        <field name="model">stock.picking.type</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors o_stock_kanban" create="0">
+                <field name="color"/>
+                <field name="code" readonly="1"/>
+                <field name="count_picking_ready"/>
+                <field name="count_picking_draft"/>
+                <field name="count_picking_waiting"/>
+                <field name="count_picking_late"/>
+                <field name="count_picking_backorders"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-if="['incoming', 'outgoing', 'internal'].indexOf(record.code.raw_value) > -1" t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}" name="stock_picking">
+                            <div>
+                                <div t-attf-class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary" t-if="!selection_mode">
+                                            <a type="object" name="get_stock_picking_action_picking_type">
+                                                <field name="name"/>
+                                            </a>
+                                        </div>
+                                        <div class="o_primary" t-if="selection_mode">
+                                            <field name="name"/>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field class="o_secondary"  name="warehouse_id" groups="stock.group_stock_multi_warehouses"/></div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section" t-if="!selection_mode">
+                                        <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_content" t-if="!selection_mode">
+                                    <div class="row">
+                                        <div class="col-6 o_kanban_primary_left">
+                                            <button class="btn btn-primary" name="get_action_picking_tree_ready" type="object">
+                                                <span t-if="record.code.raw_value =='incoming'"><t t-esc="record.count_picking_ready.value"/> To Process</span>
+                                                <span t-if="record.code.raw_value =='outgoing'"><t t-esc="record.count_picking_ready.value"/> To Process</span>
+                                                <span t-if="record.code.raw_value =='internal'"><t t-esc="record.count_picking_ready.value"/> To Process</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-6 o_kanban_primary_right">
+                                            <div t-if="record.count_picking_ready.raw_value > 0" class="row">
+                                            </div>
+
+                                            <div t-if="record.count_picking_waiting.raw_value > 0" class="row">
+                                                <div class="col-12">
+                                                    <a name="get_action_picking_tree_waiting" type="object">
+                                                        <field name="count_picking_waiting"/>
+                                                        Waiting
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_picking_late.raw_value > 0" class="row">
+                                                <div class="col-12">
+                                                    <a class="oe_kanban_stock_picking_type_list" name="get_action_picking_tree_late" type="object">
+                                                        <field name="count_picking_late"/>
+                                                        Late
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_picking_backorders.raw_value > 0" class="row">
+                                                <div class="col-12">
+                                                    <a class="oe_kanban_stock_picking_type_list" name="get_action_picking_tree_backorder" type="object">
+                                                        <field name="count_picking_backorders"/>
+                                                        Back Orders
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                            <div class="row">
+                                                <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                                    <div role="menuitem" class="o_kanban_card_manage_title">
+                                                        <span t-if="record.code.raw_value == 'internal'">Transfers</span>
+                                                        <span t-else="">View</span>
+                                                    </div>
+                                                    <div role="menuitem">
+                                                        <a name="get_stock_picking_action_picking_type" type="object">All</a>
+                                                    </div>
+                                                    <div role="menuitem">
+                                                        <a name="get_action_picking_tree_ready" type="object">Ready</a>
+                                                    </div>
+                                                    <div role="menuitem">
+                                                        <a name="get_action_picking_tree_waiting" type="object">Waiting</a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                                    <div role="menuitem" class="o_kanban_card_manage_title">
+                                                        <span>New</span>
+                                                    </div>
+                                                    <div role="menuitem">
+                                                        <a name="%(stock.action_picking_form)d" type="action" context="{'default_immediate_transfer': True}">Immediate Transfer</a>
+                                                    </div>
+                                                    <div role="menuitem">
+                                                        <a name="%(stock.action_picking_form)d" type="action">Planned Transfer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+    
+                                            <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+                                                <div class="col-8" role="menuitem" aria-haspopup="true">
+                                                    <ul class="oe_kanban_colorpicker" data-field="color" role="menu"/>
+                                                </div>
+                                                <div role="menuitem" class="col-4">
+                                                    <a class="dropdown-item" role="menuitem" type="edit">Configuration</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                </templates>
+            </kanban>
+        </field>
+    </record>
+ -->
+<!--     <record id="action_depo_kanban_form" model="ir.actions.act_window">
+        <field name="name">Depo Kanban</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">kanban,form</field>
+        <field name='view_id' ref='depo_type_kanban'/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Depo Kanban
+          </p>
+        </field>
+    </record>
+ -->
+<!--     <record id="depo_kanban_form_xpath" model="ir.ui.view">
+        <field name="name">depo_kanban_form_xpath</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="forecastle_depo.depo_type_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='stock_picking']" position="attributes">
+                <attribute name="t-if">['incoming', 'outgoing'].indexOf(record.code.raw_value) > -1</attribute>
+            </xpath>
+            <xpath expr='//div[@class="container o_kanban_card_manage_pane dropdown-menu"]' position='replace'>
+
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="add_new_group_depo" model="ir.ui.view">
+        <field name="name">add_new_group_depo</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access_rights']/group[1]" position="after">
+                <group string="Depo">
+                    <field name="depot_ids" widget="many2many_tags" domain='[("is_depot", "=", True)]'/>
+                    <field name="fal_user_depo_id" domain='[("is_depot", "=", True)]' invisible='1'/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_stock_picking_depo" model="ir.ui.view">
+        <field name="name">stock.picking.depo</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="depot_id" invisible='1'/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="tes_action_picking_tree_all" model="ir.actions.act_window">
+        <field name="name">Gate IN</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="domain">[('picking_type_code','=', 'incoming')]</field>
+        <!-- <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field> -->
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No transfer found. Let's create one!
+            </p><p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
+
+    <record id="gate_out_action_picking_tree_all" model="ir.actions.act_window">
+        <field name="name">Gate OUT</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="domain">[('picking_type_code','=', 'outgoing')]</field>
+        <!-- <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field> -->
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No transfer found. Let's create one!
+            </p><p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="depo_menu" name="Depo"/>
+    <!-- <menuitem id="depo_kanban_menu" name="Depo Kanban" action='action_depo_kanban_form' parent='depo_menu' sequence="1"/> -->
+    <menuitem id="depo_location_menu" name="Depo Location" action='action_depo_location_tree' parent='depo_menu' sequence="1"/>
+    <menuitem id="depo_location_menu_gate_in" name="Gate In" action='tes_action_picking_tree_all' parent='depo_menu' sequence="2"/>
+    <menuitem id="depo_location_menu_gate_out" name="Gate OUT" action='gate_out_action_picking_tree_all' parent='depo_menu' sequence="3"/>
+</odoo>

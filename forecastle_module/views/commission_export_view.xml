@@ -1,0 +1,146 @@
+<odoo>
+	<record id="view_commission_export_form" model="ir.ui.view">
+        <field name="name">commission.export.form</field>
+        <field name="model">commission.export</field>
+        <field name="arch" type="xml">
+        	<form>
+                <header>
+                    <button class="btn-primary" type="object" attrs="{'invisible': [('active', '=', True)]}" name="action_approve" string="Approve"/>
+                </header>
+        		<sheet>
+                    <group>
+                    	<group>
+			                <field name="principal_id"/>
+                            <field name="customer_status"/>
+                            <field name="active" invisible='1'/>
+                    	</group>
+                    	<group>
+                    	</group>
+                    </group>
+                    <notebook>
+                    	<page string="Commission">
+                    		<field name="commission_line_ids">
+                    			<tree editable="bottom">
+                    				<field name="commission_type" required='1'/>
+                                    <field name="product_category_id"/>
+                                    <field name="product_ids" widget="many2many_tags"/>
+                    				<field name="percentage" attrs="{'readonly': [('use_formula', '=', True)]}"/>
+                                    <field name="minimum_value" attrs="{'readonly': [('use_formula', '=', True)]}"/>
+                                    <field name="fix_price" attrs="{'readonly': [('use_formula', '=', True)]}"/>
+                                    <field name="tax_ids" widget="many2many_tags"/>
+                                    <field name="use_formula"/>
+                                    <field name="python_formula" attrs="{'invisible': [('use_formula', '=', False)]}"/>
+                    			</tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="commission_type" required='1'/>
+                                            <field name="product_category_id"/>
+                                            <field name="percentage"/>
+                                            <field name="minimum_value"/>
+                                        </group>
+                                        <group>
+                                            <field name="product_ids" widget="many2many_tags"/>
+                                            <field name="tax_ids" widget="many2many_tags"/>
+                                        </group>
+                                    </group>
+                                </form>
+                    		</field>
+                    	</page>
+                    </notebook>
+                </sheet>
+        	</form>
+        </field>
+    </record>
+
+    <record id="view_commission_export_tree" model="ir.ui.view">
+        <field name="name">commission.export.tree</field>
+        <field name="model">commission.export</field>
+        <field name="arch" type="xml">
+        	<tree>
+        		<field name="principal_id"/>
+        		<field name="customer_status"/>
+        	</tree>
+        </field>
+    </record>
+
+   	<record id="commssion_export_action" model="ir.actions.act_window">
+        <field name="name">Commission</field>
+        <field name="res_model">commission.export</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create Commission
+          </p>
+        </field>
+    </record>
+    <record id="commssion_export_action_draft" model="ir.actions.act_window">
+        <field name="name">Commission Draft</field>
+        <field name="res_model">commission.export</field>
+        <field name="context">{}</field>
+        <field name="domain">[('active', '=', False)]</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create Commission
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="commission_menu"
+        name="Commission"
+        parent="sale.menu_sale_config"
+        sequence="11"/>
+
+    <menuitem id="commission_export_menu"
+        name="Commission"
+        parent="commission_menu"
+        action="commssion_export_action"
+        sequence="11"/>
+    <menuitem id="commission_export_menu_draft"
+        name="Commission Draft"
+        parent="commission_menu"
+        action="commssion_export_action_draft"
+        sequence="12"/>
+
+
+<!-- Disable Create a comission per principal -->
+<!--
+
+
+    <record id="commssion_import_action" model="ir.actions.act_window">
+        <field name="name">Commission Import</field>
+        <field name="res_model">commission.export</field>
+        <field name="domain">[('commission_type', '=', 'import')]</field>
+        <field name="context">{'default_commission_type': 'import'}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create Commission Export
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="commission_import_menu"
+        name="Commission Import"
+        parent="commission_menu"
+        action="commssion_import_action"
+        sequence="12"/>
+
+     <record id="commssion_detention_action" model="ir.actions.act_window">
+        <field name="name">Commission Detention</field>
+        <field name="res_model">commission.export</field>
+        <field name="domain">[('commission_type', '=', 'detention')]</field>
+        <field name="context">{'default_commission_type': 'detention'}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create Commission Detention
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="commission_detention_menu"
+        name="Commission Detention"
+        parent="commission_menu"
+        action="commssion_detention_action"
+        sequence="13"/> -->
+</odoo>

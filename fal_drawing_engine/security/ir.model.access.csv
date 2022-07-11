@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fal_drawing_engine,fal.drawing.engine,model_fal_drawing,fal_drawing_engine.group_drawing_user,1,1,1,1
+access_fal_drawing_template,fal.drawing.template,model_fal_drawing_template,fal_drawing_engine.group_drawing_user,1,1,1,1
+access_fal_drawing_report,fal.drawing.report,model_fal_drawing_report,fal_drawing_engine.group_drawing_user,1,1,1,1
+

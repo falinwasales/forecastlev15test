@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <div>
+        <template id="report_header_footer" inherit_id="web.external_layout_standard">
+             <xpath expr="//div[@class='header']" position="replace">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-3 mb4">
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;"
+                                 alt="Logo"/>
+                        </div>
+                        <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header"
+                             name="moto"/>
+                    </div>
+                    <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                        <div class="col-12">
+                            <div style="border-bottom: 1px solid black;"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6" name="company_address">
+                            <div t-field="company.partner_id"
+                                 t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                            />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//div[@class='footer o_standard_footer']" position="replace">
+                <div class="footer o_standard_footer">
+                    <div class="text-center" style="border-top: 1px solid black;">
+                        <ul class="list-inline mb4">
+                            <li t-if="company.phone" class="list-inline-item">Phone:
+                                <span t-field="company.phone"/>
+                            </li>
+                            <li t-if="company.email" class="list-inline-item">Email:
+                                <span t-field="company.email"/>
+                            </li>
+                            <li t-if="company.website" class="list-inline-item">Web:
+                                <span t-field="company.website"/>
+                            </li>
+                            <li t-if="company.vat" class="list-inline-item"><t
+                                    t-esc="company.country_id.vat_label or 'Tax ID'"/>:
+                                <span t-field="company.vat"/>
+                            </li>
+                        </ul>
+
+                        <div name="financial_infos">
+                            <span t-field="company.report_footer"/>
+                        </div>
+
+                        <div t-if="report_type == 'pdf'" class="text-muted">
+                            Page:
+                            <span class="page"/>
+                            /
+                            <span class="topage"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </div>
+</odoo>

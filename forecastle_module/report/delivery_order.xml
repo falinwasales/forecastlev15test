@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_delivery_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                    <div class="page">
+                        <style>
+                            html *{
+                                word-wrap: break-word;
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.35cm;
+                            }
+
+                            table{
+                                margin-left: 1.35cm;
+                            }
+
+                            .cell{
+                                padding-top: 0.2cm;
+                                padding-bottom: 0.2cm;
+                                text-align: left;
+                                font-size: 0.37cm;
+                            }
+
+                            .cell_field{
+                                padding-top: 0.4cm;
+                                padding-bottom: 0.4cm;
+                                text-align: left;
+                                font-size: 0.37cm;
+                            }
+
+                            .cell2{
+                                padding-bottom: 0.2cm;
+                                padding-left: 0.2cm;
+                            }
+
+                            .cell_field2{
+                                padding-bottom: 0.2cm;
+                            }
+
+                            <!-- li{
+                                list-style-type: circle;
+                            }
+
+                            ul{
+                                padding: 0cm;
+                            } -->
+                        </style>
+
+                        <div style="margin-top: 2.4cm; margin-left: 10cm;">
+                            <table width="80%">
+                                <tr>
+                                    <td><span style="visibility: hidden;">;</span></td>
+                                    <td colspan="2" style="text-transform: uppercase; font-size: 0.6cm; font-weight: bold;">Delivery Order</td>
+                                    <!--<td style="text-transform: uppercase; font-size: 0.6cm; font-weight: bold;">Order</td>-->
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm;"><span style="visibility: hidden;">;</span></td>
+                                    <td width="25%" style="padding-top: 0.4cm;">DO No</td>
+                                    <td width="55%" style="padding-top: 0.4cm;">: <span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="visibility: hidden;">;</span></td>
+                                    <td>BL No</td>
+                                    <td>: <span t-field="o.no_master_bl"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="visibility: hidden;">;</span></td>
+                                    <td>Box Operator</td>
+                                    <td>: <span t-field="o.imp_principal_id.principal_code"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="visibility: hidden;">;</span></td>
+                                    <td>Date</td>
+                                    <td>: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="visibility: hidden;">;</span></td>
+                                    <td>DO Expired</td>
+                                    <td>: <span t-field="o.picking_ids.date_deadline"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div width="100%" style="margin-top:1cm;">   
+                            <table style="width:70%;">
+                                <tr>
+                                    <td>Please release said shipment to :</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div width="100%" style="margin-top:0.3cm;">
+                            <table style="width:70%;">
+                                <tr>
+                                    <td>Consignee</td>
+                                </tr>
+                                <tr>
+                                    <td><b><span t-field="o.partner_id.name"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td><span t-field="o.partner_id.street"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="margin-top:1cm;">   
+                            <table style="width:100%; border-collapse: collapse; border-top-style: solid; border-top-color: rgb(169,169,169);">
+                                <tr>
+                                    <td class="cell">Vessel</td>
+                                    <td class="cell">Voyage</td>
+                                    <td class="cell">POL</td>
+                                    <td class="cell">POD</td>
+                                    <td class="cell">Arrival Date</td>
+                                    <td class="cell">Terminal</td>
+                                </tr>
+                                <tr>
+                                    <td class="cell"><span t-field="o.nama_sarana_angkut"/></td>
+                                    <td class="cell"><span t-field="o.voyage_id.name"/></td>
+                                    <td class="cell"><span t-field="o.pelabuhan_asal"/></td>
+                                    <td class="cell"><span t-field="o.pelabuhan_akhir"/></td>
+                                    <td class="cell"><span t-field="o.tgl_tiba"/></td>
+                                    <td class="cell"><span t-field="o.imp_terminal_code_id"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="margin-top:0.3cm;">   
+                            <table style="width:70%;">
+                                <tr>
+                                    <td>Containers detail as follow:</td>
+                                </tr>
+                            </table> 
+
+                            <table style="width:100%; border-collapse: collapse; border-top-style: solid; border-top-color: rgb(169,169,169);">
+                                <tr>
+                                    <td class="cell">Container No.</td>
+                                    <td class="cell">Size</td>
+                                    <td class="cell">Type</td>
+                                    <td class="cell">Seal Number</td>
+                                    <td class="cell">Gross Weight <br>(KGS)</br></td>
+                                    <td class="cell">Measurment<br>(M3)</br></td>
+                                </tr>
+                                <tr t-foreach="o.import_container_info_ids" t-as="record">
+                                    <td class="cell"><span t-field="record.no_container_id"/></td>
+                                    <td class="cell"><span t-field="record.product_id.container_size"/></td>
+                                    <td class="cell"><span t-field="record.product_id.container_type"/></td>
+                                    <td class="cell"><span t-field="record.nomor_segel"/></td>
+                                    <td class="cell"><span t-field="o.bruto"/></td>
+                                    <td class="cell"><span t-field="o.volume"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div width="100%" style="margin-top:1cm;">   
+                            <table style="width:100%;">
+                                <tr>
+                                    <td>Please return empty container to the following depot :</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div width="100%" style="margin-top:0.3cm;">   
+                            <table style="width:70%;">
+                                <tr>
+                                    <td>Depot Name</td>
+                                    <td style="font-weight: bold;">: <span t-field="o.depot_name_id.depot_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Depot Address</td>
+                                    <td>: <span t-field="o.depot_name_id.depot_id.street"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Phone</td>
+                                    <td>: <span t-field="o.depot_name_id.depot_id.phone"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div width="100%" style="margin-top:1cm; margin-left: 1.35cm;">   
+                            <u style="font-weight: bold;">Notice to Consignee</u>
+                            <br/>
+                            <ul>
+                                <li>When the DO validity ends, this DO must be extended at our office.</li>
+                                <li>DO Expiry Date is accotfing to the detention free time of this shipment.</li>
+                                <li>Please return empty container back t depot as soon as possible or else detention will be billed accordingly.</li>
+                            </ul>
+                        </div>
+
+                        <div width="100%" style="margin-top:1cm;">
+                            <table style="width:70%;">
+                                <tr>
+                                    <td><b>Detention Tariff :</b></td>
+                                </tr>
+                            </table> 
+
+                            <table style="width:100%; border-collapse: collapse; text-align: left; border-top-style: solid; border-top-color: rgb(169,169,169);">
+                                <tr t-foreach='o.import_container_info_ids and o.import_container_info_ids[0]' t-as='slab'>
+                                    <td>Container Size and Type</td>
+                                    <td>1-<span t-field='slab.free_time'/> Days</td>
+                                    <td>
+                                        <span t-if="slab.free_time == 'day7'">8</span>
+                                        <span t-if="slab.free_time == 'day14'">15</span>
+                                        <span t-if="slab.free_time == 'day21'">22</span>
+                                        - <span t-esc='"%.0f" % slab.detention_formula_id.slab1'/> Days
+                                    </td>
+                                    <td>
+                                        <t t-set='day2' t-value='slab.detention_formula_id.slab1 + 1'/>
+                                        <span t-esc='"%.0f" % day2'/> 
+                                        - <span t-esc='"%.0f" % slab.detention_formula_id.slab2'/> Days
+                                    </td>
+                                    <td>
+                                        <t t-set='day3' t-value='slab.detention_formula_id.slab2 + 1'/>
+                                        <span t-esc='"%.0f" % day2'/> 
+                                        - <span t-esc='"%.0f" % slab.detention_formula_id.slab3'/> Days
+                                    </td>
+                                    <td>
+                                        <t t-set='day4' t-value='slab.detention_formula_id.slab3 + 1'/>
+                                        <span t-esc='"%.0f" % day3'/>  
+                                        Days Onwards</td>
+                                </tr>
+
+                                <t t-foreach="o.compute_import_report()" t-as="record">                                    
+                                    <tr>
+                                        <td class="cell2" style='text-transform: uppercase;'><span t-esc="record['type']"/>'<span style='text-transform: uppercase;' t-esc="record['size']"/></td>
+                                        <td class="cell2">FREE</td>
+                                        <td class="cell2" style='text-transform: uppercase;'><span t-esc="record['formula1']"/></td>
+                                        <td class="cell2" style='text-transform: uppercase;'><span t-esc="record['formula2']"/></td>
+                                        <td class="cell2" style='text-transform: uppercase;'><span t-esc="record['formula3']"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                    </div> 
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                            <tr>
+                                <td>
+                                    <img t-if="o.imp_principal_id.image_1920" t-att-src="image_data_uri(o.imp_principal_id.image_1920)" 
+                                    style="width:6.2cm; height:1.6cm; margin-right: 3.15cm; margin-top: 0.25cm;" alt="Logo" align="right"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-left: 1.1cm; margin-top:1.2cm;">
+                            <tr>
+                                <td style='line-height: 1;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                    <br/>
+                                    <span style="font-size:0.34cm;">as agent</span>
+                                    <br/>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                    <br/>
+                                    <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_delivery_order_do" model="ir.actions.report">
+            <field name="name">Delivery Order</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_delivery_order</field>
+            <field name="report_file">forecastle_module.forecastle_delivery_order</field>
+            <field name="print_report_name">'Forecastle Delivery Order - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_do" model="report.paperformat">
+        <field name="name">Delivery Order</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_delivery_order_do'))]"/>
+    </record>
+</odoo>

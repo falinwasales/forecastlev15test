@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="notice_of_arrival_final">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                <div class="page">
+                    <style>
+                        html *{
+                            word-wrap: break-word;
+                            font-family:font-family: Arial, Helvetica, sans-serif;
+                            font-size: 0.35cm;
+                        }
+
+                        li {
+                            font-size: 0.38cm;
+                            padding-bottom : 0.2cm;
+                        }
+
+                        table{
+                            margin-left: 1.6cm;
+                        }
+
+                        .cell{
+                            padding-top: 0.4cm;
+                            padding-bottom: 0.4cm;
+                        }
+
+                        .cell_field{
+                            padding-bottom: 0.4cm;
+                        }
+
+                        .cell2{
+                            padding-bottom: 0.4cm;
+                        }
+
+                        .cell_field2{
+                            padding-bottom: 0.2cm;
+                        }
+
+                        .table_report_header_string{
+                            text-transform: uppercase;
+                            font-size: 0.6cm;
+                            font-weight: bold;
+                        }
+
+                        .table_report_main_field{
+                            text-transform: uppercase;
+                        }
+                        
+                        .striped_table tr:nth-child(odd) {
+                            background-color: #f2f2f2;
+                          }
+                    </style>
+
+                    <div style='margin-top: 3cm; margin-left: 11.8cm;'>
+                        <table width="80%">
+                            <tr>
+                                <td><span style='visibility: hidden;'>;</span></td>
+                                <td colspan="2" style='text-transform: uppercase; font-size: 0.6cm; font-weight: bold;'>notice of arrival</td>
+                                <td style='text-transform: uppercase; font-size: 0.6cm; font-weight: bold;'></td>
+                            </tr>
+                            <tr>
+                                <td style='padding-top: 0.7cm;'><span style='visibility: hidden;'>;</span></td>
+                                <td style='padding-top: 0.7cm;' width="7%">To</td>
+                                <td style='padding-top: 0.7cm;'>: <span t-field='o.partner_id'/></td>
+                            </tr>
+                            <tr>
+                                <td style='padding-top: 0.7cm;'><span style='visibility: hidden;'>;</span></td>
+                                <td style='padding-top: 0.7cm;'><span style='visibility: hidden;'>;</span> </td>
+                                <td style='padding-top: 0.7cm;'>: <span t-esc="o.almt_consignee"/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table style="margin-top: 0.7cm; margin-left: 1.4cm;">
+                        <tr>
+                            <td style="text-transform: uppercase;">
+                                <b><u>shipments details:</u></b>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table style="width:90%; border-top:1px solid rgb(169,169,169);  text-align:left; margin-top: 0.6cm;" class='striped_table'>
+                        <tr>
+                            <td style="padding-left: 0.3cm; background-color: rgb(245,245,245);">B/L NUMBER</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">QTY</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">SIZE</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">TYPE</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">VESSEL</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">VOY</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">POL</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">POD</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245);" class="cell">ETA POD</td>
+                            <td style="text-align:center; background-color: rgb(245,245,245); padding-right: 3px;" class="cell">TERMINAL</td>
+                        </tr>
+
+                        <t t-if='o.import_container_info_ids'>
+                            <tr t-foreach="o._report_noa()" t-as="line1">
+                                <td style='padding-left: 0.3cm;'><span t-esc="line1['product_id']"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-esc="line1['qty']"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-esc="line1['size']"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-esc="line1['type']"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-field="o.nama_sarana_angkut"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-field="o.voyage_id.name"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-field="o.pelabuhan_asal.port_full_name"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-field="o.pelabuhan_bongkar.port_full_name"/></td>
+                                <td style="text-align:center" class="cell_field"><span t-field="o.tgl_tiba"/></td>
+                                <td style="text-align:center; padding-right: 3px;" class="cell_field"><span t-field="o.imp_terminal_code_id"/></td>
+                            </tr>
+                        </t>
+                    </table>
+
+                    <table style="margin-top: 1cm; margin-left: 1.4cm;">
+                        <td style="text-transform: uppercase;">
+                            <b><u>import charges</u></b>
+                        </td>
+                    </table>
+
+                    <table style="width:90%; text-align:left; margin-top: 0.5cm;" class='striped_table'>
+                        <tr>
+                            <td class="cell2" style='padding-left: 0.3cm;'>CHARGES</td>
+                            <td style="text-align:center" class="cell2">CURRENCY</td>
+                            <td style="text-align:center" class="cell2">RATE</td>
+                            <td style="text-align:center" class="cell2">QTY</td>
+                            <!-- <td style="text-align:center" class="cell2">PPN AMOUNT</td> -->
+                            <td style="text-align:right; padding-right: 3px;" class="cell2">AMOUNT</td>
+                        </tr>
+                
+                        <t t-foreach="o.order_line.filtered(lambda x: x.display_type != 'line_section')" t-as="line3">
+                            <t t-if='not line3.product_id.is_gain_forex and not line3.product_id.is_loss_forex'>
+                                <tr>
+                                    <td class="cell_field2" style="padding-left: 0.3cm;"><span t-field="line3.product_id.name"/></td>
+                                    <t t-if="line3.product_id.is_dollar">
+                                        <td style="text-align:center" class="cell_field2">USD</td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="text-align:center" class="cell_field2">IDR</td>
+                                    </t>
+
+                                    <t t-if="line3.product_id.is_dollar">
+                                        <td style="text-align:center" class="cell_field2"><span t-esc="&quot;{:,.2f}&quot;.format(line3.price_unit_principal_currency)"/></td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="text-align:center" class="cell_field2"><span t-esc="&quot;{:,.2f}&quot;.format(line3.price_unit)"/></td>
+                                    </t>
+                                    
+                                    <td style="text-align:center" class="cell_field2"><span t-esc="'%.0f' % line3.product_uom_qty"/></td>
+                                    <!-- <td style="text-align:center" class="cell_field2">
+                                        <t t-if='line3.price_tax == 0'>
+                                            
+                                        </t>
+                                        <t t-else=''>
+                                            <span t-esc="&quot;{:,.2f}&quot;.format(line3.price_tax)"/>
+                                        </t>
+                                    </td> -->
+                                    <t t-if="line3.product_id.is_dollar == True">
+                                        <td style="text-align:right; padding-right: 3px;" class="cell_field2"><span t-esc="&quot;{:,.2f}&quot;.format(line3.price_unit_principal_currency * line3.product_uom_qty)"/></td>
+                                    </t>
+                                    <t t-else="">
+                                        <!--  THQ MODE <td style="text-align:right; padding-right: 3px;" class="cell_field2"><span t-esc="&quot;{:,.2f}&quot;.format(line3.price_total * line3.product_uom_qty)"/></td> -->
+                                        <td style="text-align:right; padding-right: 3px;" class="cell_field2"><span t-esc="&quot;{:,.2f}&quot;.format(line3.price_subtotal)"/></td>
+
+                                    </t>
+                                </tr>
+                            </t>
+                        </t>
+                        
+                        <t t-set="subtotal" t-value="0"/>
+                        <t t-set="price" t-value="0"/>
+                        <t t-set="uom_qty" t-value="0"/>
+                        <t t-set="taxs" t-value="0"/>
+                        <t t-foreach="o.compute_import_report()" t-as="line4">
+                            <tr>
+                                <td class="cell_field2" style='padding-left: 0.3cm;'>Deposit Container</td>
+                                <td style="text-align:center" class="cell_field2">IDR</td>
+                                <td style="text-align:center" class="cell_field2"><span t-esc='&quot;{:,.2f}&quot;.format(line4["price"])' t-set='price'/></td>
+                                <td style="text-align:center" class="cell_field2"><span t-esc='line4["uom_qty"]' t-set='uom_qty'/></td>
+                                <td style="text-align:right" class="cell_field2" colspan='2'><span t-esc='&quot;{:,.2f}&quot;.format(line4["price"]*line4["uom_qty"])'/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 1cm;">
+                                    <i>*The products have not yet included taxes</i>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                    
+                    <table style="margin-top: 1.4cm; margin-left: 1.4cm; width: 87%;">
+                        <tr>
+                            <td style="text-transform: uppercase;">
+                                <b><u>notes :</u></b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <ul style="margin-left: 0cm;">
+                                    <li> 
+                                        Please note the deadline for manifest submission is 1 day from ETA for shipments originated from Singapore/Malaysia, and 2 days prior ETA for other port of origin. Otherwise, penalty fee of USD 30 per doc will be applied.
+                                    </li>
+                                    <li>
+                                        You are advised to present us your endorsed Bill of Landing/Seaway bill/Telex Release in exchange for which we will issue our Delivery Order.
+                                    </li>
+                                    <li> 
+                                        Any local charges such as storage demurrage or detention charges that may incur on your cargo will be under consignee responsibility
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class='header'>
+                    <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                        <tr>
+                            <td>
+                                <img t-if="o.imp_principal_id.image_1920" t-att-src="image_data_uri(o.imp_principal_id.image_1920)" 
+                                style="width:6.2cm; height:1.6cm; margin-right: 3.15cm; margin-top: 0.25cm;" alt="Logo" align="right"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>  
+
+                <div class='footer'>
+                    <table style="border-collapse: separate; text-align: justify; margin-left: 1.6cm; margin-top:1.2cm;">
+                        <tr>
+                            <td style='line-height: 1;'>
+                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                <br/>
+                                <span style="font-size:0.34cm;">as agent</span>
+                                <br/>
+                                <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                <br/>
+                                <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                            </td>
+                        </tr>
+                    </table>
+    
+                    <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                        <tr>
+                            <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                            </td>
+                        </tr>
+                    </table>
+    
+                    <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                        <tr>
+                            <td align="center" style="font-size: 0.34cm">
+                                Thank you for supporting Forecastle Indonesia
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_notice_of_arrival_final" model="ir.actions.report">
+            <field name="name">Notice of Arrival</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.notice_of_arrival_final</field>
+            <field name="report_file">forecastle_module.notice_of_arrival_final</field>
+            <field name="print_report_name">'Notice of Arrival- %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_noa" model="report.paperformat">
+        <field name="name">Notice of Arrival</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_notice_of_arrival_final'))]"/>
+    </record>
+
+</odoo>

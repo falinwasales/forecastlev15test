@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+		<record id="email_template_send_booking" model="mail.template">
+	        <field name="name">Booking Confirmation</field>
+	        <field name="model_id" ref="sale.model_sale_order"/>
+	        <field name="subject">Booking Confirmation ${object.name or 'n/a'}</field>
+	        <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+	        <field name="partner_to">${object.partner_id.id}</field>
+	        <field name="body_html" type="html">
+	        	<div style="margin: 0px; padding: 0px;"></div>
+	        </field>
+	        <field name="report_template" ref="forecastle_module.action_forecastle_booking"/>
+	        <field name="report_name">${(object.name or '').replace('/','_')}: Booking Confirmation</field>
+	        <field name="lang">${object.partner_id.lang}</field>
+	        <field name="auto_delete" eval="True"/>
+	    </record>
+	    <record id="email_template_send_noa" model="mail.template">
+	        <field name="name">Notice Of Arrival</field>
+	        <field name="model_id" ref="sale.model_sale_order"/>
+	        <field name="subject">Notice Of Arrival ${object.name or 'n/a'}</field>
+	        <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+	        <field name="partner_to">${object.partner_id.id}</field>
+	        <field name="body_html" type="html">
+	        	<div style="margin: 0px; padding: 0px;"></div>
+	        </field>
+	        <field name="report_template" ref="forecastle_module.action_notice_of_arrival_final"/>
+	        <field name="report_name">${(object.name or '').replace('/','_')}: Notice Of Arrival</field>
+	        <field name="lang">${object.partner_id.lang}</field>
+	        <field name="auto_delete" eval="True"/>
+	    </record>
+	    <record id="email_template_proforma" model="mail.template">
+	        <field name="name">PRO-FORMA INVOICE</field>
+	        <field name="model_id" ref="sale.model_sale_order"/>
+	        <field name="subject">PRO-FORMA INVOICE ${object.name or 'n/a'}</field>
+	        <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+	        <field name="partner_to">${object.partner_id.id}</field>
+	        <field name="body_html" type="html">
+	        	<div style="margin: 0px; padding: 0px;"></div>
+	        </field>
+	        <field name="report_template" ref="forecastle_module.action_forecastle_proforma_invoice"/>
+	        <field name="report_name">${(object.name or '').replace('/','_')}: PRO-FORMA INVOICE</field>
+	        <field name="lang">${object.partner_id.lang}</field>
+	        <field name="auto_delete" eval="True"/>
+	    </record>
+	</data>
+	<data noupdate="0">
+		<record id="sequence_repair_order" model="ir.sequence">
+            <field name="name">Repair Order</field>
+            <field name="code">seq.repair</field>
+            <field name="prefix">Repair-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="sequence_bl_number" model="ir.sequence">
+            <field name="name">BL Number</field>
+            <field name="code">seq.bl.number</field>
+            <field name="suffix">%(month)s%(year)s</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+	</data>
+	<data noupdate="0">
+		<record id="analytic_account_liner_agency" model="account.analytic.account">
+            <field name="name">Liner Egency</field>
+            <field name="company_id" eval="False"/>
+		</record>
+
+		<record id="deposit_detention_product" model="product.product">
+            <field name="name">Deposit Detention</field>
+        </record>
+
+	</data>
+</odoo>

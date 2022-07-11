@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_surat_tugas">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="forecastle_module.custom_forecastle_header_surat_tugas">
+                    <div class="page">
+                        <style>
+                            html *{
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                            }
+                            .do_title{
+                                text-transform: uppercase;
+                                font-size: 17pt;
+                            }
+                            .do_string{
+                                font-size: 10pt;
+                            }
+                        </style>
+
+                        <div style='padding-left: 0.5cm;'>
+                            <div class="row">
+                                <div style="width:100%; padding-top:3%; padding-right:7%; text-align: center;">
+                                    <h2 class="do_title" style='color:black'><b>Surat Tugas</b></h2>
+                                </div>
+                            </div>
+
+                            <div width="100%" style='margin-top:5%;'>   
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td class='do_string'>Yang bertanda tangan di bawah ini :</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div width="100%" style='margin-top:4%;' class='do_string'>                               
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width='15%;'>Nama</td>
+                                        <td width='85%;'>: <span t-field="o.fal_nama_pemberi_tugas"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Alamat</td>
+                                        <td width='85%;'>: <span t-field="o.fal_alamat_pemberi_tugas"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Jabatan</td>
+                                        <td width='85%;'>: <span t-field="o.fal_jabatan_pemberi_tugas"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div width="100%" style='margin-top:4%;' class='do_string'>   
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td>Dengan ini memberi Tugas kepada:</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div width="100%" style='margin-top:2%;' class='do_string'>   
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width='15%;'>Nama</td>
+                                        <td width='85%;'>: <span t-field="o.fal_nama_penerima_tugas"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Alamat</td>
+                                        <td width='85%;'>: <span t-field="o.fal_alamat_penerima_tugas"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Jabatan</td>
+                                        <td width='85%;'>: <span t-field="o.fal_jabatan_penerima_tugas"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+
+                            <div width="100%" style='margin-top:4%;'>   
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td class='do_string'>Untuk pengambilan Dokumen Import dengan data sbb: </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div width="100%" style='margin-top:4%;' class='do_string'>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td width='15%;'>Vessel</td>
+                                        <td width='85%;'>: <span t-field="o.nama_sarana_angkut"/> V.<span t-field="o.voyage_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Container</td>
+                                        <td width='85%;'>: <span t-field="o.temp_no_container"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>HBL No.</td>
+                                        <td width='85%;'>: <span t-field="o.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width='15%;'>Arrival Date</td>
+                                        <td width="85%;">: <span t-field="o.tgl_tiba"/></td>
+                                    </tr>
+                                    
+                                </table>
+                            </div>
+
+                            <div width="100%" style='margin-top:4%; text-align:left;'>   
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td class='do_string'>Demikian surat kuasa ini kami buat untuk dipergunakan sebagaimana mestinya</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='do_string'>Atas perhatian dan kerjasama yang baik kami ucapakan terima kasih.</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div width="70%" style='margin-top:5%;'>
+                                <table style='margin-top:15%; width: 100%;'>
+                                    <tr>
+                                        <td class='do_string'><span t-field="o.company_id.city"/>, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div>
+                                <table style='margin-top:2%; width: 100%;'>
+                                    <tr>
+                                        <td class='do_string' width='60%;'>
+                                            Pemberi tugas
+                                        </td>
+                                        <td class='do_string' width='40%;'>
+                                            Penerima tugas
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div>
+                                <table style="margin-top:15%; width: 100%;" >
+                                    <tr style="margin:5px">
+                                        <td class="do_string" width="60%;">...............................................................
+                                        </td>
+                                        <td class="do_string" width="40%;">...............................................................
+                                        </td>
+                                    </tr>
+                                    <tr style="margin:5px">
+                                        <td class="do_string" width="50%;">
+                                          As agent PT Forecastle Indonesia
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2cm; border-bottom: 1px solid rgb(169,169,169);">
+                            <tr>
+                                <td style='line-height: 1.2;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" 
+                                    style="width:170px; margin-left: 0.5cm;" alt="Logo"/>
+                                    <br>
+                                      <span t-field='o.company_id.name' style="margin-left: 0.5cm; text-transform: uppercase; font-size:0.33cm;"/>
+                                    </br>
+                                    <br></br>
+                                    <span t-field='o.company_id.street' style="margin-left: 0.5cm; font-size:0.33cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- <div class='footer'>
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm; padding-bottom: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div> -->
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_surat_tugas_report" model="ir.actions.report">
+            <field name="name">Surat Tugas</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_surat_tugas</field>
+            <field name="report_file">forecastle_module.forecastle_surat_tugas</field>
+            <field name="print_report_name">'Surat Tugas- %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_surat_tugas" model="report.paperformat">
+        <field name="name">Surat Tugas</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">17</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_surat_tugas_report'))]"/>
+    </record>
+
+</odoo>

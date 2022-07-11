@@ -1,0 +1,15 @@
+<odoo>
+    <!-- Res Company -->
+    <!-- view untuk company additional invo -->
+    <record id="fal_view_company_late_payment_statement" model="ir.ui.view">
+        <field name="name">fal_view_company_late_payment_statement_view.view</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                 <field name="fal_company_late_payment_statement"/>
+                 <field name="fal_use_late_payment_statement"/>
+            </field>
+        </field>
+    </record>
+</odoo>

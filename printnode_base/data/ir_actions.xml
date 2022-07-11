@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Picking > More > Print Product Labels -->
+    <record id="action_picking_print_product_labels" model="ir.actions.server">
+        <field name="name">Print Product Labels</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.open_product_label_multi_print_wizard()
+        </field>
+    </record>
+
+    <!-- Product Template > More > Print Product Labels -->
+    <record id="action_product_print_product_labels" model="ir.actions.server">
+        <field name="name">Print Product Labels</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template" />
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.open_product_label_multi_print_wizard()
+        </field>
+    </record>
+
+    <!-- Product Variant > More > Print Product Labels -->
+    <record id="action_product_variant_print_product_labels" model="ir.actions.server">
+        <field name="name">Print Product Labels</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="binding_model_id" ref="product.model_product_product" />
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.open_product_label_multi_print_wizard()
+        </field>
+    </record>
+
+</odoo>

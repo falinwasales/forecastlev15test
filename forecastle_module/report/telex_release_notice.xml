@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="telex_release_notice_reports">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="forecastle_module.custom_report_header_footer_telex">
+                    <div class="page">
+                        <style>
+                            html *{
+                                word-wrap: break-word;
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.4cm;
+                            }
+
+                            table{
+                                margin-left: 3.3cm;
+                            }
+                        </style>
+
+                        <table width='100%'>
+                            <tr>
+                                <td style="text-transform: uppercase; font-size: 0.6cm; font-weight: bold; padding-left: 5cm;">
+                                    telex release notice
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.9cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">TO</td>
+                                <td>: <span t-field="o.principal_id.name"/></td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 4.4cm;"><span style="visibility: hidden;">:</span></td>
+                                <td>
+                                    <span style="visibility: hidden;">;</span> <span t-field="o.principal_id.street"/>
+                                    <br/>
+                                    <span style="visibility: hidden;">;</span> <span t-field="o.principal_id.phone"/>
+                                    <br/>
+                                    <span style="visibility: hidden;">;</span> <span t-field="o.principal_id.mobile"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">B/L Number</td>
+                                <td>: <span t-field="o.bl_number"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">shipper</td>
+                                <td>: <span t-field="o.shipper_id"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">consignee</td>
+                                <td>: <span t-field="o.consignee_id"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">notify party</td>
+                                <td>: <span t-field="o.notify_id"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">quantity</td>
+                                <td> :
+                                    <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_container == True)" t-as="order_line">
+                                        <span t-esc="int(float(order_line.product_uom_qty))"/>x<span t-field="order_line.product_id.name"/> 
+                                        <br>
+                                            <span style="visibility: hidden;">;</span>
+                                        </br>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr>
+                                <td style="width: 4.4cm; text-transform: uppercase;">vessel/voyage</td>
+                                <td>: <span t-field="o.re_vessel_id.vessel_full_name"/> / <span t-field="o.voyage_id"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                            <tr t-foreach="o.pol_id" t-as="pol">
+                                <td style="width: 4.4cm; text-transform: uppercase;">pol</td>
+                                <td>: <span style='text-transform: uppercase;' t-field="pol.port_full_name"/>, <span style='text-transform: uppercase;' t-field="pol.coutry_id.name"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.4cm;">
+                                <td style="width: 4.4cm; text-transform: uppercase;">pod</td>
+                                <td>: 
+                                    <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pod")' t-as='pod'>
+                                        <span style='text-transform: uppercase;' t-field="pod[0].port_code_id.port_full_name"/>, 
+                                        <t t-if='pod[0].agent_id.street'>
+                                            <br></br>
+                                            <span style='visibility: hidden;'>a</span><span style='text-transform: uppercase;' t-field="pod[0].agent_id.street"/>,
+                                        </t>
+                                        <t t-if='pod[0].agent_id.street2'>
+                                            <br></br>
+                                            <span style='visibility: hidden;'>a</span><span style='text-transform: uppercase;' t-field="pod[0].agent_id.street2"/>,
+                                        </t>
+                                        <t t-if='pod[0].agent_id.city'>
+                                            <br></br>
+                                            <span style='visibility: hidden;'>a</span><span style='text-transform: uppercase;' t-field="pod[0].agent_id.city"/>,
+                                        </t>
+                                        <t t-if='pod[0].agent_id.zip'>
+                                            <br></br>
+                                            <span style='visibility: hidden;'>a</span><span style='text-transform: uppercase;' t-field="pod[0].agent_id.zip"/>
+                                        </t>
+                                    </t>
+                                </td>
+                        </table>
+
+                        <table style="width: 19cm; margin-top: 1.5cm; margin-left: 2.3cm;">
+                            <tr>
+                                <td>
+                                    We would like to informed that shipper have surrendered FULL SET ORIGINAL B/L
+                                    in our office, hence please release cargoes to consignee without presentation of
+                                    Original B/L.
+                                </td>
+                            </tr>
+                        </table>
+
+                        <t t-if='o.fal_signature_selection == "signature"'>
+                            <table style="width: 22cm; margin-left: 2.3cm; margin-top: 1.2cm;">
+                                <tr>
+                                    <td>
+                                        Best Regards, 
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table style="width: 22cm; margin-left: 2.3cm; margin-top: 0.4cm;">
+                                <tr>
+                                    <img t-if="o.company_id.fal_company_logo" t-att-src="image_data_uri(o.company_id.fal_company_logo)" 
+                                    style="width:6.2cm; 
+                                    height:1.6cm; 
+                                    margin-left: 2.3cm; 
+                                    margin-top: 0.8cm; 
+                                    position: absolute; 
+                                    z-index: 1;" alt="Logo"/>
+                                    <t t-if='o.fal_signature_selection == "signature"'>
+                                        <img t-if="o.telex_validate.filename_personal_sign" t-att-src="image_data_uri(o.telex_validate.filename_personal_sign)" 
+                                        style="width:2cm; 
+                                        height:3.4cm; 
+                                        margin-left: 3.7cm; 
+                                        margin-top: 0.15cm; 
+                                        position: absolute; 
+                                        z-index: 2;" alt="Logo"/>
+                                    </t>
+                                </tr>
+                            </table>
+                            
+                            <table style="width: 22cm; margin-left: 2.3cm; margin-top: 2cm;">
+                                <tr>
+                                    <td>
+                                        <span t-field='o.telex_validate'/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                        
+
+                        <table style="width: 22cm; margin-top: 3cm; margin-left: 1.9cm;">
+                            <tr>
+                                <td style="font-style: italic;">
+                                    * This Document is computer generated                              
+                                </td>
+                            </tr>
+                        </table>
+                    </div> 
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                            <tr>
+                                <td>
+                                    <img t-if="o.principal_id.image_1920" t-att-src="image_data_uri(o.principal_id.image_1920)" 
+                                    style="width:6.2cm; height:1.6cm; margin-right: 1.4cm; margin-top: 0.25cm;" alt="Logo" align="right"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-left: 1.1cm; margin-top:1.2cm;">
+                            <tr>
+                                <td style='line-height: 1;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                    <br/>
+                                    <span style="font-size:0.34cm;">as agent</span>
+                                    <br/>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                    <br/>
+                                    <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_telex_release_notice" model="ir.actions.report">
+            <field name="name">Telex Release Notice</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.telex_release_notice_reports</field>
+            <field name="report_file">forecastle_module.telex_release_notice_reports</field>
+            <field name="print_report_name">'Telex Release Notice - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_telex" model="report.paperformat">
+        <field name="name">Telex Release Notice</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">18</field>
+        <field name="margin_bottom">40</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_telex_release_notice'))]"/>
+    </record>
+</odoo>

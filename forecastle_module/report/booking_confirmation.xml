@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_booking_confirmation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="forecastle_module.custom_report_header_footer_bc">
+                    <div class="page">
+                        <style>
+                            html *{
+                                word-wrap: break-word;
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.33cm;
+                            }
+
+                            <!-- table{
+                                margin-left: 1.35cm;
+                            } -->
+
+                            .cell{
+                                padding-top: 0.4cm;
+                                padding-bottom: 0.4cm;
+                                text-align: center;
+                                font-size: 0.37cm;
+                            }
+
+                            .cell_field{
+                                padding-top: 0.4cm;
+                                padding-bottom: 0.4cm;
+                                text-align: center;
+                                font-size: 0.37cm;
+                            }
+
+                            .cell2{
+                                padding-bottom: 0.4cm;
+                                text-transform: uppercase;
+                            }
+
+                            .cell_field2{
+                                padding-bottom: 0.2cm;
+                            }
+
+                            <!-- li{
+                                list-style-type: circle;
+                            }
+
+                            ul{
+                                padding: 0cm;
+                            } -->
+                        </style>
+
+                        <t t-foreach='o.picking_ids' t-as='picking'>
+                            <div style="page-break-after: always;">
+                                <div style="margin-left: 13.1cm;">
+                                    <table>
+                                        <tr>
+                                            <td><span style="visibility: hidden;">;</span></td>
+                                            <td style="text-transform: uppercase; font-size: 0.6cm; font-weight: bold;">booking</td>
+                                            <td style="text-transform: uppercase; font-size: 0.6cm; font-weight: bold;">
+                                            <span style="visibility: hidden;">;</span> confirmation</td>
+                                        </tr>
+                                    </table>
+    
+                                    <table style='width: 70%;'>
+                                        <tr>
+                                            <td style="padding-top: 0.7cm;"><span style="visibility: hidden;">;</span></td>
+                                            <td style="padding-top: 0.7cm;">Booking No</td>
+                                            <td style="padding-top: 0.7cm;">: <span t-field="o.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top: 0.7cm;"><span style="visibility: hidden;">;</span></td>
+                                            <td style="padding-top: 0.7cm;">Date </td>
+                                            <td style="padding-top: 0.7cm;">: <span t-esc="picking.scheduled_date and picking.scheduled_date.strftime('%d %b %Y')"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+    
+                                <table style=" width: 100%; border-collapse: collapse; margin-top:1.1cm; border-spacing: 10px; table-layout: fixed; border-collapse: collapse; border-top: 1px solid black;">
+                                    <tr>
+                                        <td class="cell" style="width: 6cm; text-align: left; padding-left: 0.3cm; background-color: rgb(245,245,245);">Booking Party</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>Qty</td>
+                                        <td class="cell" style="width: 3cm; background-color: rgb(245,245,245);">Size &amp; Type</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>POL</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>POT</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>POD</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>Vessel</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>Voy</td>
+                                        <td class="cell" style='background-color: rgb(245,245,245);'>ETD</td>
+                                    </tr>
+                                
+                                    <!-- <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_container and x.display_type != 'line_section')" t-as="loop3">
+                                        <tr>
+                                            <td class="cell_field" style="width: 6cm; text-align: left; padding-left: 0.3cm;"><span t-field="o.partner_id.name"/></td>
+                                            <td class="cell_field">
+                                                <span t-field="loop3.product_uom_qty"/>
+                                            </td>
+                                            <td class="cell_field">
+                                                <span t-field="loop3.product_id.name"/>
+                                            </td>
+                                            <td class="cell_field"><span t-field="o.pol_id.name"/></td>
+                                            <td class="cell_field">
+                                                <t t-if='o.connecting_vessel_id' t-foreach="o.connecting_vessel_id" t-as="loop2">
+                                                    <t t-if='loop2'>
+                                                        <t t-foreach='loop2.filtered(lambda x: x.port_type == "pot")' t-as='cv'>
+                                                            <t t-if='cv'>
+                                                                <span t-field="cv[0].port_code_id.name"/>
+                                                            </t>
+                                                            <t t-else=''>
+                                                                <span>-</span>
+                                                            </t>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                                <t t-else=''>
+                                                    <span>-</span>
+                                                </t>
+                                            </td>
+                                            <td class="cell_field"><span t-field="o.pod_id.name"/></td>
+                                            <td class="cell_field"><span t-field="o.re_vessel_id.vessel_full_name"/></td>
+                                            <td class="cell_field"><span t-field="o.voyage_id"/></td>
+                                            <td class="cell_field"><span t-field="o.etd"/></td>
+                                        </tr>
+                                    </t> -->
+
+
+                                    <t t-foreach="o._get_picking_id_items()" t-as="loop3">
+                                        <tr>
+                                            <td class="cell_field" style="width: 6cm; text-align: left; padding-left: 0.3cm;"><span t-field="o.partner_id.name"/></td>
+                                            <td class="cell_field">
+                                                <span t-esc="loop3['qty']"/>
+                                            </td>
+                                            <td class="cell_field">
+                                                <span t-esc="loop3['name']"/>
+                                            </td>
+                                            <td class="cell_field"><span t-field="o.pol_id.name"/></td>
+                                            <td class="cell_field">
+                                                <t t-if='o.connecting_vessel_id' t-foreach="o.connecting_vessel_id" t-as="loop2">
+                                                    <t t-if='loop2'>
+                                                        <t t-foreach='loop2.filtered(lambda x: x.port_type == "pot")' t-as='cv'>
+                                                            <t t-if='cv'>
+                                                                <span t-field="cv[0].port_code_id.name"/>
+                                                            </t>
+                                                            <t t-else=''>
+                                                                <span>-</span>
+                                                            </t>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                                <t t-else=''>
+                                                    <span>-</span>
+                                                </t>
+                                            </td>
+                                            <td class="cell_field"><span t-field="o.pod_id.name"/></td>
+                                            <td class="cell_field"><span t-field="o.re_vessel_id.vessel_full_name"/></td>
+                                            <td class="cell_field"><span t-field="o.voyage_id"/></td>
+                                            <td class="cell_field"><span t-field="o.etd"/></td>
+                                        </tr>
+                                    </t>
+                                </table>
+    
+                                <table style="margin-top:0.8cm;">
+                                    <tr>
+                                        <td>
+                                            Please review the booking details, should there be any changes required, please send us a request before any container picked up:
+                                        </td>
+                                    </tr>
+                                </table>
+    
+                                <table style="width:20cm; margin-top:0.8cm;">
+                                    <tr t-foreach="o.cro_ids and o.cro_ids[0]" t-as="record">
+                                        <tr>
+                                            <td class="cell2">commodity</td>
+                                            <td class="cell2">: <span t-field="o.good_description"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cell2">cargo gross weight</td>
+                                            <td class="cell2">: <span t-field="record.gross"/> Kgs</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cell2">terminal</td>
+                                            <td class="cell2">: <span t-field="o.re_terminal_code_id"/></td>
+                                        </tr>
+                                    </tr>
+                                    <tr t-foreach="o.voyage_id.port_of_call_ids and o.voyage_id.port_of_call_ids[0]" t-as="record">
+                                        <tr>
+                                            <td class="cell2">open stack</td>
+                                            <td class="cell2">: <span t-field="record.opening_date"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cell2">closing stack</td>
+                                            <td class="cell2">: <span t-field="record.closing_date"/></td>
+                                        </tr>  
+                                        <tr>
+                                            <td class="cell2">closing document</td>
+                                            <td class="cell2">: <span t-field="record.closing_document"/></td>
+                                        </tr>  
+                                        <tr>
+                                            <td class="cell2">remarks</td>
+                                            <td class="cell2">: <span t-field="o.remarks"/></td>
+                                        </tr> 
+                                    </tr>
+                                
+                                    <tr>
+                                        <td colspan="2">
+                                            Please pick up the empty container(s) at below depot :
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td style="visibility: hidden;">
+                                            THIS IS EMPTY
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td class="cell2">depot name</td>
+                                        <td>: 
+                                            <!-- <t t-foreach='o.picking_ids.location_id' t-as='pick1'>
+                                                <t t-foreach='pick1.depot_id' t-as='pick2'>
+                                                    <span t-field='pick2.name'/>
+                                                </t>
+                                            </t> -->
+
+                                            <t t-foreach='picking.location_id' t-as='pick1'>
+                                                <t t-foreach='pick1.depot_id' t-as='pick2'>
+                                                    <span t-field='pick2.name'/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="cell2">address</td>
+                                        <td>: 
+                                            <t t-foreach='picking.location_id' t-as='pick1'>
+                                                <t t-foreach='pick1.depot_id' t-as='pick2'>
+                                                    <t t-if='pick2.street'>
+                                                        <span t-field="pick2.street"/>
+                                                    </t>
+                                                    <t t-if='pick2.street2'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="pick2.street2"/>
+                                                    </t>
+                                                    <t t-if='pick2.city'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="pick2.city"/>
+                                                    </t>
+                                                    <t t-if='pick2.state_id'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="pick2.state_id"/>
+                                                    </t>
+                                                    <t t-if='pick2.zip'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="pick2.zip"/>
+                                                    </t>
+                                                    <t t-if='pick2.country_id'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="pick2.country_id"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="cell2">phone</td>
+                                        <td>: 
+                                            <t t-foreach='picking.location_id' t-as='pick1'>
+                                                <t t-foreach='pick1.depot_id' t-as='pick2'>
+                                                    <span t-field='pick2.phone'/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+    
+                                <table style="width:100%; margin-top:0.7cm;">
+                                    <tr><td><u><b>NOTES</b></u></td></tr>
+                                    <tr><td>This booking in subject to following:</td></tr>
+                                </table>
+    
+                                <table style="width:1.1cm; border-collapse: collapse;">
+                                    <tr>
+                                        <ul>
+                                            <li>
+                                                The carrier reserves the right to substitute the named and/or performing vessel(s)
+                                                with another vessel or vessels at any time.
+                                            </li>
+                                            <li>
+                                                Arrival, berthing, departure, and transit times are estimated and given without guaranteed and subject to change without prior notice.
+                                            </li>
+                                            <li>
+                                                All dates/time are given as reasonable estimates only and subject to changes.
+                                            </li>
+                                            <li>
+                                                For DG shipment, shipper is responsible to put DG sticker on container and will be out of carrier liability
+                                            </li>
+                                            <li>
+                                                Stowage request will be subject to availability
+                                            </li>
+                                            <li>
+                                                Customer shall ensure that cargo weight doesn't exceed the max payload of the container, and shall comply with all regulations or 
+                                                requirements of customs port and other authorities and if any non compliance related cost incurred wil be customer's responsibility.
+                                            </li>
+                                        </ul>
+                                    </tr>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                    
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-top:1.2cm;">
+                            <tr>
+                                <td style='line-height: 1;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                    <br/>
+                                    <span style="font-size:0.34cm;">as agent</span>
+                                    <br/>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                    <br/>
+                                    <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_booking" model="ir.actions.report">
+            <field name="name">Booking Confirmation</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_booking_confirmation</field>
+            <field name="report_file">forecastle_module.forecastle_booking_confirmation</field>
+            <field name="print_report_name">'Booking Confirmation - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_telex" model="report.paperformat">
+        <field name="name">Booking Confirmation</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_booking'))]"/>
+    </record>
+</odoo>

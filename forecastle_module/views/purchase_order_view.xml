@@ -1,0 +1,45 @@
+<odoo>
+    <template id="portal_my_home_purchase_hide" name="Show Purchase Orders" customize_show="True" inherit_id="purchase.portal_my_home_purchase" priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]/t[4]" position="replace">
+        </xpath>
+  </template>
+
+	<!-- Change Purhcase Order Form -->
+    <record id="view_purchase_order_form_forecastle" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+        	<field name="invoice_status" position="after">
+        		<field name="commission_invoice_id" readonly="1" attrs="{'invisible': [('commission_invoice_id', '=', False)]}"/>
+        		<field name="expense_invoice_id" readonly="1" attrs="{'invisible': [('expense_invoice_id', '=', False)]}"/>
+                <field name="repair_invoice_id" readonly="1" attrs="{'invisible': [('repair_invoice_id', '=', False)]}"/>
+        	</field>
+        	<field name="partner_id" position="after">
+        		<field name="principal_id"/>
+                <field name="is_receipt" invisible ='1'/>
+        	</field>
+            <field name="origin" position="after">
+                <field name="sales_source_id" attrs="{'invisible': [('is_import', '=', True)]}"/>
+                <field name="sales_source_id_is_import" attrs="{'invisible': [('is_import', '!=', True)]}" context="{'form_view_ref':'forecastle_module.view_sale_order_import_form'}"/>
+                <field name="is_import" attrs="{'invisible': [('is_import', '!=', True)]}"/>
+                <field name="fal_vendor_type" required='1'/>
+                <field name="is_container_cost" invisible="1"/>
+                <field name="is_repair" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+                <field name="container_no_id" attrs="{'column_invisible': [('parent.is_repair', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('supplier_rank', '>=', 1)]</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="domain">[('is_receipt','=', False)]</field>
+    </record>
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+            <field name="domain">['|', ('state','in',('purchase', 'done')), ('is_receipt', '=', True)]</field>
+            <field name="view_id" ref="purchase.purchase_order_tree"/>
+    </record>
+</odoo>

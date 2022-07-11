@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_product_pricelist_inherit_forecastle" model="ir.ui.view">
+            <field name="name">view.product.pricelist.inherit.forecasle</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button class="btn-primary"  attrs="{'invisible': [('active', '=', True)]}" type="object" name="action_approve" string="Approve"/>
+                        <button class="btn-primary"  attrs="{'invisible': ['|',('active', '=', False), '|', ('fal_price_id', '!=', False), ('idr_price', '=', 'IDR')]}" type="object" name="action_auto_crete" string="Create IDR Pricelist"/>
+                    </header>
+                </xpath>
+                <xpath expr="//sheet/widget" position="replace">
+                    <widget name="web_ribbon" title="Draft" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[@name='pricelist_settings']" position="inside">
+                    <field name="principal_id"/>
+                    <field name="partner_id"/>
+                    <field name="carrier_id"/>
+                    <field name="start_date"/>
+                    <field name="date_validity"/>
+                    <field name="pol_id"/>
+                    <field name="pod_id"/>
+                    <field name="reference_number"/>
+                    <field name="fal_price_id" invisible='1'/>
+                    <field name="visible_button" invisible='1'/>
+                    <field name="idr_price" invisible='1'/>
+                </xpath>
+                <xpath expr="//field[@name='item_ids']/tree/field[@name='min_quantity']" position="before">
+                    <field name="product_set_id" />
+                </xpath>
+                <xpath expr="//field[@name='min_quantity']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='pricelist_discounts']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_pricelist_chatter" model="ir.ui.view">
+            <field name="name">product.pricelist.chatter</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                        <field name="activity_ids"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_pricelist_item_inherit" model="ir.ui.view">
+            <field name="name">view.product.pricelist.item.inherit</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="product_set_id"/>
+                </xpath>
+                <xpath expr="//field[@name='min_quantity']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_pricelist_item_form_view" model="ir.ui.view">
+            <field name="name">product.pricelist.item.form</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='applied_on']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_pricelist_action3" model="ir.actions.act_window">
+            <field name="name">Pricelists</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.pricelist</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="product.product_pricelist_view_search" />
+            <field name="context">{"default_base":'list_price'}</field>
+            <field name="domain">[('active', '=', False)]</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new pricelist
+              </p><p>
+                A price is a set of sales prices or rules to compute the price of sales order lines based on products, product categories, dates and ordered quantities.
+                This is the perfect tool to handle several pricings, seasonal discounts, etc.
+              </p><p>
+                You can assign pricelists to your customers or select one when creating a new sales quotation.
+              </p>
+            </field>
+        </record>
+    </data>
+</odoo>

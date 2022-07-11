@@ -1,0 +1,16 @@
+
+/*//xs: 0,
+//vsm: 475px,
+//sm: 576px,
+//md: 768px,
+//lg: 992px,
+//xl: 1200px,
+//xxl: 1534px,
+
+website 全宽
+*/
+@media (min-width: 1200px) {
+    .container {
+        max-width: 98% !important;
+    }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="fal_action_multi_confirm" model="ir.actions.server">
+            <field name="name">Multi Confirm Sale Order</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+               orders = records
+               for order in orders:
+                   if order.state in ['draft','sent']:
+                       order.action_confirm()
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_template_surat_do">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                    <div class="page">
+                        <style>
+                            html *{
+                                <!-- word-wrap: break-word; -->
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.4cm;
+                                line-height: 1.8;
+                            }
+
+                            table{
+                                margin-left: 1.6cm;
+                            }
+
+                            .table_report_header_string{
+                                text-transform: uppercase;
+                                font-size: 0.6cm;
+                                font-weight: bold;
+                            }
+
+                            .table_report_main_string{
+                                width: 20%;
+                            }
+                        </style>
+
+                        <table style="margin-top: 1cm; width: 100%; margin-left: 5.7cm;">
+                            <tr>
+                                <td class='table_report_header_string'>
+                                    surat pengantar pengambilan do
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 1cm; width: 100%;">
+                            <tr>
+                                <td>Kepada Yth</td>
+                                <td> <span style='visibility: hidden;'>hhh</span>: <span t-field="o.partner_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td>Hal</td>
+                                <td> <span style='visibility: hidden;'>hhh</span>: Surat Pengantar Pengambilan DO</td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 1.2cm; width: 100%;">
+                            <tr>
+                                <td>Dengan Hormat,</td>
+                            </tr>
+                            <tr>
+                                <td>Kami memberitahukan bahwa barang import kami 1 POS dengan keterangan tersebut dibawah:</td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top: 0.6cm; width: 80%; margin-left: 3.5cm;">
+                            <tr>
+                                <td class="table_report_main_string">Vessel</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.nama_sarana_angkut"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">Arrival Date</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.tgl_tiba"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">POL</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.pelabuhan_asal.port_full_name"/> / <span t-field="o.pelabuhan_asal.coutry_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">POD</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.pelabuhan_akhir.port_full_name"/> / <span t-field="o.pelabuhan_akhir.coutry_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">Consignee</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.partner_id"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">Notify</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.nama_notify"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">Container</td>
+                                <td width='3%'>:</td>
+                                <td>
+                                    <t t-foreach='o.import_container_info_ids' t-as='record'>
+                                    <span t-field="record.no_container_id"/>,
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">Box Operator</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.imp_principal_id"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">MBL no.</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.no_master_bl"/></td>
+                            </tr>
+                            <tr>
+                                <td class="table_report_main_string">HBL No.</td>
+                                <td width='3%'>:</td>
+                                <td><span t-field="o.name"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top:0.5cm; width: 100%;" class="spdo">
+                            <tr>
+                                <td>
+                                    Berdasarkan hal tersebut di atas kami mohon bantuannya untuk dapat memberikan Delivery Order asli kepada:
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="margin-top:0.5cm; width: 80%;" class="spdo">
+                            <tr>
+                                <th style="text-transform:uppercase; text-align:center; margin-top:0.5cm; margin-left: 7.7cm;" t-field="o.partner_id"/>
+                            </tr>
+                        </table>
+                        <table style="margin-top:0.5cm; width: 90%;" class="spdo">
+                            <tr t-foreach="o.import_container_info_ids and o.import_container_info_ids[0]" t-as="record">
+                                <td style="word-wrap: break-word;">
+                                    D/O berlaku <span t-field="record.free_time"/> hari dari kapal sandar, apabila ada biaya-biaya yang timbul setelah masa berlaku D/O habis, maka akan menjadi tanggung jawab penerima barang.
+                                    <br/>
+                                    Demikianlah surat ini dibuat, atas bantuan dan kerjasamanya kami ucapkan terima kasih
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top:1.8cm; width: 100%;">
+                            <tr>
+                                <td><span t-field="o.company_id.city"/>, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                            </tr>
+                        </table>
+                    
+                         <table style="margin-top:2.8cm; width: 100%;">
+                            <tr>
+                                <td>
+                                    ..............................................................
+                                    <br></br>
+                                    As agent PT Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                            <tr>
+                                <td style='line-height: 1.2;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" 
+                                    style="width:170px; margin-left: 1.2cm; margin-top: 0.7cm;" alt="Logo"/>
+                                    <br>
+                                      <span t-field='o.company_id.name' style="margin-left: 1.2cm; text-transform: uppercase; font-size:0.33cm;"/>
+                                    </br>
+                                    <br></br>
+                                    <span t-field='o.company_id.street' style="margin-left: 1.2cm; font-size:0.33cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_pengantar_do_report" model="ir.actions.report">
+            <field name="name">Surat Pengantar DO</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_template_surat_do</field>
+            <field name="report_file">forecastle_module.forecastle_template_surat_do</field>
+            <field name="print_report_name">'Surat Pengantar DO - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_pengantar_do" model="report.paperformat">
+        <field name="name">Surat Pengantar Pengambilan DO</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_pengantar_do_report'))]"/>
+    </record>
+</odoo>

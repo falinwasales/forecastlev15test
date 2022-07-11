@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_agent_code" model="ir.ui.view">
+        <field name="name">view_view_agent_code_form</field>
+        <field name="model">fce.agent.code</field>
+        <field name="arch" type="xml">
+            <form string="Agent Code">
+                <sheet string="Agent Code">
+                    <group>
+                        <group>
+                            <field name="principal_id"/>
+                            <field name="port_code_id"/>
+                            <field name="agent_id"/>
+                            <field name="agent_code"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="view_agent_code_tree_view">
+        <field name="name">view.agent.code.tree.view</field>
+        <field name="model">fce.agent.code</field>
+        <field name="arch" type="xml">
+            <tree string="Agent Code">
+                <field name="agent_code"/>
+                <field name="agent_id"/>
+                <field name="port_code_id"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_agent_code_search_view">
+        <field name="name">fce.agent.code.search.view</field>
+        <field name="model">fce.agent.code</field>
+        <field name="arch" type="xml">
+            <search string="Agent Code">
+                <field name="agent_code"/>
+                <field name="agent_id"/>
+                <field name="port_code_id"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Agent" name='agent_id' context="{'group_by':'agent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_agent_action" model="ir.actions.act_window">
+        <field name="name">Agent Code</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.agent.code</field>
+        <field name="search_view_id" ref="fce_agent_code_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <!-- <field name="domain">[('id', 'in', 'domain_agent_id')]</field> -->
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new Agent Code
+            </p>
+        </field>
+    </record>
+</odoo>

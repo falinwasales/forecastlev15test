@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_seal_number" model="ir.ui.view">
+        <field name="name">view_seal_number</field>
+        <field name="model">fce.seal.number</field>
+        <field name="arch" type="xml">
+            <form string="Seal Number">
+                <sheet string="Seal Number">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="view_seal_number_tree">
+        <field name="name">view_seal_number_tree</field>
+        <field name="model">fce.seal.number</field>
+        <field name="arch" type="xml">
+            <tree string="Seal Number">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="view_seal_number_search">
+        <field name="name">view_seal_number_search</field>
+        <field name="model">fce.seal.number</field>
+        <field name="arch" type="xml">
+            <search string="Seal Number">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="action_view_seal_number" model="ir.actions.act_window">
+        <field name="name">Seal Number</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.seal.number</field>
+        <field name="search_view_id" ref="view_seal_number_search"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new Seal Number
+            </p>
+        </field>
+    </record>
+</odoo>

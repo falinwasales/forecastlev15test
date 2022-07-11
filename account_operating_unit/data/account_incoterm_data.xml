@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<delete model="account.incoterms" id="account.incoterm_EXW"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_FOB"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_CFR"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_CIF"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_FCA"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_FAS"/>
+
+        <delete model="account.incoterms" id="account.incoterm_CFR"/>
+
+        <delete model="account.incoterms" id="account.incoterm_CIF"/>
+
+        <delete model="account.incoterms" id="account.incoterm_CPT"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_CIP"/>
+        
+        <delete model="account.incoterms" id="account.incoterm_DPU"/>
+
+        <delete model="account.incoterms" id="account.incoterm_DAP"/>
+
+        <delete model="account.incoterms" id="account.incoterm_DDP"/>
+    </data>
+</odoo>

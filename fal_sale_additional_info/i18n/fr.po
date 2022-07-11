@@ -1,0 +1,48 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* fal_sale_additional_info
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-11 05:27+0000\n"
+"PO-Revision-Date: 2018-08-24 13:50+0700\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: en\n"
+"X-Generator: Poedit 2.1.1\n"
+
+#. module: fal_sale_additional_info
+#: model:ir.model.fields,field_description:fal_sale_additional_info.field_sale_order_active
+msgid "Active"
+msgstr "Actif/ve"
+
+#. module: fal_sale_additional_info
+#: model:ir.ui.view,arch_db:fal_sale_additional_info.view_sales_order_filter_inherit_fal_sale_archive
+msgid "Archived"
+msgstr "Archivé/s"
+
+#. module: fal_sale_additional_info
+#: model:ir.model.fields,field_description:fal_sale_additional_info.field_sale_order_fal_attachment_name
+msgid "Attachment name"
+msgstr "Nom fichier joint"
+
+#. module: fal_sale_additional_info
+#: model:ir.model.fields,field_description:fal_sale_additional_info.field_sale_order_fal_partner_contact_person_id
+msgid "Contact Person"
+msgstr "Contact"
+
+#. module: fal_sale_additional_info
+#: model:ir.model.fields,field_description:fal_sale_additional_info.field_sale_order_fal_attachment
+msgid "Customer PO Attachment"
+msgstr "Bon de commande client"
+
+#. module: fal_sale_additional_info
+#: model:ir.model.fields,help:fal_sale_additional_info.field_sale_order_active
+msgid "If unchecked, it will allow you to hide        the Sale Order without removing it."
+msgstr "Si non coché, cela vous permettra de cacher        le bon de commande sans le supprimer."

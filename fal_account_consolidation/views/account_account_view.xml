@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Account Account -->
+        <record id="view_account_form_consolidation" model="ir.ui.view">
+            <field name="name">view.account.form.consolidation</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='group_id']" position="after">
+                        <field name="fal_consolidation_account_id"/>
+                    </xpath>
+                    <xpath expr="//field[@name='deprecated']" position="after">
+                        <field name="fal_is_consolidation"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</odoo>

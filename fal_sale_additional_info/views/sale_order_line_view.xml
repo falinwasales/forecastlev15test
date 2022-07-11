@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sale_order_line_tree_fal_line">
+            <field name="name">sale.order.line_tree.view.fal.line</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_order_line_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="salesman_id" position="after">
+                        <field name="price_unit" />
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <record id="action_order_line_tree_falline" model="ir.actions.act_window">
+            <field name="name">Sale Order Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="help" type="html">
+              <p>
+                Here is a list of each sales order line to be invoiced. You can
+                invoice sales orders partially, by lines of sales order. You do
+                not need this list if you invoice from the delivery orders or
+                if you invoice sales totally.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="action_order_line_tree_falline" id="menu_sale_order_line" parent="sale.menu_sale_report" sequence="2"/>
+    </data>
+</odoo>

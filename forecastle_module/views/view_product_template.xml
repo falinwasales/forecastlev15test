@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_template_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.common.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='detailed_type']" position="after">
+                    <field name="is_container" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <field name="is_gain_forex"/>
+                    <field name="is_loss_forex"/>
+                    <field name="is_telex" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                    <field name="is_detention" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                    <field name="is_interim_product"/>
+                    <field name="is_dollar"/>
+                    <field name="is_upsale"/>
+                    <field name="is_ehs_comision"/>
+                    <field name="is_ofr" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                    <field name="import_charge" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                    <field name="container_size" attrs="{'invisible': [('is_container', '=', False), ('import_charge', '=', False)], 'required': [('is_container', '=', True)]}"/>
+                    <field name="container_type" attrs="{'invisible': [('is_container', '=', False), ('import_charge', '=', False)], 'required': [('is_container', '=', True)]}"/>
+                    <field name="principal_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_account_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.account.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="account.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_account_income_id']" position="after">
+                    <field name="account_container_deposit_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_supplierinfo_tree_view3" model="ir.ui.view">
+            <field name="name">product.supplierinfo.tree.view3</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="purchase.product_supplierinfo_tree_view2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='price']" position="after">
+                    <field name="percentage"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_supplier_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='seller_ids']" position="attributes">
+                    <attribute name="context">{'default_product_tmpl_id':context.get('product_tmpl_id',active_id), 'product_template_invisible_variant': True, 'tree_view_ref':'forecastle_module.product_supplierinfo_tree_view3'}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='variant_seller_ids']" position="attributes">
+                    <attribute name="context">{'default_product_tmpl_id': context.get('product_tmpl_id', active_id), 'tree_view_ref':'forecastle_module.product_supplierinfo_tree_view3'}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_category_deposit_price_form" model="ir.ui.view">
+            <field name="name">product.category</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group name="deposit" string="Deposit">
+                        <field name="account_container_deposit_id"/>
+                        <field name="deposit_price"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

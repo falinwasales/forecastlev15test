@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_telex_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="group_1">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h2><b><center>Telex Release - OOCL SAVANNAH 404N</center></b></h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group_2">
+                            <table style="margin-top:10%; margin-left:10%;">
+                                <tr class="col-sm-3">
+                                    <th style="font-size: 15px; height:30px;"><strong>To</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>B/L No</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Shipper</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Consignee</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Notify Party</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Pol</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Pod</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <tr class="col-sm-3">
+                                    <th style="padding-right:80px"><strong>Container No</strong></th>
+                                    <th><span>:</span></th>
+                                    <th><span>No. Of Minutes</span></th>
+                                </tr>
+                                <span/>
+                            </table>
+
+                            <div class="row" style="width:100%; margin-top:50%;">
+                                <div class="col-12 text-center">
+                                    <h5><center>We Would like to informed that shipper has..</center></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

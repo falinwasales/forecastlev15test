@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="act_action_sale_order_revised" model="ir.actions.act_window">
+        <field name="name">Revised Sale Order Quotation</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="sale.view_quotation_tree" />
+        <field name="domain">[('parent_id', 'parent_of', active_id), ('active', '=', False), ('id', '!=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Revised Sale Order.
+            </p>
+        </field>
+    </record>
+
+    <record id="sale_order_inherited_view_quotation_revision" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+           <!--  <xpath expr="//button[@name='action_quotation_send'][1]" position="after">
+                <button name="print_quotation" string="Print" type="object" states="draft" class="btn-primary o_sale_print"/>
+            </xpath>
+            <xpath expr="//button[@name='action_quotation_send'][4]" position="after">
+                <button name="print_quotation" string="Print" type="object" states="sent,sale" class="o_sale_print"/>
+            </xpath> -->
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <field name="parent_id" invisible="1"/>
+                <button name="so_revision_quote" string="Revise Quotation"
+                    type="object" attrs="{'invisible':['|', ('state', 'not in', ('sent')), ('active', '=', False)]}" class="btn-primary" />
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]/button[1]" position="after">
+                <button class="oe_inline oe_stat_button" type="action"
+                    name="%(act_action_sale_order_revised)d" icon="fa-bars"
+                    attrs="{'invisible':[('fal_order_revised_count','=', 0)]}">
+                    <field string="Revised Quotation" name="fal_order_revised_count"
+                        widget="statinfo" />
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sale.action_quotations" model="ir.actions.act_window">
+        <field name="domain">[('is_revised_so', '=', False)]</field>
+    </record>
+    
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field name="domain">[('is_revised_so', '=', False)]</field>
+    </record>
+
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="domain">[('is_revised_so', '=', False)]</field>
+    </record>
+
+</odoo>

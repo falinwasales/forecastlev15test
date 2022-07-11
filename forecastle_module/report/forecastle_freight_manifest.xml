@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_freight_manifest">
+        <t t-call="web.html_container">
+            <t t-call="forecastle_module.custom_forecastle_header_footer_freight_manifest">
+                <div class="page">
+                    <t t-set="document" t-value="0"/>
+                    <t t-foreach="docs" t-as="o">
+                        <style>
+                            html *{
+                                font-family:Arial, Helvetica, sans-serif;
+                            }
+                            .do_title{
+                                font-size:12pt;
+                                font-weight:700;
+                            }
+                            .table_data{
+                                font-size:7pt;
+                                padding-right:16%
+                            }
+                        </style>
+                        
+                       <!--  <div class="row">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="width:100%; padding-left:1%; text-align: left;">
+                                    <p class="do_title">EXPORT FREIGHT MANIFEST</p>
+                                    </td>
+
+                                    <td style="font-size:7pt; padding-right:13.5%">
+                                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 25px;" alt="Logo"/>
+                                        As agent
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td style="font-size:6pt;">
+                                        <b><span t-field="o.company_id.name"/></b>
+                                        <br/>
+                                        <span t-field="o.company_id.street"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div> -->
+                        <t t-if="document == 0">
+                            <div class="export_cargo_table" style="margin-top:1cm;">
+                                <table width="100%" style="font-size:6pt; text-align:left;">
+                                        <t t-foreach="o.pod_id" t-as="line2">
+                                            <tr>
+                                                <th style="width:7.5%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">VESSEL</th>
+                                                <td style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">: <span t-field="o.re_vessel_id.vessel_full_name"/></td>
+                                                <th style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">ARRIVAL/SAILING AT POL</th>
+                                                <td style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">: 
+                                                    <t t-foreach='o.voyage_id.port_of_call_ids.filtered(lambda x: x.port_type == "pol")' t-as='voyage'>
+                                                        <t t-if='voyage'>
+                                                            <span t-field="voyage.date_td"/>
+                                                        </t>
+                                                    </t>
+                                                </td>
+                                                <th style="width:4%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">POL</th>
+                                                <td style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px; text-transform:uppercase;">: <span t-field="o.pol_id.port_full_name"/></td>
+                                                <th style="width:12%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">FINAL DESTINATION</th>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px; text-transform:uppercase;">: 
+                                                    <span t-field='line2.port_full_name'/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;"><b>VOYAGE</b></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">: <span t-field="o.voyage_id"/></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;"><b>ESTIMATE ARRIVAL AT POD</b></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">: <span t-field="o.eta"/></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;"><b>POD</b></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px; text-transform:uppercase;">: 
+                                                    <t t-foreach='o.connecting_vessel_id' t-as='connect'>
+                                                        <t t-if='connect.filtered(lambda x: x.port_type == "pot")'>
+                                                            <t t-foreach='connect.filtered(lambda x: x.port_type == "pot")' t-as='pot'>>
+                                                                <span t-field='pot[0].port_code_id.port_full_name'/>
+                                                            </t>
+                                                        </t>
+                                                        <t t-else=''>
+                                                            <span t-field="line2.port_full_name"/>
+                                                        </t>
+                                                    </t>
+                                                </td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;"><b>COC/SOC</b></td>
+                                                <td style="background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">:
+                                                    <t t-set="cocf" t-value="char"/>
+                                                    <t t-foreach="o.cro_ids" t-as="line">
+                                                        <t t-set="cocf" t-value="line.container_categ"/>
+                                                    </t>
+                                                    <span style="text-transform:uppercase" t-esc="cocf"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                </table>
+                                <br/>
+                                <div class="export_cargo_table2">
+                                    <table width="100%" style="font-size:6pt; text-align:left; table-layout:fixed;">
+                                        <tr>
+                                            <th style="width:8%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">BL NUMBER <br/> DATE</th>
+                                            <th style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">SHIPPER</th>
+                                            <th style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">CONSIGNEE</th>
+                                            <th style="width:10%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">NOTIFY PARTY</th>
+                                            <th style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">MARKS &amp; NUMBER <br/> CONTAINER NO:</th>
+                                            <th style="width:5%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">QTY PKGS</th>
+                                            <th style="width:13%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">DESCRIPTION OF GOODS</th>
+                                            <th style="width:8%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">GROSS WEIGHT <br/> VOLUME</th>
+                                            <th style="width:8%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">FREIGHT <br/> CHARGES</th>
+                                            <th style="width:5%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">SIZE</th>
+                                            <th style="width:5%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">CUR</th>
+                                            <th style="width:4%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">RATE</th>
+                                            <th style="width:4%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">P/C/EW</th>
+                                            <th style="width:8%;background-color:rgb(229,229,229); padding-top:5px; padding-bottom:5px;">AGENT <br/> CODE</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-set="qty" t-value="1"/>
+
+                        <t t-if="document == 0 or document != 0">
+                            <div class="export_cargo_table2">
+                                <table width="100%" style="font-size:6pt; text-align:left; table-layout:fixed;">
+                                    <tr>
+                                        <th style="width:8%;"></th>
+                                        <th style="width:13%;"></th>
+                                        <th style="width:13%;"></th>
+                                        <th style="width:10%;"></th>
+                                        <th style="width:13%;"></th>
+                                        <th style="width:5%;"></th>
+                                        <th style="width:13%;"></th>
+                                        <th style="width:8%;"></th>
+                                        <th style="width:8%;"></th>
+                                        <th style="width:5%;"></th>
+                                        <th style="width:5%;"></th>
+                                        <th style="width:4%;"></th>
+                                        <th style="width:4%;"></th>
+                                        <th style="width:8%;"></th>
+                                    </tr>
+                                    <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_container)" t-as="line3">
+                                        <t t-set="gross" t-value="0.0"/>
+                                        <t t-set="measure" t-value="0.0"/>
+                                        <t t-foreach="o.cro_ids.filtered(lambda x: x.container_type_id == line3.product_id)" t-as="line4">
+                                            <!-- <t t-set="gross" t-value="gross + line4.gross"/>
+                                            <t t-set="measure" t-value="measure + line4.measure"/> -->
+                                        </t>
+
+                                        <tr>
+                                            <td style="padding-top:10px;"><span t-field="o.bl_number"/> <br/> <span style="color:red; background-color:pink;" t-field="o.bl_issue_date"/></td>
+                                            <td style="padding-top:10px;"><span t-field="o.shipper_id"/> <br/> <span t-field="o.shipper_address"/></td>
+                                            <td style="padding-top:10px;"><span t-field="o.consignee_id"/> <br/> <span t-field="o.consignee_address"/></td>
+                                            <td style="padding-top:10px;"><span t-field="o.notify_id"/> <br/> <span t-field="o.notify_address"/></td>
+                                            <td style="padding-top:10px;">
+                                                <t t-foreach="o.cro_ids.filtered(lambda x: x.container_type_id == line3.product_id)" t-as="line5">
+                                                    <span style="padding-top:3px;" t-esc="line5.container_number_id.name"/>  Seal No:
+                                                    <t t-if='line5.seal_number'>
+                                                        <span t-esc="line5.seal_number.name"/>
+                                                    </t>
+                                                    <br/>
+                                                 </t>
+                                            </td>
+                                            <td style="padding-top:10px;"><span t-esc="'%.0f'%line3.product_uom_qty"/>x<span t-field="line3.product_id"/></td>
+                                            <td style="padding-top:10px;"><span t-field="o.good_description"/></td>
+                                            <td style="padding-top:10px;">
+                                                <t t-foreach="o.cro_ids.filtered(lambda x: x.container_type_id == line3.product_id)" t-as="line4">
+                                                    <!-- <t t-set="gross" t-value="gross + line4.gross"/>
+                                                    <t t-set="measure" t-value="measure + line4.measure"/> -->
+                                                    <span t-field="line4.gross"/> <br/> <span t-field="line4.measure"/>
+                                                </t>
+                                            </td>
+                                            <td style="padding-top:10px;">
+                                                <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_ofr and x.product_set_id == line3.product_set_id)" t-as="line7">
+                                                    <span t-esc="line7.product_id.name"/><br/>
+                                                </t>
+                                                <br/>
+                                                <b>TOTAL</b>
+                                            </td>
+                                            <td style="padding-top:10px;"><span t-field="line3.product_id.container_size"/></td>
+                                            <td style="padding-top:10px;">USD</td>
+                                            <td style="padding-top:10px;">
+                                                <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_ofr == True and x.product_set_id == line3.product_set_id)" t-as="line11">
+                                                    <span class="float-right" t-esc="'{:,.2f}'.format(line11.price_unit_principal_currency)"/><br/>
+                                                </t>
+                                                <br/>
+                                                <t t-set="total" t-value="0.00"/>
+                                                <t t-foreach="o.order_line.filtered(lambda x: x.product_id.is_ofr == True and x.product_set_id == line3.product_set_id)" t-as="line12">
+                                                    <t t-set="total" t-value="line12.price_unit_principal_currency + total"/>
+                                                </t>
+                                                <b><span class="float-right" t-esc="'{:,.2f}'.format(total)"/></b>
+                                            </td>
+                                            <td style="padding-top:10px;">
+                                                <t t-foreach="o.charge_info_ids.filtered(lambda x: line3.id)" t-as="line10">
+                                                    <t t-foreach="line10.sale_line_ids.filtered(lambda x: x.product_id.is_container)"  t-as="line14">
+                                                        <t t-if="line10.fce_payment_term == 'prepaid'">
+                                                            &#160;&#160;&#160;&#160;P<br/>
+                                                        </t>
+                                                        <t t-if="line10.fce_payment_term == 'collect'">
+                                                            &#160;&#160;&#160;&#160;
+                                                                C
+                                                        </t>
+                                                        <t t-if="line10.fce_payment_term == ''">
+                                                            &#160;&#160;&#160;&#160;
+                                                            EW
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td style="padding-top:10px;">
+                                                <p><span t-field="o.agent_id"/></p>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </t>
+                        <t t-set="document" t-value="document + 1"/>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle__fm" model="ir.actions.report">
+            <field name="name">Export Freight Manifest</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_freight_manifest</field>
+            <field name="report_file">forecastle_module.forecastle_freight_manifest</field>
+            <field name="print_report_name">'Forecastle Export Freight Manifest- %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="paperformat_forecastle_export_fm" model="report.paperformat">
+            <field name="name">Export Freight Manifest</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">28</field>
+            <field name="dpi">90</field>
+            <field name="report_ids" eval="[(4, ref('action_forecastle__fm'))]"/>
+    </record>
+</odoo>

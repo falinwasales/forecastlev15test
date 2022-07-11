@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_invoice_tree_fal_add_info" model="ir.ui.view">
+            <field name="name">account.move.tree.fal.add.info</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="invoice_date_due" position="after">
+                    <field name="fal_effective_payment_dates" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="hide"/>
+                    <field name="fal_risk_level" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                </field>
+                <field name="invoice_origin" position="after">
+                    <field name="fal_quotation_number" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="hide"/>
+                    <field name="fal_client_order_ref" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="hide"/>
+                </field>
+                <field name="invoice_date" position="before">
+                    <field name="commercial_partner_id" optional="hide"/>
+                    <field name="fal_parent_company" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_move_tree_fal_gc" model="ir.ui.view">
+            <field name="name">fwa.account.move.tree.fal.gc</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="partner_id" position="after">
+                        <field name="commercial_partner_id" optional="hide"/>
+                        <field name="fal_parent_company" optional="hide"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_account_invoice_form_fal_add_info" model="ir.ui.view">
+            <field name="name">account.move.form.fal.add.info</field>
+            <field name="model">account.move</field>
+            <field name="priority">10</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@id='header_right_group']/div" position="before">
+                    <label for="fal_risk_level" attrs="{'invisible': [('move_type', '=', 'entry')]}"/>
+                    <div class="o_row" name="risk_level" attrs="{'invisible': [('move_type', '=', 'entry')]}">
+                        <field name="fal_risk_level" placeholder="0-10"/>
+                        <span>-</span>
+                        <field name="fal_risk_level_name" nolabel="1" placeholder="Safe - Dangerous"/>
+                    </div>
+                </xpath>
+                <xpath expr="//group[@id='header_left_group']/div" position="before">
+                    <field name="fal_company_code" invisible="1"/>
+                </xpath>
+                <field name="partner_id" position="after">
+                    <field name="fal_attachment_name" invisible='1'/>
+                    <field name="fal_attachment" filename='fal_attachment_name' string="Invoice Attachment"/>
+                </field>
+                <!-- <xpath expr="//group[hasclass('oe_subtotal_footer')]" position="after">
+                    <group class="oe_subtotal_footer oe_left" attrs="{'invisible': [('fal_total_ordered_amount', '=', 0)]}">
+                        <field name="fal_total_ordered_amount"/>
+                        <field name="fal_total_amount_already_invoced"/>
+                        <field name="fal_percentage_invoiced_ordered"/>
+                    </group>
+                </xpath> -->
+                <field name="invoice_origin" position="before">
+                    <field name="final_quotation_number"/>
+                    <field name="fal_client_order_ref" />
+                </field>
+                <field name="payment_reference" position="before">
+                    <field name="fal_use_late_payment_statement"/>
+                    <field name="fal_supplier_order_ref"/>
+                </field>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="price_total" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--Inherit invoice search view-->
+        <record id="view_account_inherit_search" model="ir.ui.view">
+          <field name="name">view_account_inherit_search</field>
+          <field name="model">account.move</field>
+          <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+          <field name="arch" type="xml">
+            <data>
+                <filter name="salesperson" position="after">
+                    <filter name="commercial_partner" string="Commercial Partner" domain="[]" context="{'group_by':'commercial_partner_id'}" />
+                    <filter name="parent_company" string="Parent Company" domain="[]" context="{'group_by' : 'fal_parent_company'}" />
+                </filter>
+            </data>
+          </field>
+        </record>
+
+    </data>
+</odoo>

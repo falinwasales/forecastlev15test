@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_product_set_inherit_form" model="ir.ui.view">
+        <field name="name">product.set.form.inherit</field>
+        <field name="model">product.set</field>
+        <field name="inherit_id" ref="sale_product_set.view_product_set_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='set_line_ids']/tree/field[@name='quantity']" position="after">
+                <field name="formula"/>
+            </xpath>
+            <xpath expr="//field[@name='set_line_ids']/tree/field[@name='discount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="principal_id"/>
+                <field name="customer_portal_edit"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="create_uid" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="product_set_tree_approved">
+        <field name="name">Product set Approved</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.set</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="sale_product_set.view_product_set_form" />
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="product_set_tree_draft">
+        <field name="name">Product set Draft</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.set</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="sale_product_set.view_product_set_form" />
+        <field name="domain">[('active', '=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="sale_product_set.menu_product_set_config" active="False"/>
+
+    <menuitem id="product_set_menu"
+        name="Product Set"
+        parent="sale.menu_sale_config"
+        sequence="12"/>
+
+    <menuitem id="menu_product_set_approved" 
+        name="Approved"
+        parent="forecastle_module.product_set_menu" 
+        action='product_set_tree_approved' 
+        sequence="11"/>
+
+    <menuitem id="menu_product_set_draft" 
+        name="Draft"
+        parent="forecastle_module.product_set_menu" 
+        action='product_set_tree_draft' 
+        sequence="12"/>
+</odoo>

@@ -1,0 +1,208 @@
+<odoo>
+	<template id="template_export_freight_manifest">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="group_1">
+                        	<table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px;">
+                        		<tr style="border-top: 2px solid black; border-color: gray;">
+                        			<th colspan="2">Vessel</th>
+                        			<th colspan="2">Voyage</th>
+                        			<th colspan="2">Place of Receipt</th>
+                        			<th colspan="2">Port of Loading</th>
+                        			<th colspan="2">Port of Discharge</th>
+                        			<th colspan="2">Final Destination</th>
+                        			<th colspan="2">Last Port of Call</th>
+                        		</tr>
+                        		<tr>
+                        			<td colspan="2"><br>CALAIS TRADER</br></td>
+                        			<td colspan="2"><br>D03N</br></td>
+                        			<td colspan="2"><br>TBA</br></td>
+                        			<td colspan="2"><br>JAKARTA</br></td>
+                        			<td colspan="2"><br>PIERRE</br></td>
+                        			<td colspan="2"><br>PIERRE</br></td>
+                        			<td colspan="2"><br>TBA</br></td>
+                        		</tr>
+                        	</table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="2">Nationality of Vessel</th>
+                                    <th colspan="2">Name of <br>Master</br></th>
+                                    <th colspan="2">Freight</th>
+                                    <th colspan="2">COC/SOC</th>
+                                    <th colspan="2">Freight Terms</th>
+                                    <th colspan="3">Arrival at POL/<br>Sailing at POL</br></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><br>FRENCH</br></td>
+                                    <td colspan="2"><br></br></td>
+                                    <td colspan="2"><br>CY/CY</br></td>
+                                    <td colspan="2"><br>COC</br></td>
+                                    <td colspan="2"><br>COLLECT</br></td>
+                                    <td colspan="3"><br>01/01/2021 / 30/01/2021</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="5">Shipper</th>
+                                    <th colspan="4">Consignee</th>
+                                    <th colspan="4">Notify Party</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="5"><br>FALINWA GROUP INDONESIA</br></td>
+                                    <td colspan="4"><br>TO THE ORDER  OF</br></td>
+                                    <td colspan="4"><br>TRC GLOBAL CITY</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="3">B/L Number<br>Name and Address</br></th>
+                                    <th colspan="2">Total<br>Container Type</br></th>
+                                    <th colspan="2">Description of goods <br>Number and kind of packages</br></th>
+                                    <th colspan="2">Ctnr Type/Commodity</th>
+                                    <th colspan="1">Container Nr.</th>
+                                    <th colspan="1">Seal Nr.</th>
+                                    <th colspan="1">GWT</th>
+                                    <th colspan="1">NWT</th>
+                                    <th colspan="1">Cube</th>
+                                </tr>
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <td colspan="3"><br>2367651273</br></td>
+                                    <td colspan="2"><br>2xH30C</br></td>
+                                    <td colspan="2">
+                                        <br>
+                                            <b>Shipper Load,Count, and Seal</b>
+                                            <br>
+                                                2xHGGT4 FCL CONTAINER STC <br></br>
+                                                NET WIGTH : 36,776,999 KG 
+                                            </br>
+                                        </br>
+                                    </td>
+                                    <td colspan="2"><br>200C</br></td>
+                                    <td colspan="1"><br>CHGSFF1277</br></td>
+                                    <td colspan="1"><br>MBF5567S</br></td>
+                                    <td colspan="1"><br>2116524</br></td>
+                                    <td colspan="1"><br>19,480,295</br></td>
+                                    <td colspan="1"><br>25,000</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="3">B/L Clause</th>
+                                    <th colspan="2">Temperature</th>
+                                    <th colspan="1">Ventilation</th>
+                                    <th colspan="1">Container Type</th>
+                                    <th colspan="3">Freight</th>
+                                    <th colspan="2">Currency</th>
+                                    <th colspan="2">Rate</th>
+                                    <th colspan="1">Agent Code</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><br>1.1 Shipper Boat Saint Maria</br></td>
+                                    <td colspan="2"><br></br></td>
+                                    <td colspan="1"><br></br></td>
+                                    <td colspan="1"><br>2X20DC</br></td>
+                                    <td colspan="3"><br>OCEAN FREIGHT</br></td>
+                                    <td colspan="2"><br>USD</br></td>
+                                    <td colspan="2"><br>3.3500 (C)</br></td>
+                                    <td colspan="1"><br>CARPSI</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="2">Vessel</th>
+                                    <th colspan="2">Voyage</th>
+                                    <th colspan="2">Place of Receipt</th>
+                                    <th colspan="2">Port of Loading</th>
+                                    <th colspan="2">Port of Discharge</th>
+                                    <th colspan="2">Final Destination</th>
+                                    <th colspan="2">Last Port of Call</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><br>CALAIS TRADER</br></td>
+                                    <td colspan="2"><br>D03N</br></td>
+                                    <td colspan="2"><br>TBA</br></td>
+                                    <td colspan="2"><br>JAKARTA</br></td>
+                                    <td colspan="2"><br>PIERRE</br></td>
+                                    <td colspan="2"><br>PIERRE</br></td>
+                                    <td colspan="2"><br>TBA</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <th colspan="2">Nationality of Vessel</th>
+                                    <th colspan="2">Name of <br>Master</br></th>
+                                    <th colspan="2">Freight</th>
+                                    <th colspan="2">COC/SOC</th>
+                                    <th colspan="2">Freight Terms</th>
+                                    <th colspan="3">Arrival at POL/<br>Sailing at POL</br></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><br>FRENCH</br></td>
+                                    <td colspan="2"><br></br></td>
+                                    <td colspan="2"><br>CY/CY</br></td>
+                                    <td colspan="2"><br>COC</br></td>
+                                    <td colspan="2"><br>COLLECT</br></td>
+                                    <td colspan="3"><br>01/01/2021 / 30/01/2021</br></td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <td style="padding-left: 60%;"><br>TOTAL :</br></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-left: 70%;">
+                                        <br>P FOREJT USD 202.00
+                                        </br>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--  -->
+                            <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:14px; border-spacing: 15px; margin-top: 5%;">
+                                <tr>
+                                    <th>Total Container Type <br></br></th>
+                                    <th>Total Gross Weight(MT) <br></br></th>
+                                    <th>Total Net Weight(MT) <br></br></th>
+                                    <th>Total Volume <br></br></th>
+                                    <th colspan="2">Port Pair <br></br></th>
+                                    <th colspan="2">Total Nr. B/L's <br></br></th>
+                                    <th>Currency <br></br></th>
+                                    <th>Summary <br></br></th>
+                                    <th>Package Summary <br></br></th>
+                                    <th colspan="2">Freight Summary <br></br></th>
+                                    <th>Cur.</th>
+                                    <th>Amount</th>
+                                </tr>
+                                <tr style="border-top: 2px solid black; border-color: gray;">
+                                    <td>2x200DC</td>
+                                    <td>21.665</td>
+                                    <td>19.480</td>
+                                    <td>25.000</td>
+                                    <td colspan="2">JAKARTA/HONIARA</td>
+                                    <td colspan="2">1</td>
+                                    <td>SBD<br>USD</br></td>
+                                    <td>7400<br>6800</br></td>
+                                    <td>CN 2</td>
+                                    <td colspan="2">
+                                        OCEAN FREIGHT
+                                        <br>THC at Load First</br>
+                                    </td>
+                                    <td>USD</td>
+                                    <td>3500<br>4500</br></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

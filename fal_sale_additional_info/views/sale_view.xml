@@ -1,0 +1,101 @@
+<odoo>
+    <data>
+        <record id="view_order_form_fal_add_info" model="ir.ui.view">
+            <field name="name">sale.order.form.fal.add.info</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/div[@name='button_box']" position="after">
+                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_title')]" position="inside">
+                    <field name="active" invisible="1"/>
+                </xpath>
+                <field name="client_order_ref" position="after">
+                    <field name="fal_attachment_name" invisible='1'/>
+                    <field name="fal_attachment" filename='fal_attachment_name'/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_invoice_form_add_sale_line_id" model="ir.ui.view">
+            <field name="name">account.move.form.fal.add.info.sale</field>
+            <field name="model">account.move</field>
+            <field name="priority">10</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="invoice_origin" position="before">
+                    <field name="fal_sale_id"/>
+                </field>
+                <xpath expr="//group[hasclass('oe_subtotal_footer')]" position="after">
+                    <group class="oe_subtotal_footer oe_left" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}">
+                            <field name="fal_sale_total_ordered_amount"/>
+                            <field name="fal_sale_total_amount_already_invoced"/>
+                            <field name="fal_sale_percentage_invoiced_ordered"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_tree_fal_add_info" model="ir.ui.view">
+            <field name="name">sale.order.tree.fal.add.info</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="active" invisible="1"/>
+                </xpath>
+                <field name="partner_id" position="after">
+                    <field name="commercial_partner_id" optional="hide" />
+                    <field name="fal_parent_company" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree_fal_add_info" model="ir.ui.view">
+            <field name="name">sale.order.tree.fal.info</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="active" invisible="1"/>
+                </field>
+                <field name="partner_id" position="after">
+                    <field name="commercial_partner_id" optional="hide"/>
+                    <field name="fal_parent_company" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Sale Order/ Quotation filter view -->
+        <record id="view_sales_order_filter_inherit_fal_sale_archive" model="ir.ui.view">
+            <field name="name">view.sales.order.filter.inherit.fal.sale.archive</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//search/filter[@name='my_sale_orders_filter']" position="after">
+                      <separator/>
+                        <filter string="Archived" domain="[('active','=',False)]" name="archived_sale_orders_filter"/>
+                        <separator/>
+                    </xpath>
+                    <filter name="customer" position="after">
+                        <filter name="commercial_partner" string="Commercial Partner" domain="[]" context="{'group_by':'commercial_partner_id'}" />
+                        <filter name="parent_company"  string="Parent Company" domain="[]" context="{'group_by' : 'fal_parent_company'}" />
+                    </filter>
+                </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="fal_sv_sale_order_line_form">
+            <field name="name">sale.order.line.tree.fal.sv.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="price_total" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

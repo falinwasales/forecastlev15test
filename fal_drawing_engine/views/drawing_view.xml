@@ -1,0 +1,120 @@
+<odoo>
+    <record id="drawing_template_view_tree" model="ir.ui.view">
+        <field name="name">fal.drawing.template.tree</field>
+        <field name="model">fal.drawing.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="drawing_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="drawing_template_view_form" model="ir.ui.view">
+        <field name="name">fal.drawing.template.form</field>
+        <field name="model">fal.drawing.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <div class="o_row">
+                                <field name="name"  placeholder="Name of the file" nolabel="1"/>
+                            </div>
+                        </h1>
+                    </div>
+                    <field name="datas" filename='name'/>
+                    <notebook>
+                        <page string="Drawing Items">
+                            <button string="Preview" type="object" name="pdf_preview"/>
+                            <field name="drawing_ids"/>
+                            <field name="preview" widget="pdf_viewer"/>
+                        </page>
+                        <page string="Apply on">
+                            <group>
+                                <field name="print_only_drawing"/>
+                            </group>
+                            <field name="drawing_report_ids">
+                                <form>
+                                    <group>
+                                        <field name="report_id"/>
+                                        <field name="domain" widget="domain" options="{'model': 'model'}"/>
+                                        <field name="model" invisible="1"/>
+                                    </group>
+                                </form>
+                                <tree>
+                                    <field name="report_id"/>
+                                    <field name="domain"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="drawing_template_action" model="ir.actions.act_window">
+        <field name="name">Drawing Template</field>
+        <field name="res_model">fal.drawing.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Template
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_drawing" name="Drawing" action="drawing_template_action" groups="fal_drawing_engine.group_drawing_user"/>
+
+    <!-- Drawing Item -->
+	 <record id="fal_drawing_engine_form_view" model="ir.ui.view">
+        <field name="name">fal.drawing.form</field>
+        <field name="model">fal.drawing</field>
+        <field name="arch" type="xml">
+            <form string="Drawing">
+                <sheet>
+                	<field name="name"/>
+                	<group>
+                		<group>
+                            <field name="posX"/>
+                            <field name="posY"/>
+                            <field name="width" attrs="{'invisible': [('type_value', '=', 'text')], 'required': [('type_value', '=', 'barcode')]}"/>
+                            <field name="height" attrs="{'invisible': [('type_value', '=', 'text')], 'required': [('type_value', '=', 'barcode')]}"/>
+                            <field name="value" attrs="{'invisible': [('use_python_code', '=', True)]}"/>
+                            <field name="type_value"/>
+                            <field name="use_python_code"/>
+                        </group>
+                        <group>
+                            <field name="page_number"/>
+                            <field name="font_size"/>
+                            <field name="font_color" widget="color"/>
+                            <field name="rotation"/>
+                        </group>
+                    </group>
+                    <label for="python_code" attrs="{'invisible': [('use_python_code', '!=', True)]}"/>
+                    <field name="python_code" attrs="{'invisible': [('use_python_code', '!=', True)]}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="fal_drawing_engine_tree_view" model="ir.ui.view">
+        <field name="name">fal.drawing.tree</field>
+        <field name="model">fal.drawing</field>
+        <field name="arch" type="xml">
+            <tree string="Drawing">
+                <field name="value"/>
+                <field name="type_value"/>
+                <field name="use_python_code"/>
+                <field name="page_number"/>
+                <field name="posX"/>
+                <field name="posY"/>
+                <field name="font_size"/>
+                <field name="font_color" widget="color"/>
+                <field name="rotation"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

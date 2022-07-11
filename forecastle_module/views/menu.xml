@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Voyage -->
+    <menuitem id="voyage_menu_parent" name="Schedule" parent="sale.sale_menu_root" sequence="4"/>
+    <menuitem id="voyage_menu" name="Schedule" parent="voyage_menu_parent" sequence="0" action='fce_voyage_action'/>
+    <menuitem id="voyage_menu_draft" name="Schedule Draft" parent="voyage_menu_parent" sequence="1" action='fce_voyage_action_draft'/>
+    <!-- Port Of Call -->
+    <menuitem id="port_of_call" name="Port Of Call" parent="voyage_menu_parent" action='fce_port_of_call_action' sequence="2"/>
+    <menuitem id="conves" name="Connecting Vessel" parent="voyage_menu_parent" sequence="3" action='fce_conves_action'/>
+    <!-- Port of Code -->
+    <menuitem id="port_of_code_menu" name="Master Data" parent="sale.sale_menu_root" sequence="5"/>
+    <menuitem id="port_of_code_menu_1" name="Port Code" parent="port_of_code_menu" sequence="1"/>
+    <menuitem id="port_of_code_menu_active" name="Port Code" parent="port_of_code_menu_1" sequence="1" action='fce_port_code_action'/>
+    <menuitem id="port_of_code_menu_archive" name="Port Code Draft" parent="port_of_code_menu_1" sequence="2" action='fce_port_code_action_archive'/>
+    <!-- Hs Code -->
+    <menuitem id="hs_code_menu" name="HS Code" parent="port_of_code_menu" sequence="2"/>
+    <menuitem id="hs_code_menu_active" name="HS Code" parent="hs_code_menu" sequence="1" action='fce_hs_code_action'/>
+    <menuitem id="hs_code_menu_archive" name="HS Code Draft" parent="hs_code_menu" sequence="2" action='fce_hs_code_action_archive'/>
+    <!-- Terminal Code -->
+    <menuitem id="terminal_code" name="Terminal Code" parent="port_of_code_menu" sequence="2" action='fce_terminal_code_action'/>
+    <!-- Seal Number -->
+    <menuitem id="seal_number" name="Seal Name" parent="port_of_code_menu" sequence="8" action='action_view_seal_number'/>
+    <!-- Vessel Menu -->
+    <menuitem id="vessel_menu" name="Vessel" parent="port_of_code_menu" sequence="3"/>
+    <menuitem id="vessel_menu_active" name="Vessel" parent="vessel_menu" sequence="1" action='fce_vessel_action'/>
+    <menuitem id="vessel_menu_archive" name="Vessel Draft" parent="vessel_menu" sequence="2" action='fce_vessel_action_archive'/>
+    <!-- Group Code -->
+    <menuitem id="group_code" name="Group Code" parent="port_of_code_menu" sequence="4"/>
+    <menuitem id="group_code_approved" name="Group Code Approved" parent="group_code" sequence="1" action='fce_group_code_action'/>
+    <menuitem id="group_code_archive" name="Group Code Draft" parent="group_code" sequence="2" action='fce_group_code_action_archive'/>
+    <!-- KPBC CODE -->
+    <menuitem id="kpbc_code" name="KPBC Code" parent="port_of_code_menu" sequence="5"/>
+    <menuitem id="kpbc_code_active" name="KPBC Code" parent="kpbc_code" sequence="1" action='fce_kpbc_code_action'/>
+    <menuitem id="kpbc_code_archive" name="KPBC Code Draft" parent="kpbc_code" sequence="2" action='fce_kpbc_code_action_archive'/>
+    <!-- Package Code -->
+    <menuitem id="package_code" name="Package Code" parent="port_of_code_menu" sequence="6" action='fce_package_code_action'/>
+    <menuitem id="package_code_active" name="Package Code" parent="package_code" sequence="1" action='fce_package_code_action'/>
+    <menuitem id="package_code_archive" name="Package Code Draft" parent="package_code" sequence="2" action='fce_package_code_action_archive'/>
+    <!-- MRG -->
+    <menuitem id="mrg" name="MRG" parent="sale.sale_menu_root" sequence="4"/>
+    <menuitem id="mrg_approved" name="Approved" parent="mrg" action="product.product_pricelist_action2" sequence="4"/>
+    <menuitem id="mrg_need_approval" name="Draft" parent="mrg" action="product_pricelist_action3" sequence="4"/>
+</odoo>

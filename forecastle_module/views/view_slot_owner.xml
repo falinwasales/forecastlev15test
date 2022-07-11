@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_slot_owner" model="ir.ui.view">
+        <field name="name">view_slot_owner_form</field>
+        <field name="model">fce.slot.owner</field>
+        <field name="arch" type="xml">
+            <form string="Slot Owner">
+                <sheet string="Slot Owner">
+                    <group>
+                        <group>
+                            <field name="vendor_ids" domain="[('is_vendor', '=', True)]"/>
+                            <field name="capacity"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="slot_owner_tree_view">
+        <field name="name">Slot Owner</field>
+        <field name="model">fce.slot.owner</field>
+        <field name="arch" type="xml">
+            <tree string="Slot Owner">
+                <field name="vendor_ids"/>
+                <field name="capacity"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="slot_owner_search_view">
+        <field name="name">Slot Owner</field>
+        <field name="model">fce.slot.owner</field>
+        <field name="arch" type="xml">
+            <search string="Slot Owner">
+                <field name="vendor_ids"/>
+                <field name="capacity"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Vendor" name='vendor_ids' context="{'group_by':'vendor_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Act Window -->
+    <record id="slot_owner_action" model="ir.actions.act_window">
+        <field name="name">Slot Owner</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.slot.owner</field>
+        <field name="search_view_id" ref="slot_owner_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Slot Owner
+          </p>
+        </field>
+    </record>
+</odoo>

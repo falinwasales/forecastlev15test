@@ -1,0 +1,103 @@
+<odoo>
+	<record id="view_forecastle_soa_form" model="ir.ui.view">
+        <field name="name">forecastle.soa.form</field>
+        <field name="model">fce.soa</field>
+        <field name="arch" type="xml">
+        	<form>
+                <header>
+                    <button name="action_view_journal_item" string="View Journal Item" class="oe_highlight" type="object"/>
+                    <button name="open_soa_wizard" string="Create Journal" class="oe_highlight" 
+                    type="object" attrs="{'invisible': [('move_id', '!=', False)]}"
+                    context="{'default_active_id': active_id}"/>
+                </header>
+        		<sheet>
+	        		<group>
+	        			<group>
+	        				<field name="principal_id" attrs="{'readonly': [('move_id', '!=', False)]}"/>
+	        				<label for="date_from" string="Date From" />
+                            <div style="display: inline;">
+                                <field name="date_from" class="oe_inline" attrs="{'readonly': [('move_id', '!=', False)]}"/> to <field name="date_to" class="oe_inline" attrs="{'readonly': [('move_id', '!=', False)]}"/>
+                            </div>
+                            <field name="company_id"/>
+                            <field name="company_currency_id"/>
+                            <field name='soa_currency_id' attrs="{'readonly': [('move_id', '!=', False)]}" required='1'/>
+                            <field name='system_currency_id' invisible="1"/>
+                            <field name='soa_date'/>
+	        			</group>
+	        			<group>
+	        				<field name="ap_difference" widget="monetary" options="{'currency_field': 'company_currency_id'}"/>
+                            <field name="balance_system_currency" widget="monetary" options="{'currency_field': 'system_currency_id'}"/>
+                            <field name="balance_soa_currency" widget="monetary" options="{'currency_field': 'soa_currency_id'}"/>
+                            <field name="soa_difference_amount" widget="monetary" options="{'currency_field': 'system_currency_id'}"/>
+                            <field name="difference_move_id"/>
+                            <field name="move_id"/>
+                            <field name="invoice_id"/>
+	        			</group>
+	        		</group>
+                    <field name="soa_line_ids" nolabel="1" force_save="1" readonly="1">
+	        			<tree editable="bottom">
+	        				<field name="fce_exclude" widget="boolean_toggle"  attrs="{'column_invisible': [('parent.move_id', '!=', False)]}"/>
+                            <field name="move_id"/>
+                            <field name="fal_invoice_mode"/>
+                            <field name="sale_source_id"/>
+                            <field name="no_bl"/>
+                            <field name="vessel_id"/>
+                            <field name="feeder_vessel_id"/>
+                            <field name="voyeg_id"/>
+                            <field name="mother_vessel_id"/>
+                            <field name="amount_currency" string="Balance System Currency"/>
+                            <field name="balance_soa_currency"/>
+                            <field name="balance"/>
+                            <field name="container_number" widget="many2many_tags"/>
+                        </tree>
+                    </field>
+                    <!-- <field name="move_line_ids" nolabel="1" attrs="{'invisible': [('move_id', '=', False)]}"/> -->
+        		</sheet>
+        	</form>
+        </field>
+    </record>
+
+    <record id="view_fce_soa_chatter" model="ir.ui.view">
+        <field name="name">forecastle.soa.chatter</field>
+        <field name="model">fce.soa</field>
+        <field name="inherit_id" ref="view_forecastle_soa_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+	<record id="view_forecastle_soa_tree" model="ir.ui.view">
+        <field name="name">forecastle.soa.tree</field>
+        <field name="model">fce.soa</field>
+        <field name="arch" type="xml">
+        	<tree>
+        		<field name="principal_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="ap_difference"/>
+        	</tree>
+        </field>
+    </record>
+
+    <record id="forecastle_soa_action" model="ir.actions.act_window">
+        <field name="name">SOA</field>
+        <field name="res_model">fce.soa</field>
+        <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create SOA
+        </p>
+        </field>
+    </record>
+
+	<menuitem id="forecastle_soa_menu"
+        name="SOA"
+        parent="account.menu_finance_entries"
+        action="forecastle_soa_action"
+        sequence="11"/>
+</odoo>

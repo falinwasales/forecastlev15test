@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="assets_chatter_position"
+        name="Chatter Position Assets"
+        inherit_id="web.assets_backend"
+    >
+        <xpath expr=".">
+            <script
+                type="text/javascript"
+                src="/configurable_chatter_position/static/src/js/chatter_position.js"
+            />
+        </xpath>
+    </template>
+</odoo>

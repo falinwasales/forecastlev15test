@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_label_multi_print_form" model="ir.ui.view">
+        <field name="name">product.label.multi.print.form</field>
+        <field name="model">product.label.multi.print</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="report_id" required="1" options="{'no_create': True}"/>
+                </group>
+                <group string="Products and Labels Qty. to Print">
+                    <field name="product_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                        </tree>
+                    </field>
+                </group>
+                <group name="printer">
+                    <field name="printer_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="printer_bin" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="status" invisible="1"/>
+                </group>
+
+                <p colspan="4" class="text-danger" attrs="{'invisible': [('status', '!=', 'offline')]}">
+                    Printer is not available. Please, choose another printer.
+                </p>
+                <footer>
+                    <button string="Print" name="do_print" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

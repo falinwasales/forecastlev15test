@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Container Info Form -->
+    <record id="view_fce_cro" model="ir.ui.view">
+        <field name="name">view_frc_cro_form</field>
+        <field name="model">fce.cro</field>
+        <field name="arch" type="xml">
+            <form string="Container Information">
+                <sheet string="Container Information">
+                    <group>
+                        <group>
+                            <field name="container_number_id"/>
+                        </group>
+                        <group>
+                            <field name="seal_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="commodity_type"/>
+                            <field name="container_type_id"/>
+                            <field name="hs_code" widget="many2many_tags"/>
+                            <field name="set_temp"/>
+                        </group>
+                        <group>
+                            <field name="length"/>
+                            <field name="height"/>
+                            <field name="width"/>
+                            <field name="total_outer_dimension"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="imdg_class"/>
+                            <field name="ems_number"/>
+                            <field name="un_number"/>
+                        </group>
+                        <group>
+                            <field name="gross"/>
+                            <field name="nett"/>
+                            <field name="measure"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Container Info Tree -->
+    <record model="ir.ui.view" id="fce_cro_tree_view">
+        <field name="name">Container Information</field>
+        <field name="model">fce.cro</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="commodity_type"/>
+                <field name="container_type_id" string ="Container"/>
+                <field name="container_categ" string ="Container Category"/>
+                <field name="gross"/>
+                <field name="nett"/>
+                <field name="measure"/>
+                <field name="imdg_class"/>
+                <field name="ems_number"/>
+                <field name="company_id" invisible="1"/>
+                <field name="un_number"/>
+                <field name="pg_class"/>
+                <field name="set_temp"/>
+                <field name="length"/>
+                <field name="height"/>
+                <field name="width"/>
+                <field name="total_outer_dimension"/>
+                <field name="hs_code" widget="many2many_tags"/>
+                <field name="container_number_id" domain="[('product_id', '=', container_type_id)]"  context="{'default_product_id': container_type_id, 'default_company_id': company_id}"/>
+                <field name="seal_number"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- Import Container Info Tree -->
+    <record model="ir.ui.view" id="import_container_info_tree_view">
+        <field name="name">Kontainer Info</field>
+        <field name="model">import.container.info</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="product_id" required="1"/>
+                <field name="quantity"/>
+                <field name="ofr"/>
+                <field name="con_deposit"/>
+                <field name="no_container"/>
+                <field name="ukuran_container"/>
+                <field name="tipe_container"/>
+                <field name="jenis_container"/>
+                <field name="nomor_segel"/>
+                <field name="status_container"/>
+                <field name="detention_days"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="import_container_info_form_view">
+        <field name="name">Kontainer Info</field>
+        <field name="model">import.container.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id" required="1"/>
+                            <field name="quantity"/>
+                            <field name="ofr"/>
+                            <field name="con_deposit"/>
+                            <field name="nomor_segel"/>
+                        </group>
+                        <group>
+                            <field name="no_container" attrs="{'invisible': [('no_container_id', '!=', False)]}"/>
+                            <field name="no_container_id" domain="[('product_id', '=', product_id)]" attrs="{'invisible': [('no_container_id', '=', False)]}"/>
+                            <field name="ukuran_container"/>
+                            <label for="tipe_container"/>
+                            <div>
+                                <field name="tipe_container" class="oe_edit_only"/> <field name="container_type"/>
+                            </div>
+                            <field name="jenis_container"/>
+                            <field name="status_container"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="size"/>
+                            <field name="detention_formula_id" domain="[('product_category', '=', size)]"/>
+                            <field name="date_of_arrival"/>
+                            <field name="free_time"/>
+                            <field name="last_date"/>
+                            <field name="request_extend_do"/>
+                            <label for="detention_days"/>
+                            <div class="o_row">
+                                <field name="detention_days" class="oe_inline"/> Days
+                            </div>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="non_slab" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="slab1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="slab2" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="slab3" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="slab4" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="actual_gate" readonly="1"/>
+                            <label for="total_days"/>
+                            <div class="o_row">
+                                <field name="total_days" class="oe_inline"/> Days
+                            </div>
+
+                            <label for="total_detention_days"/>
+                            <div class="o_row">
+                                <field name="total_detention_days" class="oe_inline"/> Days
+                            </div>
+                        </group>
+                        <group>
+                            <field name="total_detention_deposit" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="actual_detention_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="refund_detention" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

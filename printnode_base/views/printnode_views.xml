@@ -1,0 +1,899 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <!-- Views -->
+
+    <!-- Accounts -->
+    <record id="printnode_account_form" model="ir.ui.view">
+        <field name="name">printnode_account.form</field>
+        <field name="model">printnode.account</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Account" create="true" edit="false" delete="false">
+                <header>
+                    <button name="import_printers" string=" Import Printers" type="object" class="oe_highlight" icon="fa-cloud-download" />
+                    <button name="unlink" string=" Forget Account" type="object" icon="fa-trash-o" />
+                </header>
+                <group>
+                    <field name="name" />
+                    <field name="endpoint" required="1" placeholder="https://api.printnode.com"/>
+                    <field name="username" required="1" placeholder="9f68a54b09ff07ae13d4442c120ff0eeaaeadfxx"/>
+                    <field name="password" required="0" />
+                    <field name="alias" />
+                    <field name="status" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="printnode_account_tree" model="ir.ui.view">
+        <field name="name">printnode_account.tree</field>
+        <field name="model">printnode.account</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Accounts" editable="bottom" create="true" delete="false">
+                <field name="name" />
+                <field name="username" />
+                <field name="debug_logging" />
+                <field name="status" />
+                <button name="import_printers" title="Import Printers" type="object" icon="fa-cloud-download" />
+                <button name="unlink" title="Forget Account" type="object" icon="fa-trash-o" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_account_action" model="ir.actions.act_window">
+        <field name="name">Accounts</field>
+        <field name="res_model">printnode.account</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_account_tree" />
+    </record>
+
+    <!-- Computers -->
+    <record id="printnode_computer_form" model="ir.ui.view">
+        <field name="name">printnode_computer.form</field>
+        <field name="model">printnode.computer</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Computer" create="false" edit="false" delete="false">
+                <header></header>
+                <group>
+                    <field name="printnode_id" />
+                    <field name="active" widget="boolean_toggle" />
+                    <field name="name" />
+                    <field name="status" />
+                    <field name="account_id" />
+                    <field name="printer_ids" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="printnode_computer_tree" model="ir.ui.view">
+        <field name="name">printnode_computer.tree</field>
+        <field name="model">printnode.computer</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Computers" editable="bottom" create="false" edit="false" delete="false">
+                <field name="printnode_id" />
+                <field name="name" />
+                <field name="status" />
+                <field name="account_id" />
+                <field name="active" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_computer_action" model="ir.actions.act_window">
+        <field name="name">Computers</field>
+        <field name="res_model">printnode.computer</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_computer_tree" />
+    </record>
+
+    <!-- Printers -->
+    <record id="printnode_printer_form" model="ir.ui.view">
+        <field name="name">printnode_printer.form</field>
+        <field name="model">printnode.printer</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Printer" create="false" edit="true" delete="false">
+                <header>
+                </header>
+                <group>
+                    <field name="id" invisible="1"/>
+                    <field name="printnode_id" />
+                    <field name="active" widget="boolean_toggle" />
+                    <field name="online" widget="boolean_toggle" />
+                    <field name="name" />
+                    <field name="status" />
+                    <field name="computer_id" />
+                    <field name="account_id" />
+                    <field name="paper_ids" widget="many2many_tags" />
+                    <field name="format_ids" widget="many2many_tags" />
+                    <field name="default_printer_bin" domain="[('printer_id', '=', id)]" options="{'no_create': True}" />
+                    <field name="printer_bin_ids"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="printnode_printer_tree" model="ir.ui.view">
+        <field name="name">printnode_printer.tree</field>
+        <field name="model">printnode.printer</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Printers" create="false" edit="false" delete="false">
+                <field name="name" />
+                <field name="computer_id" />
+                <field name="account_id" />
+                <field name="status" invisible="1" />
+                <field name="active" widget="boolean_toggle" />
+                <field name="online" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_printer_action" model="ir.actions.act_window">
+        <field name="name">Printers</field>
+        <field name="res_model">printnode.printer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="printnode_printer_tree" />
+    </record>
+
+    <!-- Paper -->
+    <record id="printnode_paper_tree" model="ir.ui.view">
+        <field name="name">printnode_paper.tree</field>
+        <field name="model">printnode.paper</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Papers" editable="bottom">
+                <field name="name" />
+                <field name="width" />
+                <field name="height" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_paper_action" model="ir.actions.act_window">
+        <field name="name">Papers</field>
+        <field name="res_model">printnode.paper</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_paper_tree" />
+    </record>
+
+    <!-- PrintJobs -->
+    <record id="printnode_printjob_form" model="ir.ui.view">
+        <field name="name">printnode_printjob.form</field>
+        <field name="model">printnode.printjob</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Print Job" create="false" edit="false">
+                <group>
+                    <field name="create_date" string="Date" />
+                    <field name="description" />
+                    <field name="printer_id" />
+                    <field name="printnode_id" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="printnode_printjob_tree" model="ir.ui.view">
+        <field name="name">printnode_printjob.tree</field>
+        <field name="model">printnode.printjob</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Print Jobs" create="false" edit="false">
+                <field name="create_date" string="Date" />
+                <field name="description" />
+                <field name="printer_id" />
+                <field name="printnode_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_printjob_action" model="ir.actions.act_window">
+        <field name="name">Print Jobs</field>
+        <field name="res_model">printnode.printjob</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="printnode_printjob_tree" />
+    </record>
+
+    <!-- Print Action Button -->
+    <record id="printnode_action_button_tree" model="ir.ui.view">
+        <field name="name">printnode.action.button.tree</field>
+        <field name="model">printnode.action.button</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Buttons" editable="bottom" decoration-muted="not active">
+                <field name="model_id" />
+                <field name="model" invisible="1"/>
+                <field name="method_id" options="{'no_create': True}" domain="[('model_id', '=', model_id)]" />
+                <field name="domain" readonly="1" />
+                <field name="description" />
+                <field name="report_id" options="{'no_create': True}" domain="[('model', '=', model)]" />
+                <field name="number_of_copies" />
+                <field name="printer_id" options="{'no_create': True}" />
+                <field name="printer_bin" options="{'no_create': True}"/>
+                <field name="preprint" />
+                <field name="active" widget="boolean_toggle" />
+                <button name="edit_domain" string="Domain Editor" type="object" icon="fa-edit" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_domain_editor" model="ir.ui.view">
+        <field name="name">printnode.action.button.domain.editor</field>
+        <field name="model">printnode.action.button</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="model_id" readonly="1" />
+                    <field name="method_id" readonly="1" />
+                    <field name="model" readonly="1" />
+                    <field name="domain" widget="domain" options="{'model': 'model'}" />
+                </group>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="printnode_scenario_domain_editor" model="ir.ui.view">
+        <field name="name">printnode.scenario.domain.editor</field>
+        <field name="model">printnode.scenario</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="model_id" readonly="1" />
+                    <field name="model" readonly="1" />
+                    <field name="domain" widget="domain" options="{'model': 'model'}" />
+                </group>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="printnode_action_button_search" model="ir.ui.view">
+        <field name="name">printnode.action.button.search</field>
+        <field name="model">printnode.action.button</field>
+        <field name="arch" type="xml">
+            <search string="Buttons">
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <field name="model_id" />
+                <field name="description" />
+            </search>
+        </field>
+    </record>
+
+    <record id="printnode_action_buttons" model="ir.actions.act_window">
+        <field name="name">Buttons</field>
+        <field name="res_model">printnode.action.button</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_action_button_tree" />
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+
+    <!-- Print Scenarios -->
+    <record id="printnode_scenario_tree" model="ir.ui.view">
+        <field name="name">printnode.scenario.tree</field>
+        <field name="model">printnode.scenario</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Scenarios" editable="bottom" decoration-muted="not active">
+                <field name="action" options="{'no_create': True}" />
+                <field name="domain" readonly="1" />
+                <field name="description" />
+                <field name="reports_model_id" invisible="1" />
+                <field name="report_id" options="{'no_create': True}" domain="[('model_id', '=', reports_model_id)]" />
+                <field name="number_of_copies"/>
+                <field name="printer_id" options="{'no_create': True}" />
+                <field name="printer_bin" options="{'no_create': True}"/>
+                <field name="active" widget="boolean_toggle" />
+                <button name="edit_domain" string="Domain Editor" type="object" icon="fa-edit" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_scenarios" model="ir.actions.act_window">
+        <field name="name">Scenarios</field>
+        <field name="res_model">printnode.scenario</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_scenario_tree" />
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+
+    <!-- Print Action Methods -->
+    <record id="printnode_action_method_tree" model="ir.ui.view">
+        <field name="name">printnode.action.method.tree</field>
+        <field name="model">printnode.action.method</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Methods" editable="bottom">
+                <field name="model_id" />
+                <field name="name" />
+                <field name="method" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_action_methods" model="ir.actions.act_window">
+        <field name="name">Methods</field>
+        <field name="res_model">printnode.action.method</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_action_method_tree" />
+    </record>
+
+
+    <!-- Print Map Action Server -->
+    <record id="printnode_map_action_server_tree" model="ir.ui.view">
+        <field name="name">printnode.map.action.server.tree</field>
+        <field name="model">printnode.map.action.server</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Configure Print Wizard" editable="bottom">
+                <field name="model_id"
+                       options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                       attrs="{'readonly': [('id', '!=', False)]}"/>
+                <field name="name"/>
+                <field name="model_name"/>
+                <field name="action_server_id"
+                       groups="base.group_no_one"
+                       readonly="1"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_action_map_action_server" model="ir.actions.act_window">
+        <field name="name">Configure Print Wizard</field>
+        <field name="res_model">printnode.map.action.server</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_map_action_server_tree" />
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <!-- Print Policy Report -->
+    <record id="printnode_policy_report_tree" model="ir.ui.view">
+        <field name="name">printnode.report.policy.tree</field>
+        <field name="model">printnode.report.policy</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Report Settings" editable="bottom" decoration-warning="error">
+                <field name="report_id" options="{'no_create': True}" />
+                <field name="report_model" />
+                <field name="report_type" />
+                <field name="report_paper_id" />
+                <field name="exclude_from_auto_printing"/>
+                <field name="error" invisible="1" />
+                <field name="notes" widget="html" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_policy_report" model="ir.actions.act_window">
+        <field name="name">Report Settings</field>
+        <field name="res_model">printnode.report.policy</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_policy_report_tree" />
+    </record>
+
+    <record id="printnode_policy_printer_tree" model="ir.ui.view">
+        <field name="name">printnode.policy.printer.tree</field>
+        <field name="model">printnode.printer</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Printer Settings" create="false" editable="bottom" decoration-warning="error">
+                <field name="computer_id" readonly="1" />
+                <field name="name" readonly="1" />
+                <field name="id" invisible="1" />
+                <field name="default_printer_bin" domain="[('printer_id', '=', id)]" options="{'no_create': True}" />
+                <field name="paper_ids" widget="many2many_tags" />
+                <field name="format_ids" widget="many2many_tags" />
+                <field name="error" invisible="1" />
+                <field name="notes" widget="html" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_policy_printer" model="ir.actions.act_window">
+        <field name="name">Printer Settings</field>
+        <field name="res_model">printnode.printer</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_policy_printer_tree" />
+    </record>
+
+
+    <!-- Rule -->
+    <record id="printnode_rules_tree" model="ir.ui.view">
+        <field name="name">printnode.rule.tree</field>
+        <field name="model">printnode.rule</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="User Rules" editable="bottom" decoration-warning="error">
+                <field name="user_id" options="{'no_create': True}" />
+                <field name="printer_id" options="{'no_create': True}" />
+                <field name="printer_bin" options="{'no_create': True}"/>
+                <field name="report_id" options="{'no_create': True}" />
+                <field name="report_model" />
+                <field name="error" invisible="1" />
+                <field name="notes" widget="html" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_rules" model="ir.actions.act_window">
+        <field name="name">User Rules</field>
+        <field name="res_model">printnode.rule</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_rules_tree" />
+    </record>
+
+
+    <!-- Shipping Labels -->
+    <record id="shipping_label_form" model="ir.ui.view">
+        <field name="name">shipping.label.form</field>
+        <field name="model">shipping.label</field>
+        <field name="arch" type="xml">
+            <form string="Shipping Label Form" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <field name="create_date" widget="datetime"/>
+                        <field name="carrier_id" ref="delivery_carrier"/>
+                        <field name="picking_id"/>
+                        <field name="tracking_numbers"/>
+                        <field name="label_ids">
+                            <tree create="false" edit="false" delete="false">
+                                <field name="document_id"/>
+                                <field name="package_id"/>
+                                <button name="print_label_with_package_via_printnode" type="object" icon="fa-print"
+                                        string="Send to Printer" aria-label="Send to Printer"
+                                        title="Send shipping labels to Printer via PrintNode"/>
+                            </tree>
+                        </field>
+                        <field name="label_status"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="shipping_label_tree" model="ir.ui.view">
+        <field name="name">shipping.label.tree</field>
+        <field name="model">shipping.label</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Shipping Label Tree" create="false" edit="false"
+                  delete="false" decoration-muted="label_status == 'inactive'">
+                <field name="create_date" widget="datetime"/>
+                <field name="carrier_id" ref="delivery_carrier"/>
+                <field name="picking_id"/>
+                <field name="tracking_numbers"/>
+                <field name="label_ids"/>
+                <field name="label_status"/>
+                <button name="print_via_printnode" type="object" icon="fa-print"
+                        string="Send to Printer" aria-label="Send to Printer"
+                        title="Send shipping labels to Printer via PrintNode"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="shipping_label_document_form" model="ir.ui.view">
+        <field name="name">shipping.label.document.form</field>
+        <field name="model">shipping.label.document</field>
+        <field name="arch" type="xml">
+            <form string="Shipping Label Document Form">
+                <sheet>
+                    <group>
+                        <field name="document_id" widget="many2one_barcode"/>
+                        <field name="package_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="shipping_label_search_view" model="ir.ui.view">
+        <field name="name">shipping.label.search</field>
+        <field name="model">shipping.label</field>
+        <field name="arch" type="xml">
+            <search string="Shipping Label">
+                <filter string="Active labels"
+                        name="active_labels"
+                        domain="[('label_status', '=', 'active')]"/>
+                <field name="picking_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="shipping_label_print" model="ir.actions.server">
+        <field name="name">Print via PrintNode</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="printnode_base.model_shipping_label"/>
+        <field name="binding_model_id" ref="printnode_base.model_shipping_label"/>
+        <field name="code">
+            records.print_via_printnode()
+        </field>
+    </record>
+
+    <record id="shipping_labels_action" model="ir.actions.act_window">
+        <field name="name">Shipping Labels</field>
+        <field name="res_model">shipping.label</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="shipping_label_tree" />
+        <field name="context">{'search_default_active_labels': 1}</field>
+    </record>
+
+
+    <!-- Stock Picking -->
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_toggle_is_locked']" position="after">
+                <button name="print_last_shipping_label" string="Print Last Shipping Label"
+                        attrs="{'invisible': ['|', '|',
+                            ('picking_type_code', '!=', 'outgoing'),
+                            ('state', 'in', ('draft', 'cancel')),
+                            ('is_locked', '=', False)]}"
+                        groups="printnode_base.printnode_security_group_user"
+                        type="object"/>
+            </xpath>
+            <xpath expr="//page[last()]" position="after">
+                <page string="Shipping Labels"
+                      attrs="{'invisible': ['|', '|',
+                            ('picking_type_code', '!=', 'outgoing'),
+                            ('state', 'in', ('draft', 'cancel')),
+                            ('is_locked', '=', False)]}"
+                      groups="printnode_base.printnode_security_group_user">
+                    <field name="shipping_label_ids"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Delivery Carrier -->
+    <record id="view_delivery_carrier_form" model="ir.ui.view">
+        <field name="name">delivery.carrier.form</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="printnode" string="PrintNode">
+                    <group>
+                        <field name="autoprint_paperformat_id"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_delivery_carrier_printnode_tree" model="ir.ui.view">
+        <field name="name">delivery.carrier.printnode.tree</field>
+        <field name="model">delivery.carrier</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <tree string="Delivery Carrier" editable="bottom" create="false" delete="false">
+                <field name="name" readonly="1"/>
+                <field name="autoprint_paperformat_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="printnode_carrier_settings" model="ir.actions.act_window">
+        <field name="name">Quick Delivery Carrier PrintNode Settings</field>
+        <field name="res_model">delivery.carrier</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="printnode_base.view_delivery_carrier_printnode_tree"/>
+    </record>
+
+
+    <!-- Settings -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">Settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" string="PrintNode" 
+                    data-string="PrintNode" data-key="printnode_base"
+                    groups="printnode_base.printnode_security_group_manager">
+
+                    <h2>General</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="printnode_enabled"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="printnode_enabled"/>
+                                <div class="text-muted">
+                                    Print reports immediately via Printnode service (otherwise it would be downloaded)
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16 row">
+                                        <label for="printnode_printer" string="Default Printer" class="col-3 col-lg-3 o_light_label"/>
+                                        <field name="printnode_printer" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div class="text-muted">
+                                    Other Settings
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <button name="%(printnode_base.printnode_account_action)d"
+                                            type="action" class="btn-link"
+                                            icon="fa-arrow-right" string="Manage accounts" />
+                                    </div>
+                                    <div class="mt16">
+                                        <button name="%(printnode_base.printnode_action_methods)d"
+                                            type="action" class="btn-link"
+                                            icon="fa-arrow-right" string="View mappings"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_send_slp"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_send_slp"/>
+                                <div class="text-muted">
+                                    If this option is selected then when user Validates Delivery Order,
+                                    shipping labels are automatically sent to the printer that is set in
+                                    user preferences. In case no Shipping Label Printer is selected on User,
+                                    then system will try to send to the printer selected below.
+                                    If no printer is selected below - user will get error message.
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16 row">
+                                        <label for="company_label_printer" string="Default Shipping Label Printer"
+                                               class="col-3 col-lg-3 o_light_label"/>
+                                        <field name="company_label_printer" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div attrs="{'invisible': [('print_sl_from_attachment', '=', True)]}">
+                                <br/>
+                                <div class="o_setting_left_pane">
+                                    <field name="print_package_with_label"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="print_package_with_label"/>
+                                    <div class="text-muted">
+                                        (Experimental) System will try to guess which Shipping Label is related to which Package.
+                                        This is quite comlex in Odoo standard and is possible ONLY if on every Delivery Order you
+                                        will be using "Put In Pack" button. So quantity of Shipping Labels will be equal to quantity
+                                        of Packages related to Delivery Order. So by enabling this checkbox you also will automatically
+                                        enable "Put In  Pack" feature on Delivery Order AND will force users to always "Put In Pack"
+                                        on Delivery Order. Additionally it will Print Package on the same Label Printer as Shipping
+                                        Label (just after Shipping Label is Printed).
+                                    </div>
+                                    <div class="content-group" attrs="{'invisible': [('print_package_with_label', '=', False)]}">
+                                        <div class="mt16 row">
+                                            <label for="printnode_package_report" class="col-3 col-lg-3 o_light_label"/>
+                                            <field name="printnode_package_report" class="oe_inline"
+                                                attrs="{'required': [('print_package_with_label', '=', True)]}" options="{'no_create': True}"
+                                                domain="[('model', '=', 'stock.quant.package'), ('report_type', 'in', ['qweb-pdf', 'qweb-text'])]"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div attrs="{'invisible': [('print_package_with_label', '=', True)]}">
+                                <br/>
+                                <div class="o_setting_left_pane">
+                                    <field name="print_sl_from_attachment"/>
+                                </div>
+                                <div class="o_setting_right_pane" attrs="{'invisible': [('print_package_with_label', '=', True)]}">
+                                    <label for="print_sl_from_attachment"/>
+                                    <div class="text-muted">
+                                        If you use Odoo Enterprise standard carrier integration modules
+                                        (DHL, UPS, Fedex, USPS and etc.), than do not select this checkbox.
+                                        But in some cases when you use Shipping Carrier Integration modules
+                                        purchased from Odoo App Store that are done NOT according to
+                                        Odoo Standards of coding, auto-printing of shipping labels may not work.
+                                        As this modules are adding Shipping Labels directly to the attachments
+                                        avoiding standard Odoo mechanisms. This checkbox helps you to workaround
+                                        this problem. If enabled, it will try to search for latest attachments in
+                                        Delivery Order with the same Creation Date and will send them to the printer.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="printnode_recheck"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="printnode_recheck"/>
+                                <div class="text-muted">
+                                    If this checkbox is set the printer status is verified when documents are set in printing Wizard
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="o_setting_left_pane">
+                                <field name="im_a_teapot"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="im_a_teapot"/>
+                                <div class="text-muted">
+                                    Shows message that report was successfully sent to printnode service.
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="o_setting_right_pane">
+                                <label for="wizard_report_ids"/>
+                                <field name="wizard_report_domain_ids" invisible="1"/>
+                                <field name="wizard_report_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <div class="text-muted">
+                                    Select list of reports that should be visible to end user when they invoke
+                                    Product Label Printing Wizard. If this list is empty, then all available reports
+                                    for Product will be shown to the user.
+                                </div>
+                                <div>
+                                    <br/>
+                                    <label for="def_wizard_report_id"/>
+                                    <field name="def_wizard_report_id" widget="many2one" options="{'no_create': True}"/>
+                                    <div class="text-muted">
+                                        Select here default Product Label that will be pre-selected when user opens Product Label Printing Wizard.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Notifications</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="printnode_notification_email" class="o_form_label d-block">Notification email</label>
+                                <field name="printnode_notification_email" />
+                                <div class="text-muted">
+                                    Odoo will send notification email on this email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="printnode_notification_page_limit" class="o_form_label d-block">Notification number of pages</label>
+                                <field name="printnode_notification_page_limit" />
+                                <div class="text-muted">
+                                    Odoo will send notificaiton email when number of available pages will be less than value of this field.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="printnode_configs_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'printnode_base'}</field>
+    </record>
+
+
+    <!-- Menus -->
+    <menuitem id="menu_printnode" name="PrintNode" sequence="80"
+        web_icon="printnode_base,static/description/icon.png"
+        groups="printnode_security_group_manager"
+    />
+
+    <menuitem id="menu_printnode_policy" name="Print Report Policy" parent="menu_printnode" sequence="30" />
+
+    <menuitem id="menu_printnode_policy_reports" name="Report Settings" parent="menu_printnode_policy" sequence="31"
+        action="printnode_policy_report" />
+
+    <menuitem id="menu_printnode_policy_printers" name="Printer Settings" parent="menu_printnode_policy" sequence="32"
+        action="printnode_policy_printer" />
+
+    <menuitem id="menu_printnode_rules" name="User Rules" parent="menu_printnode_policy" sequence="34"
+        action="printnode_rules" />
+
+    <menuitem id="menu_printnode_carrier_settings" name="Delivery Carrier Settings" parent="menu_printnode_policy" sequence="35"
+        action="printnode_carrier_settings" />
+
+    <menuitem id="menu_printnode_buttons" name="Print Action Buttons" parent="menu_printnode" sequence="32"
+        action="printnode_action_buttons" />
+    
+    <menuitem id="menu_printnode_scenarios" name="Print Scenarios" parent="menu_printnode" sequence="33"
+        action="printnode_scenarios" />
+
+    <menuitem id="menu_shipping_labels" name="Shipping Labels" parent="menu_printnode" sequence="34"
+        action="shipping_labels_action"/>
+
+    <menuitem id="menu_printnode_log" name="Print jobs" parent="menu_printnode" sequence="35"
+        action="printnode_printjob_action" />
+
+    <menuitem id="menu_printnode_service" name="Configuration" parent="menu_printnode" sequence="36" />
+
+    <menuitem id="menu_printnode_general" name="Settings" parent="menu_printnode_service" sequence="37"
+        action="printnode_configs_action" />
+    <menuitem id="menu_printnode_accounts" name="Accounts" parent="menu_printnode_service" sequence="38"
+        action="printnode_account_action" />
+    <menuitem id="menu_printnode_computers" name="Computers" parent="menu_printnode_service" sequence="39"
+        action="printnode_computer_action" />
+    <menuitem id="menu_printnode_printers" name="Printers" parent="menu_printnode_service" sequence="40"
+        action="printnode_printer_action" />
+    <menuitem id="menu_printnode_papers" name="Papers" parent="menu_printnode_service" sequence="41"
+        action="printnode_paper_action" />
+    <menuitem id="menu_printnode_methods" name="Methods" parent="menu_printnode_service" sequence="42"
+        action="printnode_action_methods" />
+    <menuitem id="menu_printnode_server_actions" name="Configure Print Wizard" parent="menu_printnode_service" sequence="43"
+        action="printnode_action_map_action_server" />
+
+    <!-- User Preferences -->
+    <record model="ir.ui.view" id="res_user_form">
+        <field name="name">Users Preferences</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group[@name='messaging']" position="before">
+                    <group string="Printing" name="printing" col="2" groups="printnode_base.printnode_security_group_user">
+                        <field name="printnode_enabled" />
+                        <field name="printnode_printer"/>
+                            <p class="text-danger" attrs="{'invisible': [('printnode_rule_ids', '=', [])]}">
+                                NOTE: There is User Rule defined for the current user.
+                                Beware that User Rules are overriding Default Printer
+                                in User Settings for particular Reports
+                            </p>
+                        <field name="user_label_printer" />
+                        <field name="printnode_rule_ids" invisible="1"/>
+                    </group>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+    <record id="view_users_form_preferences" model="ir.ui.view">
+        <field name="name">res.users.preferences.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif" />
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group[@name='preferences']" position="after">
+                    <group string="Printing" name="printing" col="2" groups="printnode_base.printnode_security_group_user">
+                        <field name="printnode_enabled" readonly="0" />
+                        <field name="printnode_printer" readonly="0" attrs="{'required': [('printnode_enabled', '=', True)]}"/>
+                            <p class="text-danger" attrs="{'invisible': [('printnode_rule_ids', '=', [])]}">
+                                NOTE: There is User Rule defined for the current user.
+                                Beware that User Rules are overriding Default Printer
+                                in User Settings for particular Reports
+                            </p>
+                        <field name="user_label_printer" readonly="0"/>
+                        <field name="printnode_rule_ids" invisible="1"/>
+                    </group>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+    <record id="open_printnode_accounts" model="ir.actions.todo">
+        <field name="action_id" ref="printnode_account_action"/>
+    </record>
+
+</data>
+</odoo>

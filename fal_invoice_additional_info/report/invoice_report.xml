@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <template id="fal_additional_invoice_report" inherit_id="account.report_invoice_document">
+        <!-- <xpath expr="//div[hasclass('page')]/p[@t-if='o.fiscal_position_id.note']" position="after">
+            <br/>
+            <br/>
+            <div class='row' t-if="o.fal_use_late_payment_statement and o.company_id.fal_use_late_payment_statement">
+                <p>
+                    <span style="font-size:10px;" t-field="o.company_id.fal_use_late_payment_statement"/>
+                </p>
+            </div>
+        </xpath> -->
+        <xpath expr="//div[hasclass('page')]/p[@t-if='not is_html_empty(o.fiscal_position_id.note)']/span[@t-field='o.fiscal_position_id.note']" position="after">
+            <br/>
+            <br/>
+            <div class='row' t-if="o.fal_use_late_payment_statement and o.company_id.fal_use_late_payment_statement">
+                <p>
+                    <span style="font-size:10px;" t-field="o.company_id.fal_use_late_payment_statement"/>
+                </p>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="falinwa_invoice_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="fal_invoice_additional_info.fal_additional_invoice_report" t-lang="o.lang"/>
+            </t>
+        </t>
+    </template>
+
+  </data>
+</odoo>

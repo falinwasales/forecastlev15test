@@ -1,0 +1,55 @@
+<odoo>
+	<template id="custom_report_header_footer_sdo">
+
+		<t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        
+        <t t-call="forecastle_module.external_layout_standard_forecastle_tiga"><t t-raw="0"/></t>
+	</template>
+
+	<template id="external_layout_standard_forecastle_tiga">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <table style="width:100%; border-collapse: separate; font-size:9pt; padding-bottom: 5px;">
+                <tr>
+                    <td>
+                        <img t-if="o.principal_id.image_1920" t-att-src="image_data_uri(o.principal_id.image_1920)" 
+                        style="width:53mm; height:16mm; padding-right: 60px;" alt="Logo" align='right'/>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="col-12" style='border-bottom: 1px solid black;'>
+            </div>
+        </div>
+
+        <!--  -->
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <div class="pt-5">
+                <t t-call="web.address_layout"/>
+            </div>
+            <t t-raw="0"/>
+        </div>
+        <!--  -->
+
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4">
+                    <li t-if="company.phone" class="list-inline-item d-inline"><span class="o_force_ltr" t-field="company.phone"/></li>
+                    <li t-if="company.email" class="list-inline-item d-inline"><span t-field="company.email"/></li>
+                    <li t-if="company.website" class="list-inline-item d-inline"><span t-field="company.website"/></li>
+                </ul>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,54 @@
+<odoo>
+    <record id="helpdesk_ticket_forecastle" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.forecastle</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group/field[@name='company_id']" position="after">
+                <field name="fce_location"/>
+                <field name="can_edit" invisible='1'/>
+            </xpath>
+            <xpath expr="//group/group/field[@name='user_id']" position="replace">
+                <field name="user_id"/>
+            </xpath>
+            <field name='description' position="replace">
+                <field name="description" class="field_description" placeholder="Description of the ticket..." />
+            </field>
+            <field name='priority' position="replace">
+                <field name="priority" widget="priority" attrs="{'readonly': [('can_edit', '=', False)]}"/>
+            </field>
+            <xpath expr="//group/group/field[@name='ticket_type_id']" position="replace">
+                <field name="ticket_type_id" string='Type' attrs="{'readonly': [('can_edit', '=', False)]}"/>
+            </xpath>
+            <field name="user_id" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit', '=', False)]}</attribute>
+            </field>
+            <xpath expr="//group/group/field[@name='tag_ids']" position="replace">
+                <field name="tag_ids" string='Ticket Type' widget="many2many_tags" options="{'color_field': 'color'}" attrs="{'readonly': [('can_edit', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//group/group/field[@name='team_id']" position="before">
+                <field name="fal_user_selection" string="User"/>
+            </xpath>
+            <xpath expr="//group/group[2]" position="after">
+                <group attrs="{'invisible': [('fal_user_selection', '=', 'customer')]}">
+                    <field name="fal_employee" string="Employee" />
+                    <field name="fal_employee_email"/>
+                </group>
+            </xpath>
+            <xpath expr="//group/group[2]" position="attributes">
+                <attribute name="attrs">{'invisible': [('fal_user_selection', '=', 'employee')]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_tree_forecastle" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.forecastle</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="fal_employee"/>
+            </field>
+        </field>
+    </record>
+</odoo>

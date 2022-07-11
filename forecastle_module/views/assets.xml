@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="assets_frontend" inherit_id="portal.assets_frontend" name="Website Assets">
+    <xpath expr="//script[last()]" position="after">
+        <script type="text/javascript" src="/forecastle_module/static/src/js/content/website_root.js"/>
+        <script type="text/javascript" src="/forecastle_module/static/src/js/sale_portal_sidebar.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+        </script>
+        <!-- <script type="text/javascript" src="/forecastle_module/static/src/js/easy-number-separator.js"></script> -->
+    </xpath>
+</template>
+
+</odoo>

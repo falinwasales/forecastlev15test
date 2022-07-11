@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_conves" model="ir.ui.view">
+        <field name="name">view_conves_form</field>
+        <field name="model">fce.conves</field>
+        <field name="arch" type="xml">
+            <form string="Connecting Vessel">
+                <sheet string="Connecting Vessel">
+                    <group>
+                        <group>
+                            <field name="port_code_id" readonly="1" force_save="1"/>
+                            <field name="port_type" readonly="1" force_save="1"/>
+                            <field name="vessel_id" readonly="1" force_save="1"/>
+                            <field name="voyage_id"/>
+                            <field name="agent_id" readonly="1" force_save="1"/>
+                            <field name="agent_code_id" readonly="1" force_save="1"/>
+                        </group>
+                        <group>
+                            <label for="date_etd" string="ETD - ETA"/>
+                            <div>
+                                <field name="date_etd" readonly="1" force_save="1"/>
+                                <span> - </span>
+                                <field name="date_eta" readonly="1" force_save="1"/>
+                            </div>
+                            <label for="time_departure" string="ATD - ATA"/>
+                            <div>
+                                <field name="time_departure" readonly="1" force_save="1"/>
+                                <span> - </span>
+                                <field name="time_arrival" readonly="1" force_save="1"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="fce_conves_view">
+        <field name="name">fce.conves.tree</field>
+        <field name="model">fce.conves</field>
+        <field name="arch" type="xml">
+            <tree string="Connecting Vessel">
+                <field name="port_code_id"/>
+                <field name="port_type"/>
+                <field name="vessel_id"/>
+                <field name="voyage_id"/>
+                <field name="date_etd"/>
+                <field name="date_eta"/>
+                <field name="time_departure"/>
+                <field name="time_arrival"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_conves_view_search">
+        <field name="name">fce.conves.search</field>
+        <field name="model">fce.conves</field>
+        <field name="arch" type="xml">
+            <search string="Connecting Vessel">
+                <field name="port_code_id"/>
+                <field name="vessel_id"/>
+                <field name="voyage_id"/>
+                <separator/>
+                <filter name="filter_date_etd" date="date_etd"/>
+                <filter name="filter_date_eta" date="date_eta"/>
+                <separator/>
+                <filter name="filter_time_departure" date="time_departure"/>
+                <filter name="filter_time_arrival" date="time_arrival"/>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_conves_action" model="ir.actions.act_window">
+        <field name="name">Connecting Vessel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.conves</field>
+        <field name="search_view_id" ref="fce_conves_view_search"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Connecting Vessel
+          </p>
+        </field>
+    </record>
+</odoo>

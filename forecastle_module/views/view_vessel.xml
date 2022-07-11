@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_fce_vessel_form" model="ir.ui.view">
+        <field name="name">view_fce_vessel_form</field>
+        <field name="model">fce.vessel</field>
+        <field name="arch" type="xml">
+            <form string="Vessel">
+                <header>
+                    <button class="btn-primary" type="object" attrs="{'invisible': [('active', '=', True)]}" name="action_approve" string="Approve"/>
+                </header>
+                <sheet string="Vessel">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Vessel ID..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vessel_full_name"/>
+                            <field name="vessel_operator" domain="[('is_carrier', '=', True)]"/>
+                            <field name="nationality"/>
+                            <field name="active" invisible='1'/>
+                        </group>
+                        <group>
+                            <field name="imo_number"/>
+                            <div id="loa" class="o_row d-flex">
+                                <label for="loa"/>
+                                <field name="loa" class="oe_inline"/>
+                                <span class="oe_grey">m</span>
+                            </div>
+                            <div id="grt" class="o_row d-flex">
+                                <label for="grt"/>
+                                <field name="grt" class="oe_inline"/>
+                                <span class="oe_grey">Ton</span>
+                            </div>
+                            <div id="year_built" class="o_row d-flex">
+                                <label for="year_built"/>
+                                <field name="year_built" class="oe_inline"/>
+                                <!-- <span class="oe_grey">Ton</span> -->
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="fce_vessel_tree_view">
+        <field name="name">Vessel</field>
+        <field name="model">fce.vessel</field>
+        <field name="arch" type="xml">
+            <tree string="Vessel">
+                <field name="name"/>
+                <field name="vessel_full_name"/>
+                <field name="vessel_operator"/>
+                <field name="nationality"/>
+                <field name="imo_number"/>
+                <field name="loa"/>
+                <field name="grt"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fce_vessel_chatter_chatter" model="ir.ui.view">
+        <field name="name">fce.vessel.chatter</field>
+        <field name="model">fce.vessel</field>
+        <field name="inherit_id" ref="view_fce_vessel_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_vessel_search_view">
+        <field name="name">Vessel</field>
+        <field name="model">fce.vessel</field>
+        <field name="arch" type="xml">
+            <search string="Vessel">
+                <field name="name"/>
+                <field name="vessel_full_name"/>
+                <field name="vessel_operator"/>
+                <field name="nationality"/>
+                <field name="imo_number"/>
+                <field name="loa"/>
+                <field name="grt"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Feeder Operator" name='vessel_operator' context="{'group_by':'vessel_operator'}"/>
+                    <filter string="Nationality" name='nationality' context="{'group_by':'nationality'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_vessel_action" model="ir.actions.act_window">
+        <field name="name">Vessel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.vessel</field>
+        <field name="search_view_id" ref="fce_vessel_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new
+          </p>
+        </field>
+    </record>
+    <record id="fce_vessel_action_archive" model="ir.actions.act_window">
+        <field name="name">Vessel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.vessel</field>
+        <field name="search_view_id" ref="fce_vessel_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="domain">[('active', '=', False)]</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new
+          </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,12 @@
+<odoo>
+    <template id="portal_my_home_helpdesk_ticket_hide" name="Hide Tickets" customize_show="True" inherit_id="helpdesk.portal_my_home_helpdesk_ticket" priority="50">
+    	<xpath expr="//div[hasclass('o_portal_docs')]/t[5]" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]/t[5]" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]/t[5]" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]/t[5]" position="replace">
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_forecastle_invoice_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="group_1">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h2><b><center>INVOICE</center></b></h2>
+                                </div>
+                            </div>
+
+                            <table style="width:100%; font-size: 14px;">
+                                <tr>
+                                    <td style="padding-right:200px">To:<span>&#160; Ship</span></td>
+                                    <td>Invoice No:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:200px"></td>
+                                    <td>Date:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:200px"></td>
+                                    <td>Account No:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:200px"></td>
+                                    <td>Credit Term:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:200px"></td>
+                                    <td>Issued By:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:200px">Attn:</td>
+                                    <td>Page:<span>&#160; Bill</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Tel:</td>
+                                </tr>
+                                <tr>
+                                    <td>Fax:</td>
+                                </tr>
+                            </table>
+
+                            <table style="width:100%; margin-top:5%; font-size: 12px;">
+                                <tr>
+                                    <td style="padding-right:80px"><b>Vessel/Voyage Equip</b><span>&#160; Ship</span></td>
+                                    <td><b>Loading/Discharge</b></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:80px"><b>Bill of Landing No:</b><span>&#160; Ship</span></td>
+                                    <td><b>ETD</b></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="width:100%; border: 1px solid black; border-collapse: collapse;" cellpadding="1" cellspacing="1" border="1">
+                                <thead>
+                                    <tr style="font-size: 10px; height:30px;">
+                                        <th>No.</th>
+                                        <th>Particulars</th>
+                                        <th>Qty</th>
+                                        <th>Rate</th>
+                                        <th>Cur</th>
+                                        <th>Amount</th>
+                                        <th>Tax Rate(%)</th>
+                                        <th>VAT Amount</th>
+                                        <th>Amount (Inc.VAT)</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>44</td>
+                                        <td>55</td>
+                                        <td>66</td>
+                                        <td>77</td>
+                                        <td>88</td>
+                                        <td>9</td>
+                                    </tr>
+                                </tbody>
+
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6">TOTAL : </td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>44</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table style="width:100%; border: 1px solid black; margin-top:2%;">
+                                <tr style="padding:15px; height:30px;">
+                                    <td><b>VAT Amount (IDR)</b></td>
+                                    <td style="border: 1px solid black;">555</td>
+                                    <td><b>Total Payable (IDR)</b></td>
+                                    <td style="border: 1px solid black;">555</td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="width:100%; margin-top:2%;">
+                                <tr>
+                                    <td><b>IDR: FOUR HUNDRED THOUSANDS RUPIAH</b></td>
+                                </tr>
+                            </table>
+
+                            <table style="width:100%; border: 1px solid black; margin-top:2%; box-shadow: 5px 10px 8px #888888;">
+                                <tr>
+                                    <td><b><u>1X20'GP</u></b></td>
+                                </tr>
+                                <tr>
+                                    <td>BMNHHH</td>
+                                </tr>
+                            </table>
+
+                            <table style="width:100%; margin-top:2%; font-size: 11px;">
+                                <tbody>
+                                    <tr>
+                                        <ul>
+                                            <td><li>IMPORTANT NOTES:</li></td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <td>Payment by bank transfer please send to;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Beneficiency Name:</td>
+                                        <td><b>For PT FORECASTLE INDONESIA</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank:</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SWIFT CODE:</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Account No:</td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+
+                            <table style="width:100%; margin-top:2%; font-size: 11px;">
+                                <tbody>
+                                    <tr>
+                                        <ul>
+                                            <td><li>A receipt must be obtained when payment done.</li></td>
+                                            <td>Authorized Signature</td>
+                                        </ul>
+                                    </tr>
+
+                                    <tr>
+                                        <ul>
+                                            <td><li>Invoiced is not proof of payment</li></td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <ul>
+                                            <td><li>When payment is made, please include Invoice number/BL number from the transfer detail</li></td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <ul>
+                                            <td><li>Settlement of invoice is recognized only when our bank has recieved full statement. Bank shall not be under Forecastle account</li></td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <ul>
+                                            <td><li>Not accept any other complain after 3 days payment</li></td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <ul>
+                                            <td><li>Please remit full payment. We unable to refund any Over Payment(Terms and condition are applied).</li></td>
+                                        </ul>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_invoice_report" model="ir.actions.report">
+            <field name="name">Forecastle Invoice</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.template_forecastle_invoice_report</field>
+            <field name="report_file">forecastle_module.template_forecastle_invoice_report</field>
+            <field name="print_report_name">'Invoices - %s' % (object.name)</field>
+            <!-- <field name="binding_model_id" ref="model_account_move"/> -->
+            <field name="binding_type">report</field>
+    </record>
+
+    <report
+        id="forecastle_invoice_report"
+        model="account.move"
+        string="Forecastle Invoice"
+        report_type="qweb-pdf"
+        name="forecastle_module.template_forecastle_invoice_report"
+        file="forecastle_module.template_forecastle_invoice_report"
+        print_report_name="'Forecastle Invoice'"
+    />
+
+</odoo>

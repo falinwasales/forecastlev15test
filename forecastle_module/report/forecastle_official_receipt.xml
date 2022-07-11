@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_official_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="forecastle_module.custom_report_header_footer_or">
+                    <div class="page">
+                        <style>
+                            html *{
+                                font-family: Arial, Helvetica, sans-serif;
+                                word-wrap: break-word;
+                            }
+            
+                            .do_title{
+                                font-size:17pt;
+                                text-align:right;
+                                padding-right:4%;
+                                margin-left:0.5cm;
+                            }
+
+                            .official_receipt_table{
+                                margin-top:5%;
+                                margin-left:0.5cm;
+                                margin-right:0.5cm;
+                            }
+                            .official_total_table{
+                                margin-left:0.5cm;
+                                margin-right:0.5cm;
+                            }
+                            .official_total_table_total{
+                                margin-left:0.5cm;
+                                margin-right:0.5cm;
+                            }
+                            .string_table{
+                                padding-top:8px;
+                                padding-bottom:8px;
+                                text-align:left;
+                            }
+                            .string_table2{
+                                padding-top:8px;
+                                padding-bottom:8px;
+                                text-align:center;
+                            }
+                            .field_table1{
+                                text-align:center;
+                                padding-top:15px;
+                            }
+                            .total_in_word{
+                                margin-left:0.5cm;
+                                margin-right:0.5cm;
+                            }
+                            .stamp{
+                                margin-left:0.5cm;
+                                margin-right:0.5cm;
+                            }
+                            .official_receipt_table tr:nth-child(odd) {
+                                background-color: #f2f2f2;
+                              }
+                        </style>
+
+                        <div style="page-break-after: always;">
+                            <div class="do_title">
+                                <p><b>OFFICIAL RECEIPT</b></p>
+                            </div>
+                            <!--  -->
+                            <div style="width:100%;">
+                                <table style="width:50%; text-align: justify; font-size:10pt; margin-top:1%;" align='left'>
+                                    <tr>
+                                        <td>Received From:</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><span t-field='o.partner_id.name'/></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span t-field='o.partner_id.street'/>,
+                                            &#160;<span t-field="o.partner_id.city"/>
+                                            &#160;<span t-field="o.partner_id.state_id"/>
+                                            &#160;<span t-field="o.partner_id.zip"/>
+                                            <br><span t-field="o.partner_id.country_id"/></br></td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:30%; text-align: justify; font-size:10pt; margin-top:1%;" align='right'>
+                                    <tr>
+                                        <td>OR Number</td>
+                                        <td>: <span style="color:red;" t-field='o.name'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paid Date</td>
+                                        <td>: <span t-esc="o.date and o.date.strftime('%d %b %Y')"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Received in</td>
+                                        <td>: <span t-field='o.journal_id'/></td>
+                                    </tr>
+                                </table>
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                            </div>
+                            <!--  -->
+                            <t t-set="total_amount" t-value="0.0"/>
+                            <div class="official_receipt_table">
+                                <table style="width:100%; font-size:10pt; border-top:1px solid gray; table-layout:fixed;">
+                                    <tr>
+                                        <td class="string_table" style="width:15%;">Invoice</td>
+                                        <td class="string_table2" style="width:12.5%;">Invoice Date</td>
+                                        <td class="string_table2" style="width:17%">BL Number</td>
+                                        <td class="string_table2" style="width:12.5%">Vessel</td>
+                                        <td class="string_table2" style="width:8%">Voyage</td>
+                                        <td class="string_table2" style="width:7%">Cont</td>
+                                        <td class="string_table2" style="width:3%">Qty</td>
+                                        <td class="string_table2" style="width:15%; text-align: right;">Amount</td>
+                                    </tr>
+
+                                    <tr t-foreach="o.reconciled_invoice_ids.filtered(lambda x: x.fal_invoice_type == 'invoice')" t-as="line1">
+                                        <td style="text-align:left; padding-top:15px;">
+                                            <span t-field="line1.name"/>
+                                        </td>
+                                        <td class="field_table1">
+                                            <span t-esc="line1.date and line1.date.strftime('%d %b %Y')"/>
+                                        </td>
+                                        <!-- bl number -->
+                                        <t t-if="line1.fal_sale_source_id.is_import">
+                                            <td class="field_table1">
+                                                <span t-field="line1.fal_sale_source_id.no_host_bl"/>
+                                            </td>
+                                        </t>
+                                        <!--  vessel -->
+                                        <t t-if="line1.fal_sale_source_id.is_import">
+                                            <td class="field_table1">
+                                                <span t-field="line1.fal_sale_source_id.nama_sarana_angkut"/>
+                                            </td>
+                                        </t>
+                                        <!--  voyage -->
+                                        <t t-if="line1.fal_sale_source_id.is_import">
+                                            <td class="field_table1">
+                                                <span t-field="line1.fal_sale_source_id.voyage_id"/>
+                                            </td>
+                                        </t>
+                                        <!-- compute_or_invoice[name] -->
+                                        <td class="field_table1">
+                                            <t t-foreach="line1.compute_or_invoice()" t-as="line2">
+                                                <span t-esc='line2["nama"]'/>
+                                            </t>
+                                        </td>
+                                        <!-- [qty] -->
+                                        <td class="field_table1">
+                                            <t t-foreach="line1.compute_or_invoice()" t-as="line2">
+                                                <span t-esc="line2['uom_qty']" t-set="uom_qty"/>
+                                            </t>
+                                        </td>
+                                        <!-- total  -->
+                                        <td class="field_table1" style='text-align:right;'>
+                                            <span t-esc="'{:,.2f}'.format(line1.amount_total)"/>
+                                            <t t-set="total_amount" t-value="total_amount + line1.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="official_total_table_total">
+                                <table style="width:100%; font-size:10pt; margin-top:3%">
+                                    <td style="width:10%;padding-top:15px;"/>
+                                    <td style="width:10%;padding-top:15px;"/>
+                                    <td style="width:10%;padding-top:15px;"/>
+                                    <td style="width:10%;padding-top:15px;"/>
+                                    <td style="width:10%;padding-top:15px;"/>
+                                    <td style="width:20%;padding-top:15px;"/>
+                                    <td style="width:20%;">
+                                        <b>Total Receipt (IDR)</b>
+                                    </td>
+                                    <td style="width:0%;"/>
+                                    <td style="text-align: center; width:0%;"/>
+                                    <td style="text-align: right; width:19%;">
+                                        <b><span t-esc="'{:,.2f}'.format(total_amount)"/></b>
+                                    </td>
+                                </table>
+                            </div>
+
+                            <div class="total_in_word">
+                                <table style="width:100%; font-size:10pt; margin-top:3%">
+                                    <tr>
+                                        <td>IDR :<span style='text-transform:capitalize'/> <t t-esc="env['account.payment'].get_amount_to_text(o.amount)"/> Only</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div>
+                                <table style="margin-top:15%; width: 100%;">
+                                    <tr>
+                                        <td width="70%;">
+                                        </td>
+                                        <td width="30%;" style="font-size:10pt; text-align:left; padding-right: 0.5cm;"><span t-field="o.company_id.city"/>, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="70%;">
+                                        </td>
+                                        <td width="30%;" style="font-size:10pt; text-align:left; padding-right: 0.5cm; padding-top:3cm;">......................................................
+                                        </td>
+                                    </tr>
+                                    <tr style="margin:5px">
+                                        <td width="70%;">
+                                          
+                                        </td>
+                                        <td width="30%;" style="font-size:10pt; text-align:left; padding-right: 0.5cm; ">
+                                          As agent PT Forecastle Indonesia
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+
+    <record id="action_official" model="ir.actions.report">
+            <field name="name">Official Receipt Invoice</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_official_receipt</field>
+            <field name="report_file">forecastle_module.forecastle_official_receipt</field>
+            <field name="print_report_name">'Official Receipt Invoice- %s' % (object.name)</field>
+            <field name="binding_model_id" ref="account.model_account_payment"/>
+            <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="paperformat_official_receipt_invoice" model="report.paperformat">
+        <field name="name">Official Receipt Invoice</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_official'))]"/>
+    </record>
+
+</odoo>

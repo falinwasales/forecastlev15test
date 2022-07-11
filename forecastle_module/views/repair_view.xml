@@ -1,0 +1,47 @@
+<odoo>
+	<record id="view_fce_repair_form" model="ir.ui.view">
+        <field name="name">fce.repair.form</field>
+        <field name="model">fce.repair</field>
+        <field name="arch" type="xml">
+        	<form>
+        		<sheet>
+                    <group>
+                    	<group>
+			                <field name="name"/>
+			                <!-- <field name="total_repair_by_principal"/> -->
+			                <!-- <field name="total_repair_by_consignee"/> -->
+                            <!-- <field name="total_repair"/> -->
+                    	</group>
+                    	<group>
+                    	</group>
+                    </group>
+                    <notebook>
+                    	<page string="Receipt Orders">
+                    		<field name="receipt_ids">
+                    			<tree>
+                    				<field name="state" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="lot_id"/>
+                    				<!-- <field name="repaired_by"/> -->
+                					<field name="filename" invisible="1"/>
+                                    <field name="photo" filename="filename"/>
+                					<!-- <field name="repair_value"/> -->
+                    			</tree>
+                                <form>
+                                    <group>
+                                        <field name="product_id"/>
+                                        <field name="lot_id"/>
+                                        <field name="filename" invisible="1"/>
+                                        <field name="photo" filename="filename"/>
+                                    </group>
+                                    <group>
+                                    </group>
+                                </form>
+                    		</field>
+                    	</page>
+                    </notebook>
+                </sheet>
+        	</form>
+        </field>
+    </record>
+</odoo>

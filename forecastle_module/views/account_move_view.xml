@@ -1,0 +1,179 @@
+<odoo>
+	<record id="view_move_form_soa_forecastle" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//group[@id='header_right_group']/field[@name='date']" position="after">
+        		<field name="soa_date" attrs="{'invisible': [('move_type', 'in', ('out_invoice', 'out_refund','out_receipt'))]}"/>
+        	</xpath>
+
+<!--             <xpath expr="//group[@id='header_left_group']/div/label[1]" position="attributes">
+                <attribute name="string">Booking Party</attribute>
+            </xpath> -->
+
+            <xpath expr="//field[@name='payment_reference']" position="after">
+                <field name='fal_invoice_type'/>
+                <field name='fal_invoice_mode' string="Invoice Type" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt'))]}" statusbar_visible="invoice,expense,commission,invoice_repair"/>
+                <field name='fal_invoice_mode' string="Vendor Type" attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}" statusbar_visible="vendor_bill_c2c,vendor_bill_feeder,vb_repair"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[2]/field[@name='line_ids']/tree/field[@name='quantity']" position="after">
+                <field name="fal_sale_price"/>
+                <field name='fal_no_container'/>
+                <field name="fal_principal_currency_id" />
+                <field name="fal_currency_medium" invisible="1"/>
+                <field name="fal_unit_price_usd" attrs='{"column_invisible": [("parent.fal_usd_manual", "=", False)], "readonly": [("fal_currency_medium", "=", "IDR")]}' force_save="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="fal_cur_rate_warning" invisible="1"/>
+                <field name="fal_payment_date" invisible="1"/>
+                <field name="fal_sale_source_id" attrs="{'invisible': [('is_import', '=', True)]}"/>
+                <field name='fal_usd_manual'/>
+                <field name="fal_sale_source_id_import" attrs="{'invisible': [('is_import', '!=', True)]}" context="{'form_view_ref':'forecastle_module.view_sale_order_import_form'}"/>
+                <field name="is_import" attrs="{'invisible': [('is_import', '!=', True)]}"/>
+                <label for="fal_rate_currency"/>
+                <div>
+                    <field name="fal_rate_currency" class="oe_inline" attrs="{'readonly': [('fal_forex', '=', True)]}"/>
+                    <button string='Generate Gain/Loss' name="generate_forex" type="object" icon="fa-plus" class="oe_stat_button oe_inline" attrs="{'invisible': [('fal_forex', '=', True)]}"/>
+                    <field name="fal_forex" invisible='1'/>
+                </div>
+                <field name="source_principal_id" invisible="0"/>
+                <field name="source_job" invisible="0"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="replace">
+                <div name="invoice_date_div">
+                    <field name="invoice_date" nolabel="1" options="{'datepicker': {'warn_future': true}}" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                    <button string='Update Currency' name="update_cur_rate_price" type="object" icon="fa-usd" class="oe_stat_button oe_inline" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('fal_cur_rate_warning', '=', False)]}" style="color:#dc3545;border:none"/>
+                    <button string='Update Currency' name="update_cur_rate_price" type="object" icon="fa-usd" class="oe_stat_button oe_inline" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('fal_cur_rate_warning', '=', True)]}"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='fal_payment_date']" position="after">
+                <field name="fal_received_in" invisible="1"/>
+                <field name="fal_or_name" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='fal_received_in']" position="after">
+                <field name="fal_amount" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='quantity']" position="after">
+                <!-- Letaknya deket Unit Price USD -->
+                <field name="fal_sale_price" attrs='{"column_invisible": [("parent.fal_usd_manual", "=", True)]}'/>
+                <field name="fal_sale_price_quantity" readonly='1' invisible="1"/>
+            </xpath>
+
+            <xpath expr="//tree//field[@name='price_unit']" position="attributes">
+                <attribute name='string'>Price</attribute>
+            </xpath>
+            <xpath expr="//tree//field[@name='price_unit']" position="after">
+                <field name="fal_system_rate" invisible='1'/>
+                <field name='fal_transaction_rate' invisible='1'/>
+            </xpath>
+
+            <xpath expr="//tree//field[@name='price_unit']" position="attributes">
+                <attribute name='invisible'>0</attribute>
+            </xpath>
+            <xpath expr="//tree//field[@name='price_unit']" position="attributes">
+                <attribute name='attrs'>{"readonly": [("fal_currency_medium", "=", "USD")]}</attribute>
+            </xpath>
+            <xpath expr="//tree//field[@name='tax_ids']" position="after">
+                <field name='fal_transaction_total'/>
+            </xpath>
+            <xpath expr="//tree//field[@name='price_subtotal']" position="after">
+                <field name="fal_transaction_total_tax" invisible='1'/>
+            </xpath>
+            <xpath expr="//tree//field[@name='price_subtotal']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- <xpath expr="//tree//field[@name='price_total']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//group/field[@name='invoice_payments_widget']" position="after">
+                <field name="fal_untaxed_amount" invisible='1'/>
+            </xpath>
+            <xpath expr="//group[@class='oe_subtotal_footer oe_right']/field[@name='amount_residual']" position="before">
+                <field class='oe_subtotal_footer_separator' name="fal_invoice_amount" invisible='1'/>
+            </xpath>
+
+            <!-- <xpath expr="//group[@class='oe_subtotal_footer oe_right']/field[5]" position="attributes">
+                <attribute name='invisible'>1</attribute>
+            </xpath> -->
+
+            <xpath expr="//group[@class='oe_subtotal_footer oe_right']/field[4]" position="after">
+                <field name='fal_invoice_total_taxes' invisible='1'/>
+            </xpath>
+
+            <xpath expr="//group[@class='oe_subtotal_footer oe_left']" position="attributes">
+                <attribute name='invisible'>1</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//group[@class='oe_subtotal_footer oe_right']/field[3]" position="attributes">
+                <attribute name='invisible'>1</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="after">
+                <field name="upsale_merge"/>
+            </xpath> -->
+
+             <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='quantity']" position="after">
+                    <!-- <field name="fal_sale_price"/> -->
+                    <field name="fal_principal_currency_id" force_save="1"/>
+                    <field name="fal_currency_medium" invisible='1'/>
+                    <field name="fal_unit_price_usd" attrs='{"column_invisible": [("parent.fal_usd_manual", "=", False)], "readonly": [("fal_currency_medium", "=", "IDR")]}' force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_account_list_forecastle" model="ir.ui.view">
+        <field name="name">account.account.tree</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+        	<field name="user_type_id" position="after">
+        		<field name="is_contra_account" attrs="{'readonly': [('internal_type', 'not in', ('payable', 'receivable'))]}"/>
+        	</field>
+        </field>
+    </record>
+
+    <record id="view_account_form_forecastle" model="ir.ui.view">
+        <field name="name">account.account.form</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+        	<field name="deprecated" position="after">
+        		<field name="is_contra_account" attrs="{'readonly': [('internal_type', 'not in', ('payable', 'receivable'))]}"/>
+        	</field>
+        </field>
+    </record>
+
+    <record id="view_account_move_line_form_forecastle" model="ir.ui.view">
+        <field name="name">account.move.line.form</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <field name="move_id" position="after">
+                <field name="sales_source"/>
+                <field name="principal_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_move_line_tree_forecastle" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="mode">extension</field>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//tree" position="inside">
+                <field name="fal_sale_price"/>
+            </xpath> -->
+            <xpath expr="//tree/field[@name='move_id']" position="after">
+                <field name="principal_id"/>
+                <field name="sales_source"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

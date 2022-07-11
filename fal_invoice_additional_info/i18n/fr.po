@@ -1,0 +1,146 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* fal_invoice_additional_info_staging_2
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-26 02:10+0000\n"
+"PO-Revision-Date: 2020-03-26 02:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_percentage_invoiced_ordered
+msgid "% Invoiced / ordered"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_attachment_name
+msgid "Attachment name"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__commercial_partner_id
+msgid "Commercial Entity"
+msgstr "Entité commerciale"
+
+#. module: fal_invoice_additional_info_staging_2
+#: model_terms:ir.ui.view,arch_db:fal_invoice_additional_info_staging_2.view_account_inherit_search
+msgid "Commercial Partner"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model,name:fal_invoice_additional_info_staging_2.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_company_code
+msgid "Company Code"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_partner_contact_person_id
+msgid "Contact Person"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_client_order_ref
+msgid "Customer PO Number"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_effective_payment_dates
+msgid "Effective Payment Dates"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__final_quotation_number
+msgid "Final Quotation"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model,name:fal_invoice_additional_info_staging_2.model_account_move
+msgid "Journal Entries"
+msgstr "Pièces comptables"
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_res_company__fal_use_late_payment_statement
+msgid "Late payment statement"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_parent_company
+#: model_terms:ir.ui.view,arch_db:fal_invoice_additional_info_staging_2.view_account_inherit_search
+msgid "Parent Company"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_quotation_number
+msgid "Quotation Number"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_risk_level
+msgid "Risk Level"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_risk_level_name
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__fal_risk_level_name
+msgid "Risk Level Name"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__fal_risk_level
+msgid "Risk Level define in number 1 - 9"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model,name:fal_invoice_additional_info_staging_2.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_sale_id
+msgid "Sales Source"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__fal_parent_company
+msgid "The Parent Company for group"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__commercial_partner_id
+msgid ""
+"The commercial entity that will be used on Journal Entries for this invoice"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__fal_effective_payment_dates
+msgid "The efective payment dates."
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_total_amount_already_invoced
+msgid "Total invoiced amount"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_total_ordered_amount
+msgid "Total ordered amount"
+msgstr ""
+
+#. module: fal_invoice_additional_info_staging_2
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_account_move__fal_use_late_payment_statement
+#: model:ir.model.fields,field_description:fal_invoice_additional_info_staging_2.field_res_company__fal_company_late_payment_statement
+#: model:ir.model.fields,help:fal_invoice_additional_info_staging_2.field_account_move__fal_use_late_payment_statement
+msgid "Use Late Payment Statement"
+msgstr "Utiliser la déclaration de retard de paiement"

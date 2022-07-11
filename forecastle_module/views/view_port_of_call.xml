@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_port_of_call" model="ir.ui.view">
+        <field name="name">view_fce_port_of_call_form</field>
+        <field name="model">fce.port.of.call</field>
+        <field name="arch" type="xml">
+            <form string="Port Of Call" create="false" edit="false">
+                <sheet string="Port Of Call">
+                    <group>
+                        <group>
+                            <field name="name" invisible ='1'/>
+                            <field name="port_code_id"/>
+                            <field name="port_type"/>
+                        </group>
+                        <group>
+                            <field name="opening_date"/>
+                            <field name="closing_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="date_etd" attrs="{'invisible': [('port_type', '!=', 'pol'), ('port_type', '!=', 'pot'),]}"/>
+                            <field name="date_eta" attrs="{'invisible': [('port_type', '!=', 'pod'), ('port_type', '!=', 'pot')]}"/>
+                        </group>
+                        <group>
+                            <label for="date_td" string="ATD - ATA"/>
+                            <div>
+                                <field name="date_td"/>
+                                <span> - </span>
+                                <field name="date_ta"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="fce_port_of_call_tree_view">
+        <field name="name">fce.port.of.call.tree</field>
+        <field name="model">fce.port.of.call</field>
+        <field name="arch" type="xml">
+            <tree string="Port Of Call" create="false" edit="false">
+                <field name="port_type"/>
+                <field name="port_code_id"/>
+                <field name="opening_date"/>
+                <field name="closing_date"/>
+                <field name="date_etd"/>
+                <field name="date_eta"/>
+                <field name="date_td"/>
+                <field name="date_ta"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_port_of_call_search_view">
+        <field name="name">fce.port.of.call.search</field>
+        <field name="model">fce.port.of.call</field>
+        <field name="arch" type="xml">
+            <search string="Port Of Call">
+                <field name="port_type"/>
+                <field name="port_code_id"/>
+                <separator/>
+                <filter name="filter_opening_date" date="opening_date"/>
+                <filter name="filter_closing_date" date="closing_date"/>
+                <separator/>
+                <filter name="filter_date_etd" date="date_etd"/>
+                <filter name="filter_date_eta" date="date_eta"/>
+                <separator/>
+                <filter name="filter_date_td" date="date_td"/>
+                <filter name="filter_date_ta" date="date_ta"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Port Type" name='port_type' context="{'group_by':'port_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_port_of_call_action" model="ir.actions.act_window">
+        <field name="name">Port Of Call</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.port.of.call</field>
+        <field name="search_view_id" ref="fce_port_of_call_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new Port of Call
+            </p>
+        </field>
+    </record>
+</odoo>

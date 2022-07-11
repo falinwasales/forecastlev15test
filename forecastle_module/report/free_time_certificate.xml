@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_free_time_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                    <div class="page">
+                        <style>
+                            html *{
+                                word-wrap: break-word;
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.38cm;
+                            }
+
+                            table{
+                                margin-left: 1.6cm;
+                            }
+
+                            .table_report_header_string{
+                                text-transform: uppercase;
+                                font-size: 0.6cm;
+                                font-weight: bold;
+                            }
+                        </style>
+
+                        <table style="margin-top: 2.4cm; width: 21cm;">
+                            <tr>
+                                <td class="table_report_header_string">free time certificate</td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top:1cm; width: 21cm;">
+                            <tr>
+                                <td>To : Whom it may concern</td>
+                            </tr>
+                        </table>
+
+                        <table style="margin-top:1cm; width: 19cm;">
+                            <tr>
+                                <td>We hereby confirmed the container(s) have combined free time of 
+                                    <t t-set='detention' t-value="o.env['detention.formula'].search([('principal_id', '=', o.principal_id.id)])"/>
+                                    <span t-if="detention.free_time == 'day7'">7 (seven)</span>
+                                    <span t-if="detention.free_time == 'day14'">14 (fourteen)</span>
+                                    <span t-if="detention.free_time == 'day21'">21 (twenty one)</span>    
+                                days (demurage + detention) at port destination</td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:1.5cm;">
+                            <tr>
+                                <td style="width: 3.7cm;">SHIPPER</td>
+                                <td>: <span t-field="o.shipper_id"/></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 3.7cm;"><span style="visibility: hidden;">thq</span></td>
+                                <td><span t-field="o.shipper_address"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:1.1cm;">
+                            <tr>
+                                <td style="text-transform: uppercase; width: 3.7cm;">consignee</td>
+                                <td>: <span t-field="o.consignee_id"/></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <td><span t-field="o.consignee_address"/></td>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:0.7cm;">
+                            <tr>
+                                <td style="text-transform: uppercase; width: 3.7cm;">notify party</td>
+                                <td>
+                                    <span t-if="o.notify_id.name == o.consignee_id.name">: Same as consignee</span>
+                                    <span t-else="">
+                                        : <span t-field="o.notify_id"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:0.7cm;">
+                            <tr>
+                                <td style="text-transform: uppercase; width: 3.7cm;">vessel/voyage</td>
+                                <td>: <span t-field="o.re_vessel_id.vessel_full_name"/> <span t-field="o.voyage_id"/></td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-transform: uppercase; width: 3.7cm;">destination</td>
+                                <td>: <span t-field="o.pod_id.port_full_name"/></td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-transform: uppercase; width: 3.7cm;">bl number</td>
+                                <td>: <span t-field="o.bl_number"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:1.1cm;">
+                            <tr>
+                                <td>This certificate is issued without prejudice on the part of the master, owner and agent subject vessel.</td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:1.4cm;">
+                            <tr>
+                                <td><span t-field="o.company_id.city"/>, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 21cm; margin-top:2.8cm;">
+                            <tr>
+                                <td style="text-decoration: overline;">As agent PT Forecastle Indonesia</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                            <tr>
+                                <td>
+                                    <img t-if="o.principal_id.image_1920" t-att-src="image_data_uri(o.principal_id.image_1920)" 
+                                    style="width:6.2cm; height:1.6cm; margin-right: 3.15cm; margin-top: 0.25cm;" alt="Logo" align="right"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-left: 1.6cm; margin-top:1.2cm;">
+                            <tr>
+                                <td style='line-height: 1;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                    <br/>
+                                    <span style="font-size:0.34cm;">as agent</span>
+                                    <br/>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                    <br/>
+                                    <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_telex_report" model="ir.actions.report">
+            <field name="name">Free Time Certificate</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_free_time_certificate</field>
+            <field name="report_file">forecastle_module.forecastle_free_time_certificate</field>
+            <field name="print_report_name">'Free Time Certicate - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_free" model="report.paperformat">
+        <field name="name">Free Time Certificate</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_telex_report'))]"/>
+    </record>
+</odoo>

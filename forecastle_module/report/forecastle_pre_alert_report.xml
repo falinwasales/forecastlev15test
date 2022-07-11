@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_pre_alert_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        html *{
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                            }
+                    </style>
+
+                    <div class="article">
+                        <div class="row" style="padding-left: 10pt;">
+                            <div style="width:100%; text-align: left;">
+                                <h4 class="do_title">PRE ALERT REPORT</h4>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10pt; font-size: 10pt;">
+                            <div class="col-6">
+                                <table style="width:100%;">  
+                                    <!--  -->
+                                    <t t-if='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")'>
+                                        <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")' t-as='connect'>
+                                            <tr>
+                                                <td width="20%"><b>To</b></td>
+                                                <td>: <b><span t-field="connect[0].agent_id.name"/></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Address</b></td>
+                                                <td>: 
+                                                    <t t-if='connect[0].agent_id.street'>
+                                                        <span t-field="connect[0].agent_id.street"/>
+                                                    </t>
+                                                    <t t-if='connect[0].agent_id.street2'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="connect[0].agent_id.street2"/>
+                                                    </t>
+                                                    <t t-if='connect[0].agent_id.city'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="connect[0].agent_id.city"/>
+                                                    </t>
+                                                    <t t-if='connect[0].agent_id.state_id'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="connect[0].agent_id.state_id"/>
+                                                    </t>
+                                                    <t t-if='connect[0].agent_id.zip'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="connect[0].agent_id.zip"/>
+                                                    </t>
+                                                    <t t-if='connect[0].agent_id.country_id'>
+                                                        <br></br>
+                                                        <span style='visibility: hidden;'>a</span><span t-field="connect[0].agent_id.country_id"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Email</b></td>
+                                                <td>: <span t-field="connect[0].agent_id.email"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Vessel</b></td>
+                                                <td>: <span t-field="o.re_vessel_id.vessel_full_name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Voyage</b></td>
+                                                <td>: <span t-field="o.voyage_id"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ATD POL</b></td>
+                                                <td>: <span t-field="o.date_td"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ETA THLCH</b></td>
+                                                <td>: 
+                                                    <t t-if='o.connecting_vessel_id'>
+                                                        <t t-foreach='o.connecting_vessel_id' t-as='record'>
+                                                            <t t-if='record.filtered(lambda x: x.port_type == "pot")'>
+                                                                <t t-foreach='record.filtered(lambda x: x.port_type == "pot")' t-as='pot'>
+                                                                    <span t-field='pot[0].date_eta'/>
+                                                                </t>
+                                                            </t>
+                                                            <!-- <t t-else='record.filtered(lambda x: x.port_type == "pod")'>
+                                                                <t t-foreach='record.filtered(lambda x: x.port_type == "pod")' t-as='pod'>
+                                                                    <span t-field='pod[0].date_eta'/>
+                                                                </t>
+                                                            </t> -->
+                                                        </t>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <!--  -->
+                                    <t t-else=''>
+                                        <tr>
+                                            <td width="20%"><b>To</b></td>
+                                            <td>: <b><span t-field="o.agent_id.name"/></b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Address</b></td>
+                                            <td>: 
+                                                <t t-if='o.agent_id.street'>
+                                                    <span t-field="o.agent_id.street"/>
+                                                </t>
+                                                <t t-if='o.agent_id.street2'>
+                                                    <br></br>
+                                                    <span style='visibility: hidden;'>a</span><span t-field="o.agent_id.street2"/>
+                                                </t>
+                                                <t t-if='o.agent_id.city'>
+                                                    <br></br>
+                                                    <span style='visibility: hidden;'>a</span><span t-field="o.agent_id.city"/>
+                                                </t>
+                                                <t t-if='o.agent_id.state_id'>
+                                                    <br></br>
+                                                    <span style='visibility: hidden;'>a</span><span t-field="o.agent_id.state_id"/>
+                                                </t>
+                                                <t t-if='o.agent_id.zip'>
+                                                    <br></br>
+                                                    <span style='visibility: hidden;'>a</span><span t-field="o.agent_id.zip"/>
+                                                </t>
+                                                <t t-if='o.agent_id.country_id'>
+                                                    <br></br>
+                                                    <span style='visibility: hidden;'>a</span><span t-field="o.agent_id.country_id"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Email</b></td>
+                                            <td>: <span t-field="o.agent_id.email"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Vessel</b></td>
+                                            <td>: <span t-field="o.re_vessel_id.vessel_full_name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Voyage</b></td>
+                                            <td>: <span t-field="o.voyage_id"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>ATD POL</b></td>
+                                            <td>: <span t-field="o.date_td"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>ETA THLCH</b></td>
+                                            <td>: 
+                                                <span t-field='o.eta'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!--  -->
+                                </table>
+                            </div>
+                            <div class="col-6" style="text-align: right;"> 
+                               <img t-if="o.principal_id.image_1920" t-att-src="image_data_uri(o.principal_id.image_1920)" style="width:85mm; height:25mm;" alt="Logo"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped" style="width:100%; border-collapse: collapse; text-align: center; font-size: 15px; margin-top: 2%; font-size: 10pt; ">
+                            <tr>
+                                <th width="5%" style="text-align: center;"><br/>Container<br/>Number</th>
+                                <th width="5%" style="text-align: center;"><br/>Seal<br/>Number</th>
+                                <th width="3%" style="text-align: center;"><br><br/></br>Size</th>
+                                <th width="3%" style="text-align: center;"><br><br/></br>Type</th>
+                                <th width="5%" style="text-align: center;">Tare<br/>Weight<br/>KGS</th>
+                                <th width="5%" style="text-align: center;">Gross<br/>Weight<br/>KGS</th>
+                                <th width="5%" style="text-align: center;"><br/>VGM<br/>KGS</th>
+                                <th width="5%" style="text-align: center;"><br/>Port of<br/>Discharge</th>
+                                <th width="7%" style="text-align: center;"><br/>Final<br/>Destination</th>
+                                <th width="12%" style="text-align: center;"><br/>Bill Of Lading<br/>Number</th>
+                                <th width="8%" style="text-align: center;"><br/>HS Code</th>
+                                <th width="7%" style="text-align: center; "><br><br/></br>Vessel</th>
+                                <th width="19%" style="text-align: center;"><br/>MV Connecting Details<br/>Voyage</th>
+                                <th width="10%" style="text-align: center; "><br><br/></br>ETA POT</th>
+                                <th width="3%" style="text-align: center;"><br/>Slot<br/>Owner</th>
+                            </tr>
+
+                            <t t-set="total_gross" t-value="0"/>
+                            <t t-set="total_volume" t-value="0"/>
+                            <tr t-foreach="o.cro_ids" t-as="loop">
+                                <t t-set="last_line" t-value="o.connecting_vessel_id and o.connecting_vessel_id[(len(o.connecting_vessel_id))-1]"/>
+                                <t t-set="last_line_cro" t-value="o.cro_ids and o.cro_ids[(len(o.cro_ids))-1]"/>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                    <t t-if="loop.container_number_id"><span t-field="loop.container_number_id"/></t>
+                                    <t t-else=" ">TBA</t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                    <t t-if="loop.seal_number"><span t-field="loop.seal_number"/></t>
+                                    <t t-else=" ">TBA</t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="loop.container_type_id.container_size"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="loop.container_type_id.container_type"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="loop.container_number_id.tare"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="loop.gross"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="loop.measure"/></td>
+                                
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                    <t>
+                                        <t t-if='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")'>
+                                            <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")' t-as='connect'>
+                                                <span t-field="connect[0].port_code_id"/>
+                                            </t>
+                                        </t>
+                                        <t t-else=" ">
+                                            <span t-field='o.pod_id'/>
+                                        </t>
+                                    </t>
+                                </td>
+                                
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="o.pod_id"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="o.bl_number"/></td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                    <t t-if="last_line_cro.hs_code.digit_categories"><span t-field="last_line_cro.hs_code.digit_categories"/></t>
+                                    <t t-else=" ">TBA</t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                  <t>
+                                        <t t-if='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pod")' t-as='connect'>
+                                            <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pod")' t-as='connect'>
+                                                <span t-field="connect[0].vessel_id.vessel_full_name"/>
+                                            </t>
+                                        </t>
+                                        <t t-else=" ">-</t>
+                                    </t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                  <t>
+                                    <t t-if='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pod")' t-as='connect'>
+                                        <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pod")' t-as='connect'>
+                                            <span t-field="connect[0].voyage_id"/>
+                                        </t>
+                                    </t>
+                                    <t t-else=" ">-</t>
+                                    </t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;">
+                                    <t>
+                                        <t t-if='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")' t-as='connect'>
+                                            <t t-foreach='o.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")' t-as='connect'>
+                                                <span t-field="connect[0].date_eta"/>
+                                            </t>
+                                        </t>
+                                        <t t-else=" ">-</t>
+                                        </t>
+                                </td>
+                                <td style="border-collapse: separate; font-size:12px; text-align: center;"><span t-field="o.fal_carrier_id.feeder_code"/></td>
+                                <t t-set="total_gross" t-value="total_gross + int(loop.gross)"/>
+                                <t t-set="total_volume" t-value="total_volume + int(loop.measure)"/>
+                            </tr>
+                            <tr>
+                              <td colspan="15" style="padding-top: 30px;"/>
+                            </tr>
+                            <tr style="background-color: #F2F2F2">
+                                <td colspan="2" style="text-align: right;"><b>Total</b></td>
+                                <td colspan="3" style="text-align: right;"/>
+                                <td colspan="1" style="border-collapse: separate; font-size:12px; text-align: center; "><b><span t-esc="'{:,.0f}'.format(total_gross)"/></b></td>
+                                <td colspan="1" style="border-collapse: separate; font-size:12px;   text-align: center; "><b><span t-esc="'{:,.0f}'.format(total_volume)"/></b></td>
+                                <td colspan="8" style="text-align: right;"/>
+                            </tr>
+                        </table>
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <table>
+                            <tr>
+                                <img alt="Logo" t-att-src="'/logo?company=%d' % (o.company_id)" t-att-alt="'%s' % (o.company_id.name)" style="border:0px solid transparent; height: 30; width: 180px;" height="30"/>
+                            </tr>
+                          
+                            <tr>
+                                <td width="3%;" style="font-size: 8pt;">as agent</td>
+                            </tr>
+                            <tr>
+                                <td width="40%;" style="text-transform:uppercase; font-size:10pt;"><b><span t-field="o.company_id.name"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="100%;" style="font-size: 10pt;"><span t-field="o.company_id.street"/>,<span t-field="o.company_id.city"/>,<span t-field="o.company_id.state_id"/>,<span t-field="o.company_id.country_id"/></td>
+                            </tr>
+                        </table>
+
+                        <table width="35%" style="font-size: 10pt;">
+                            <tr>
+                                <td width="10%">Phone</td>
+                                <td> : <span t-field="o.company_id.phone"/></td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td> : <span t-field="o.company_id.email"/></td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td> : <span t-field="o.fal_get_user"/></td>
+                            </tr>
+                            <tr>
+                                <td>Division </td>
+                                <td> : <span t-field="o.fal_get_division"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div> 
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_pre_alert_report" model="ir.actions.report">
+            <field name="name">Forecastle Pre Alert Report</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_pre_alert_report</field>
+            <field name="report_file">forecastle_module.forecastle_pre_alert_report</field>
+            <field name="print_report_name">'Forecastle Pre Alert Report - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_pre_alert_report" model="report.paperformat">
+            <field name="name">Pre Alert Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">12</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+            <field name="report_ids" eval="[(4, ref('action_forecastle_pre_alert_report'))]"/>
+        </record>
+
+</odoo>

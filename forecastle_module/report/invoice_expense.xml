@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="expense_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                    <div class="page">
+                        <style>
+                             html *{
+                                font-family: Arial, Helvetica, sans-serif;
+                            }
+
+                            .do_title{
+                                font-size:17pt;
+                                margin-top:1.3cm;
+                                text-align:right;
+                                padding-right:24.3%;
+                                margin-left:0.5cm;
+                            }
+                            .string_table{
+                                padding-top:4px;
+                                padding-bottom:4px;
+                                text-align:left;
+                                background-color:rgb(229,229,229);
+                                vertical-align:middle;
+                            }
+                            .string_table2{
+                                padding-top:4px;
+                                padding-bottom:4px;
+                                text-align:center;
+                                background-color:rgb(229,229,229);
+                                vertical-align:middle;
+                            }
+                            .string_table3{
+                                padding-top:4px;
+                                padding-bottom:4px;
+                                text-align:right;
+                                background-color:rgb(229,229,229);
+                                vertical-align:middle;
+                            }
+                        </style>
+
+                        <div class="do_title">
+                            <p><b>INVOICE</b></p>
+                        </div>
+
+                        <t>
+                            <div style="width:100%; margin-top;1%; margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:63%; font-size:10pt; margin-top:1%;" align="left">
+                                    <tr>
+                                        <td><b>To : <span t-field="o.partner_id.name"/></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td> 
+                                            <span t-field="o.partner_id.street"/>, <span t-field="o.partner_id.city"/> 
+                                            <span t-field="o.partner_id.state_id"/> <span t-field="o.partner_id.zip"/>  
+                                            <span t-field="o.partner_id.country_id"/>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:37%;font-size:10pt; margin-top:1%;" align="left">
+                                    <tr>
+                                        <td width="25%">Invoice No</td>
+                                        <td>: <span style="color:red;" t-field="o.fal_sale_source_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="25%">Date</td>
+                                        <td>: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="25%">Credit Term</td>
+                                        <td>: <span t-field="o.invoice_payment_term_id"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="25%">Issued By</td>
+                                        <td>: 
+                                            <t t-if='o.fal_sale_source_id_import'>
+                                                <t t-foreach='o.fal_sale_source_id_import' t-as='so'>
+                                                    <span t-esc="so.create_uid.name"/>
+                                                </t>
+                                            </t>
+                                            <t t-else=''>
+                                                <span t-esc="o.create_uid.name"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:50%; border-collapse: collapse; text-align: justify; font-size:10pt; margin-top:4%; " align="left">
+                                    <tr>
+                                        <td width="1%"><b>Vessel/Voyage</b></td>
+                                        <t t-if="o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field=" o.fal_sale_source_id.mother_vessel"/>/<span t-field="o.fal_sale_source_id.no_voyage"/></td>
+                                        </t>
+                                        <t t-if="not o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field=" o.fal_sale_source_id.re_vessel_id.vessel_full_name"/>/<span t-field="o.fal_sale_source_id.voyage_id"/></td>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <td width="1%"><b>BL Number</b></td>
+                                        <t t-if="o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field="o.fal_sale_source_id.name"/></td>
+                                        </t>
+                                        <t t-if="not o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field="o.fal_sale_source_id.bl_number"/></td>
+                                        </t>
+                                    </tr>
+                                </table>
+                                <table width="50%" style="text-align: justify; font-size:10pt; margin-top:4%;" align="left">
+                                    <tr>
+                                        <td width="2%"><b>Loading/Discharge</b></td>
+                                        <t t-if="o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field="o.fal_sale_source_id.pelabuhan_asal"/> TO <span t-field="o.fal_sale_source_id.pelabuhan_akhir"/>  <span>VIA <span t-field="o.fal_sale_source_id.pelabuhan_akhir"/></span>
+                                            </td>
+                                        </t>
+                                        <t t-if="not o.fal_sale_source_id.is_import">
+                                            <td style="width:27%">: <span t-field="o.fal_sale_source_id.pol_id"/> TO <span t-field="o.fal_sale_source_id.pod_id"/>
+                                                <t t-if='o.fal_sale_source_id.connecting_vessel_id'>
+                                                    <t t-foreach='o.fal_sale_source_id.connecting_vessel_id.filtered(lambda x: x.port_type == "pot")' t-as='so'>
+                                                        <t t-if='so'>
+                                                            <span>VIA <span t-field="o.fal_sale_source_id.pelabuhan_akhir"/></span>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <t t-if="o.fal_sale_source_id.is_import">
+                                            <td width="2%"><b>ETA</b></td>
+                                            <td style="width:27%">: <span t-esc="o.fal_sale_source_id.eta and o.fal_sale_source_id.eta.strftime('%d %b %Y')"/></td>
+                                        </t>
+                                        <t t-if="not o.fal_sale_source_id.is_import">
+                                            <td width="2%"><b>ETD</b></td>
+                                            <td style="width:27%">: 
+                                                <t t-if='o.is_import'>
+                                                    <span t-field="o.fal_sale_source_id.tgl_tiba"/>
+                                                </t>
+                                                <t t-if='not o.is_import'>
+                                                    <span t-field="o.fal_sale_source_id.etd"/>
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:100%; font-size:10pt; margin-top:2%;  border-top : 1px solid gray;">
+                                    <tr>
+                                        <th class="string_table" style="padding-left:3px;">Particulars</th>
+                                        <th class="string_table2">Qty</th>
+                                        <th class="string_table2">Cur</th>
+                                        <th class="string_table2" width="15%;">Unit Price</th>
+                                        <th class="string_table3">PPN Amount</th>
+                                        <th class="string_table3">Amount (Inc PPN)</th>
+                                    </tr>
+
+                                    <!-- Total tax and amount of invoice -->
+                                    <t t-set="total_tax" t-value="0.0"/>
+                                    <t t-set="total_amount" t-value="0.0"/>
+                                    
+                                    
+                                    <!-- get forex price -->
+                                    <t t-set="forex_price" t-value="0.0"/>
+                                    <t t-foreach="o.invoice_line_ids.filtered(lambda x: x.product_id.is_gain_forex or x.product_id.is_loss_forex and a.display_type == 'line_section')" t-as='gn'>
+                                        <t t-if='gn'>
+                                            <t t-set="forex_price" t-value="gn.price_unit"/>
+                                        </t>
+                                    </t>
+
+                                    <!-- get upsale -->
+                                    <t t-set="upsale_unit" t-value="0.0"/>
+                                    <t t-foreach="o.invoice_line_ids.filtered(lambda x: x.product_id.is_upsale)" t-as='gn'>
+                                        <t t-if='gn'>
+                                            <t t-set="upsale_unit" t-value="gn.price_unit"/>
+                                        </t>
+                                    </t>
+                                    
+
+                                    <t t-set="total_tax2" t-value="0.0"/>
+                                    <t t-set="total_amount2" t-value="0.0"/>
+
+
+                                    <t t-foreach='o.invoice_line_ids' t-as='line'>
+                                        <t t-if='not line.product_id.is_upsale'>
+                                            <tr>
+                                                <!-- Product Name -->
+                                                <td class="inv_border" style="text-align:left; padding-top:10px; padding-left:3px;">
+                                                    <span t-field="line.product_id.name"/>
+                                                </td>
+                                                <!-- Quantity -->
+                                                <td class="inv_border" style="text-align:right; padding-top:10px;">
+                                                    <span t-field="line.quantity"/>
+                                                </td>
+                                                <!-- Currency -->
+                                                <td class="inv_border" style="text-align:center; padding-top:10px;">
+                                                    <span t-if="line.product_id.is_container or line.product_id.is_dollar">
+                                                        USD
+                                                    </span>
+                                                    <span t-else="">IDR</span>
+                                                </td>
+                                                <!-- Price Unit -->
+                                                <td class="inv_border" style="text-align:center; padding-top:10px;">
+                                                    <t t-if='line[0]'>
+                                                        <span t-esc="line.price_unit + upsale_unit"/>
+                                                    </t>
+                                                    <t t-else=''>
+                                                        <span t-esc="line.price_unit"/>
+                                                    </t>
+                                                </td>
+                                                <!-- Tax -->
+                                                <td class="inv_border" style="text-align:center; padding-top:10px;">
+                                                    <t t-if='not line.product_id.is_dollar'>
+                                                        <span t-esc='line.fal_transaction_total'/>
+                                                    </t>
+                                                </td>
+                                                <!-- price total -->
+                                                <td class="inv_border" style="text-align:right; padding-top:10px;">
+                                                    <t t-if='line[0]'>
+                                                        <span t-esc="line.price_total + upsale_unit"/>
+                                                        <t t-set="container_idr" t-value="line.price_total + upsale_unit"/>
+                                                        <t t-set="total_amount" t-value="total_amount + container_idr"/>
+                                                    </t>
+                                                    <t t-else=''>
+                                                        <span t-esc="line.price_total"/>
+                                                        <t t-set="container_idr" t-value="line.price_total"/>
+                                                        <t t-set="total_amount" t-value="total_amount + container_idr"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+
+
+                                    <tr>
+                                        <!-- <td/> -->
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td style="text-align:left; padding-top:15px; padding-left:10px;"><b>VAT Amount(IDR)</b></td>
+                                        <td style="text-align:right; padding-top:10px; padding-bottom: 15px;">
+                                            <span t-esc="&quot;{:,.2f}&quot;.format(total_tax)"/>
+                                        </td>
+                                        <td/>
+                                    </tr>
+                                    
+                                    <tr>
+
+                                        <!-- <td/> -->
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td style="text-align:left; padding-top:10px; padding-bottom: 10px; padding-left:10px; background-color: rgb(229,229,229);"><b>Total Payable(IDR)</b></td>
+                                        <td style="text-align:right; padding-top:10px; padding-bottom: 10px; background-color: rgb(229,229,229);"/>
+                                        <td style="text-align:right; padding-top:10px; padding-bottom: 10px; background-color: rgb(229,229,229);">
+                                            <b>
+                                                <span t-esc="&quot;{:,.2f}&quot;.format(o.amount_total)"/>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:100%; border-collapse: collapse; text-align: left; font-size:10pt; margin-top:2%; ">
+                                    <tr>
+                                        <td style="text-transform:capitalize;">
+                                            IDR : <span t-esc="env['account.move'].get_amount_to_text(o.amount_total)"/> Only
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Kurs <span t-esc="&quot;{:,.2f}&quot;.format(o.fal_rate_currency)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:70%; border-collapse: collapse; text-align: left; font-size:10pt; margin-top:4%; ">
+                                    <tr>
+                                        <td style="text-transform:uppercase;"><b>important notes:</b></td>
+                                    </tr>
+                                    <tr>
+                                        <ul>
+                                            <td>– Payment by bank transfer please send to</td>
+                                        </ul>
+                                    </tr>
+                                    <tr>
+                                        <td>   Beneficiary Name</td>
+                                        <td>: PT.FORECASTLE INDONESIA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>   Bank</td>
+                                        <td>: Maybank</td>
+                                    </tr>
+                                    <tr>
+                                        <td>   Bank Address</td>
+                                        <td>: Cabang Angkasa, Kemayoran, Jakarta</td>
+                                    </tr>
+                                    <tr>
+                                        <td>   SWIFT CODE</td>
+                                        <td>: IBBKIDJA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>   Account No</td>
+                                        <td>: 2-134-495539(IDR)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>   </td>
+                                        <td>: 2-134-403591(USD)</td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td>   Virtual Account Customer</td>
+                                        <td>: <span t-field='o.fal_sale_source_id.partner_id.virtual_account'/></td>
+                                    </tr> -->
+                                </table>
+
+                            </div>
+                            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+                                <table style="width:100%; border-collapse: collapse; text-align: left; font-size:10pt; margin-top:1%;">
+                                    <tr><td>   A receipt must be obtained when payment is done</td></tr>
+                                    <tr><td>– Invoice is not as proof of payment</td></tr>
+                                    <tr><td>– Please indicate invoice number/BL number in the transfer detail</td></tr>
+                                    <tr><td>– We expect full amount in bank, all bank charges are for payor's account</td></tr>
+                                    <tr><td>– Company do not accept any complain after 3 days payment received</td></tr>
+                                    <tr><td>– Please remit full exact amount stated in this invoice, refund of overpayment(If any) are subject to administration charges (terms and condition         applied)</td></tr>
+                                </table>
+                            </div>
+                        </t>
+                    </div> 
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.2cm; border-bottom: 1px solid rgb(169,169,169);">
+                            <tr>
+                                <td>
+                                     <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="height: 35; width: 220px; margin-right: 3.15cm; margin-top: 0.15cm; margin-left:0.3cm;" alt="Logo" align="left"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-bottom:1cm; margin-left:0.5cm; margin-right:0.5cm;">
+                            <tr>
+                                <td style="line-height: 1;font-size:0.355cm;">
+                                    <p><i>*This invoice is computer generated no signature is required</i></p>
+                                    As agent<br></br>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.355cm;"/></b><br></br>
+                                    <span t-field="o.company_id.street" style="font-size:0.355cm;"/>&#160;<span t-field="o.company_id.city" style="font-size:0.355cm;"/>&#160;<span t-field="o.company_id.country_id" style="font-size:0.355cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:1cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.365cm; padding-top: 0.2cm; padding-bottom: 0.1cm;" align="center">
+                                    <a><i class="fa fa-phone" aria-hidden="true"></i>
+                                    </a><span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <a><i class="fa fa-envelope" aria-hidden="true"></i>
+                                    </a><span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <a style="padding-left : 0.5cm;"><i class="fa fa-globe" aria-hidden="true"></i></a><span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.2cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_expense_invoice" model="ir.actions.report">
+            <field name="name">Expense Invoice</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.expense_invoice</field>
+            <field name="report_file">forecastle_module.expense_invoice</field>
+            <field name="print_report_name">'Expense Invoice - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_expense_invoice" model="report.paperformat">
+        <field name="name">Expense Invoice Report</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_expense_invoice'))]"/>
+    </record>
+</odoo>

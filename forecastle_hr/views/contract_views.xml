@@ -1,0 +1,20 @@
+<odoo>
+    <record id="hr_contract_view_form_forecastle" model="ir.ui.view">
+        <field name="name">hr.contract.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <field name="date_end" position="attributes">
+                <attribute name="attrs">{'invisible': [('employment_status', '=', 'permanent')], 'required': [('employment_status', '!=', 'permanent')]}</attribute>
+                <attribute name="string">End Employment Status Date</attribute>
+            </field>
+            <field name="structure_type_id" position="after">
+                <field name="employment_status"/>
+                <field name="contract_duration" attrs="{'invisible': [('employment_status', '=', 'permanent')], 'required': [('employment_status', '!=', 'permanent')]}"/>
+            </field>
+            <field name="first_contract_date" position="attributes">
+                <attribute name="string">Join Date</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

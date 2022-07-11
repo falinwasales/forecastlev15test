@@ -1,0 +1,107 @@
+<odoo>
+	<template id="template_terminal_departure_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="group_1">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                	<h2><b>LG CONTAINER LINES</b></h2>
+                                    <h2><b><center>FINAL LOADING LIST</center></b></h2>
+                                </div>
+                            </div>
+
+                            <table style="width:100%; margin-top:5%; font-size: 16px;">
+                                <tr>
+                                    <td style="padding-right:80px"><b>Vessel:</b><span>&#160; Racha BHUM</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:80px"><b>Voyages:</b><span>&#160; 156N</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:80px"><b>ATD POL:&#160;</b><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right:80px"><b>ETA LCH:&#160;</b><span t-field="o.name"/></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="width:100%; border: 1px solid black; border-collapse: collapse; font-size: 13px; margin-top:5%;" cellpadding="1" cellspacing="1" border="1">
+                            	<tr>
+                            		<th rowspan="2">POD</th>
+                            		<th rowspan="2">F/destn</th>
+                            		<th colspan="2">GP</th>
+                            		<th colspan="2">Open Top</th>
+                            		<th colspan="1">Tank</th>
+                            		<th colspan="2">DG(Y/N)</th>
+                            		<th rowspan="2">TOTAL WT</th>
+                            		<th rowspan="2">CNTR No</th>
+                            		<th rowspan="2">B/L No.</th>
+                            		<th colspan="3"> MV Connecting Details</th>
+                            		<th rowspan="2">Remarks</th>
+								</tr>
+								<tr>
+									<th>20'</th>
+									<th>40'HC</th>
+									<!--  -->
+									<th>A1</th>
+									<th>B1</th>
+									<!--  -->
+									<th>20'</th>
+									<!--  -->
+									<th>20'</th>
+									<th>40'OT</th>
+									<!--  -->
+									<th>Vessel</th>
+									<th>Voyage</th>
+									<th>ETA Pkg</th>
+								</tr>
+								<tr>
+									<td><span t-field="o.name"/></td>
+									<td><span t-field="o.name"/></td>
+									<td><span t-field="o.name"/></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td colspan="2">TOTAL:</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>0000</td>
+								</tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+	<record id="action_forecastle_invoice_report" model="ir.actions.report">
+            <field name="name">Terminal Departure Report</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.template_terminal_departure_report</field>
+            <field name="report_file">forecastle_module.template_terminal_departure_report</field>
+            <field name="print_report_name">'Departure Report - %s' % (object.name)</field>
+            <!-- <field name="binding_model_id" ref="model_account_move"/> -->
+            <field name="binding_type">report</field>
+    </record>
+</odoo>

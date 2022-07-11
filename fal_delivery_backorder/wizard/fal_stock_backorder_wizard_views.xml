@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="fal_view_backorder_wizard" model="ir.ui.view">
+        <field name="name">fal.stock.backorder.wizard.form</field>
+        <field name="model">fal.stock.backorder.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Backorder creation">
+                <p>
+                    Please fill in products quantity for backorder.
+                </p>
+                <group>
+                    <group>
+                        <field name="fal_picking_type_id"/>
+                        <field name="fal_location_id" invisible='1'/>
+                        <field name="fal_location_dest_id" invisible='1'/>
+                        <field name="scheduled_date" widget="datetime"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <field name="fal_stock_backorder_line_wizard_ids"/>
+                <field name="is_over_qty" invisible="1"/>
+                <p style="color: #ff0000;" attrs="{'invisible': [('is_over_qty', '=', False)]}">
+                    <p>
+                        You insert more than what was initially
+                        planned for the product.
+                    </p>
+                    <p>
+                    <field name="overprocessed_product_name" class="oe_inline"/>.
+                    </p>
+                    <p>
+                        Please check before confirm.
+                    </p>
+                </p>
+                <footer>
+                    <button name="process" string="Create Backorder" type="object" class="oe_highlight"/>
+                    <button string="_Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="fal_view_backorder_line_wizard_tree" model="ir.ui.view">
+        <field name="name">fal_view_backorder_line_wizard_tree</field>
+        <field name="model">fal.stock.backorder.line.wizard</field>
+        <field name="arch" type="xml">
+            <tree string="Backorder Line" create="0" editable="bottom">
+                <field name="move_line_id" invisible="1"/>
+                <field name="product_id" options="{'no_open': True, 'no_create': True, 'readonly': True}"/>
+                <field name="product_uom_qty" options="{'no_create': True, 'readonly': True}"/>
+                <field name="fal_backorder_qty"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

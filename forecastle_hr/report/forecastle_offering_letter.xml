@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_offering_letter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class='page'>
+                        <style>
+                            @font-face {
+                                font-family: swiss;
+                                font-style: normal;
+                                font-weight: 700;
+                                src: local('Swiss 721'), url('https://fonts.cdnfonts.com/s/14236/Swiss721Bold.woff') format('woff');
+                            }
+
+                            .table_report_header_string{
+                                text-transform: uppercase;
+                                font-size: 9pt;
+                            }
+
+                            .table_report_string{
+                                font-family: swiss;
+                                font-size: 9pt;
+                            }
+
+                            .table_report_field{
+                                font-family: swiss;
+                                font-size: 9pt;
+                            }
+
+                            .table_report_string_re{
+                                font-family: swiss;
+                                font-size: 9pt;
+                                font-weight: bold;
+                                text-transformation: uppercase;
+                            }
+
+                            .table_report_string{
+                                font-family: swiss;
+                                font-size: 9pt;
+                                word-wrap: break-word;
+                            }
+
+                            .table_report_main_offer{
+                                font-family: swiss;
+                                font-size: 9pt;
+                                width: 15%;
+                            }
+
+                            .table_report_orient_main{
+                                font-family: swiss;
+                                font-size: 9pt;
+                                word-wrap: break-word;
+                            }
+                        </style>
+
+                        <div>
+                            <table style='margin-top:3%; width: 100%;'>
+                                <th class='table_report_header_string'>private &#38; confidential</th>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:3%; width: 60%;'>
+                                <tr>
+                                    <td class='table_report_string' width='20%;'>TO</td>
+                                    <td class='table_report_string'>: Falinwa</td>
+                                </tr>
+                                <tr>
+                                    <td class='table_report_string' width='20%;'>DATE</td>
+                                    <td class='table_report_string'>: 2021</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:2%; width: 60%;'>
+                                <tr>
+                                    <td class='table_report_string_re' width='20%;'>RE</td>
+                                    <td class='table_report_string_re'>: OFFERING LETTER</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:2%; width: 60%;'>
+                                <tr>
+                                    <td class='table_report_string_re'>DEAR FALINWA</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:2%; width: 80%;'>
+                                <tr>
+                                    <td class='table_report_main_offer'>
+                                        We are pleased to offer you an employment in PT.Orientjasa Maritim Indonesia, under the following
+                                        terms &#38; conditions:
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:3%; width: 80%;'>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Position</td>
+                                    <td class='table_report_orient_main'>: HR Administration</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Level</td>
+                                    <td class='table_report_orient_main'>: Officer</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Division</td>
+                                    <td class='table_report_orient_main'>: HRGA Dept</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Organization Name</td>
+                                    <td class='table_report_orient_main'>: Shared Service</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Strating Date</td>
+                                    <td class='table_report_orient_main'>: 29 March 2021</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Contract Period</td>
+                                    <td class='table_report_orient_main'>: 6 months from join date</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Probation Period</td>
+                                    <td class='table_report_orient_main'>: 3 months from contract period</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Basic Salary</td>
+                                    <td class='table_report_orient_main'>: RP 4.450.000</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Position Allowance</td>
+                                    <td class='table_report_orient_main'>: [if any changing salaary after contract/probation period]</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Meal Allowance</td>
+                                    <td class='table_report_orient_main'>: Rp. 30.000,-gross per working day [attendance policy]</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Transport Allowance</td>
+                                    <td class='table_report_orient_main'>: Rp. 28.000,-gross per working day [attendance policy]</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Mobile Phone Allowance</td>
+                                    <td class='table_report_orient_main'>: Rp. </td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Annual Leave</td>
+                                    <td class='table_report_orient_main'>: 12(twelve_ dayas after 12 months of service</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Hospitalization</td>
+                                    <td class='table_report_orient_main'>: Covered by Company Insurance Policy after permanent staff.</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Outpatient</td>
+                                    <td class='table_report_orient_main'>: 75% reimbursment as per level based on company regulation.</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>BPJS Kesehatan</td>
+                                    <td class='table_report_orient_main'>: As per-government regulation</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>BPJS Ketenagakerjaan</td>
+                                    <td class='table_report_orient_main'>: As per-government regulation</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>THR</td>
+                                    <td class='table_report_orient_main'>: As per-government regulation</td>
+                                </tr>
+                                <tr>
+                                    <td width='30%' class='table_report_orient_main'>Working Hours</td>
+                                    <td class='table_report_orient_main'>: Monday-Friday: 08:00 - 17:00</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:3%; width: 80%;'>
+                                <tr>
+                                    <td class='table_report_string'><u>NOTED</u></td>
+                                </tr>
+                                <tr>
+                                    <td class='table_report_string' width='80%;' style=' word-wrap: break-word;'>
+                                        <i>
+                                            During the trial period, each party in its sole discretion may terminate the employment relationship in 
+                                            question without any prior notice and without any compensation.
+                                        </i>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:4%; width: 90%;'>
+                                <tr>
+                                    <td class='table_report_string' width='50%;'>
+                                        PT. Orientjasa Maritim Indonesia,
+                                    </td>
+                                    <td class='table_report_string' width='40%;'>
+                                        Accepted &#38; Agreed by,,
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:10%; width: 90%;'>
+                                <tr>
+                                    <td class='table_report_string' width='50%;'>
+                                        <u>Dhiny Afriyanti</u>
+                                    </td>
+                                    <td class='table_report_string' width='40%;'>
+                                        <hr style="width:50%;text-align:left;margin-left:0"></hr>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            <table style='margin-top:1%; width: 90%;'>
+                                <tr>
+                                    <td class='table_report_string' width='50%;'>
+                                        <u>Director</u>
+                                    </td>
+                                    <td class='table_report_string' width='40%;'>
+                                        Employee                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_offering_report" model="ir.actions.report">
+            <field name="name">Forecastle Offering Letter</field>
+            <field name="model">hr.applicant</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_hr.forecastle_offering_letter</field>
+            <field name="report_file">forecastle_hr.forecastle_offering_letter</field>
+            <field name="print_report_name">'Forecastle Offering Letter - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="binding_type">report</field>
+    </record>
+</odoo>

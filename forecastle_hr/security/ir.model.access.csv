@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fce_hr_ethnicity,fce.hr.ethnicity,model_fce_hr_ethnicity,base.group_user,1,1,1,1
+access_fce_hr_buku_dosa,fce.hr.buku.dosa,model_fce_hr_buku_dosa,hr.group_hr_user,1,0,0,0
+access_fce_hr_buku_dosa_officer,fce.hr.buku.dosa.officer,model_fce_hr_buku_dosa,group_hr_officer,1,0,1,0
+access_fce_hr_buku_dosa_supervisor,fce.hr.buku.dosa.supervisor,model_fce_hr_buku_dosa,group_hr_supervisor,1,1,1,1
+access_fce_hr_buku_dosa_supervisor_other,fce.hr.buku.dosa.supervisor.other,model_fce_hr_buku_dosa,group_hr_supervisor_other,1,1,1,1
+access_fce_hr_buku_dosa_manager,fce.hr.buku.dosa.manager,model_fce_hr_buku_dosa,hr.group_hr_manager,1,1,1,1
+access_fce_hr_education,fce.hr.education,model_fce_hr_education,base.group_user,1,1,1,1
+access_fce_hr_work_exp,fce.hr.work.exp,model_fce_hr_work_exp,base.group_user,1,1,1,1
+access_fce_hr_work_address,fce.hr.work.address,model_fce_hr_work_address,base.group_user,1,1,1,1
+access_fce_hr_priv_info,fce.hr.priv.info,model_fce_hr_priv_info,base.group_user,1,1,1,1
+access_fce_hr_emergency_contact,fce.hr.emergency.contact,model_fce_hr_emergency_contact,base.group_user,1,1,1,1
+hr.access_hr_employee_category_user,hr.employee.category.user,hr.model_hr_employee_category,hr.group_hr_user,1,0,0,0
+access_hr_employee_category_manager,hr.employee.category.manager,hr.model_hr_employee_category,hr.group_hr_manager,1,1,1,1
+hr.access_hr_employee_user,hr.employee user,hr.model_hr_employee,hr.group_hr_user,1,0,0,0
+access_hr_employee_officer,hr.employee officer,hr.model_hr_employee,group_hr_officer,1,1,1,0
+access_hr_employee_supervisor,hr.employee supervisor,hr.model_hr_employee,group_hr_supervisor,1,1,1,1
+access_hr_employee_supervisor_other,hr.employee supervisor other,hr.model_hr_employee,group_hr_supervisor_other,1,0,0,0
+access_hr_employee_manager,hr.employee manager,hr.model_hr_employee,hr.group_hr_manager,1,1,1,1
+access_informal_certificate,informal_certificate,model_fce_informal_certificate,base.group_user,1,1,1,1
+access_formal_certificate,formal_certificate,model_fce_formal_certificate,base.group_user,1,1,1,1
+access_academic_transcript,academic_transcript,model_fce_academic_transcript,base.group_user,1,1,1,1
+access_hr_employee_public_user,hr.employee.public user,hr.model_hr_employee_public,group_hr_user_public,1,0,0,0
+access_hr_employee_public_officer,hr.employee.public officer,hr.model_hr_employee_public,group_hr_officer_public,1,1,1,0
+access_hr_employee_public_supervisor,hr.employee.public supervisor,hr.model_hr_employee_public,group_hr_supervisor_other_public,1,1,1,1
+access_hr_employee_public_supervisor_other,hr.employee.public supervisor other,hr.model_hr_employee_public,group_hr_supervisor_public,1,0,0,0
+access_hr_employee_public_manager,hr.employee.public manager,hr.model_hr_employee_public,group_hr_manager_public,1,1,1,1

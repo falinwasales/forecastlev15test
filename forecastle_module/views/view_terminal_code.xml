@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id="view_terminal_code" model="ir.ui.view">
+        <field name="name">view_terminal_code_form</field>
+        <field name="model">fce.terminal.code</field>
+        <field name="arch" type="xml">
+            <form string="Terminal Code">
+                <sheet string="Port Code">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Terminal Code..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="port_code_id"/>
+                        </group>
+                        <group>
+                            <field name="terminal_full_name"/>
+                        </group>
+                        <group>
+                            <field name="address"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree -->
+    <record model="ir.ui.view" id="fce_terminal_code_tree_view">
+        <field name="name">Terminal Code</field>
+        <field name="model">fce.terminal.code</field>
+        <field name="arch" type="xml">
+            <tree string="Terminal Code">
+                <field name="name"/>
+                <field name="terminal_full_name"/>
+                <field name="port_code_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fce_terminal_code_chatter" model="ir.ui.view">
+        <field name="name">fce.terminal.code.chatter</field>
+        <field name="model">fce.terminal.code</field>
+        <field name="inherit_id" ref="view_terminal_code"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <!-- Search -->
+    <record model="ir.ui.view" id="fce_terminal_code_search_view">
+        <field name="name">Terminal Code</field>
+        <field name="model">fce.terminal.code</field>
+        <field name="arch" type="xml">
+            <search string="Terminal Code">
+                <field name="name"/>
+                <field name="terminal_full_name"/>
+                <field name="port_code_id"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Port Code" name='port_code_id' context="{'group_by':'port_code_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- Action -->
+    <record id="fce_terminal_code_action" model="ir.actions.act_window">
+        <field name="name">Terminal Code</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fce.terminal.code</field>
+        <field name="search_view_id" ref="fce_terminal_code_search_view"/>
+        <field name="context">{'search_default_active':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new
+          </p>
+        </field>
+    </record>
+</odoo>

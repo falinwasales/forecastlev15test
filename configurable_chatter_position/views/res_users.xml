@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="view_users_form_chatter_position" model="ir.ui.view">
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="before">
+                <field name="context_chatter_position" readonly="0" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_form_preferences_chatter_position" model="ir.ui.view">
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="before">
+                <field name="context_chatter_position" readonly="0" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

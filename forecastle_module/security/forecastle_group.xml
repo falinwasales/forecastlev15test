@@ -1,0 +1,23 @@
+<odoo>
+	<record model="res.groups" id="group_schedule">
+        <field name="name">Schedule</field>
+    </record>
+    <record model="res.groups" id="group_calendar">
+        <field name="name">Calendar</field>
+    </record>
+    <record model="res.groups" id="group_dashboard">
+        <field name="name">Dashboard</field>
+    </record>
+    <record model="res.groups" id="group_discuss">
+        <field name="name">Discuss</field>
+    </record>
+    <record model="res.groups" id="group_repairs">
+        <field name="name">Repairs</field>
+    </record>
+    <record model="res.groups" id="group_products">
+        <field name="name">Products</field>
+    </record>
+    <record model="res.groups" id="group_maintenance">
+        <field name="name">Maintenance</field>
+    </record>
+</odoo>

@@ -1,0 +1,161 @@
+<odoo>
+    <record id="model_action_unreserved_quants" model="ir.actions.server">
+        <field name="name">Fix Unreserved Quants</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_fix_unreserved_quants()</field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_forecastle">
+        <field name="name">view_stock_quant_forecastle</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_uom_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='value']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_picking" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name="principal_id"/>
+            </xpath>
+<!--             <xpath expr="//button[@name='print_last_shipping_label']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> --> <!-- NEEED CHECK --> 
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='principal_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='lot_ids']" position="attributes">
+                <attribute name="string">Container Number</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']" position="inside">
+                <attribute name="string">Container Number</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_assign']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+<!--            <xpath expr="//field[@name='lot_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath> -->
+<!--             <xpath expr="//field[@name='qty_done']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath> -->
+        </field>
+    </record>
+    <record id="view_move_line_tree" model="ir.ui.view">
+            <field name="name">stock.move.line.tree</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='lot_id']" position="after">
+                    <field name="consignee_id" invisible="1"/>
+                    <field name="principal_id" invisible="1"/>
+                    <field name="repaired_by" invisible="1"/>
+                    <field name="repair_value" invisible="1"/>
+                    <field name="actual_gate" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="actual_gate_out" attrs="{'readonly': [('parent.picking_type_code', '=', 'incoming')]}"/>
+                    <field name="photo" filename="filename" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="remark"/>
+                    <field name="condition" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="repair_status" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="start_repair_date" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="complete_repair_date" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="grade" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="tare" force_save="1" attrs="{'readonly': [('parent.picking_type_code', '!=', 'incoming')]}"/>
+                    <field name="available_lot_ids" invisible="1"/>
+                    <field name="location_id" invisible="1"/>
+                    <field name="max_gross_weight" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="container_state" force_save="1" attrs="{'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="idle_days" force_save="1" attrs="
+                    {'column_invisible': [('parent.picking_type_code', '!=', 'outgoing')], 'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <!-- eksport -->
+                    <field name="loading_date" attrs="
+                    {'column_invisible': [('parent.picking_type_code', '!=', 'outgoing')], 'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="gate_in_cy" attrs="{
+                    'column_invisible': [('parent.picking_type_code', '!=', 'outgoing')], 'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="pod_id" attrs="{
+                    'column_invisible': [('parent.picking_type_code', '!=', 'outgoing')], 'readonly': [('parent.picking_type_code', '=', 'outgoing')]}"/>
+                    <!-- import -->
+                    <field name="discharge_date" attrs="{
+                    'column_invisible': [('parent.picking_type_code', '!=', 'incoming')]}"/>
+                    <field name="gate_out_cy" attrs="{
+                    'column_invisible': [('parent.picking_type_code', '!=', 'incoming')]}"/>
+                    <field name="pelabuhan_asal" attrs="{
+                    'column_invisible': [('parent.picking_type_code', '!=', 'incoming')]}"/>
+                </xpath>
+                <xpath expr="//tree/field[@name='lot_id']" position="attributes">
+                    <attribute name="string">Container Number</attribute>
+                </xpath>
+            </field>
+    </record>
+     <record id="view_move_line_tree_history" model="ir.ui.view">
+            <field name="name">stock.move.line.tree</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_move_line_tree" />
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="attributes">
+                <attribute name="string">Container Number</attribute>
+            </xpath>
+            </field>
+    </record>
+
+
+    <record model="ir.actions.server" id="stock.action_view_quants"> <!-- Menu + python -->
+        <field name="code">
+            action = model.with_context(
+                search_default_locationgroup=1,
+                search_default_principal=1,
+            ).action_view_quants()
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="stock.dashboard_open_quants"> <!-- Used in dashboard -->
+        <field name="context">{'search_default_internal_loc': 1, 'search_default_locationgroup':1, 'search_default_principal':1}</field>
+    </record>
+
+    <record id="quant_search_view" model="ir.ui.view">
+        <field name="name">stock.quant.search</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">
+                <field name="principal_id"/>
+            </field>
+            <filter name="locationgroup" position="after">
+                <filter string='Principal' name="principal" domain="[]" context="{'group_by' : 'principal_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_tree_editable">
+        <field name="name">stock.quant.tree.editable</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="before">
+                <field name="principal_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

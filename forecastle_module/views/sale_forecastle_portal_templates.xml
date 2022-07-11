@@ -1,0 +1,2669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Import Manifest -->
+    <template id="import_manifest_portal_content" name="Import Manifest Portal Content">
+        <script>
+        function OpenImage(value) {
+            window.open(value.src, "_blank");
+        }
+        </script>
+        <!-- Intro -->
+<!--         <div id="introduction" t-attf-class="pb-2 pt-3 #{'card-header bg-white' if report_type == 'html' else ''}">
+          <h2 class="my-0">
+                <t t-esc="sale_order.no_master_bl or sale_order.name"/>
+            </h2>
+        </div> -->
+        <div t-attf-class="#{'card-body' if report_type == 'html' else ''}">
+            <section id="details" style="page-break-inside: auto;">
+
+                <table style="width:100%;">
+                    <tr style="border-bottom: 1px solid; border-top: 1px solid; border-color:#dddddd">
+                        <th width="20%">NO. HBL</th>
+                        <th width="100%">
+                            : <span t-field="sale_order.name"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th width="20%">NO. MBL</th>
+                        <th width="100%">
+                            : <span t-field="sale_order.no_master_bl"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td width="20%">POL</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.pelabuhan_asal"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">POD</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.pelabuhan_akhir"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Vessel</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.nama_sarana_angkut"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Voyage</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.voyage_id"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">ETA</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.tgl_tiba"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">ATA</td>
+                        <td width="100%">
+                            : <span t-field="sale_order.ata_jkt"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <br/>
+
+                <h3 id="details">Charges</h3>
+
+                <t t-set="display_discount" t-value="True in [line.discount > 0 for line in sale_order.order_line]"/>
+
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">Items</th>
+                            <th class="text-left">Size</th>
+                            <th class="text-left">Type</th>
+                            <th class="text-right">Quantity</th>
+                            <!-- <th t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">Unit Price</th> -->
+<!--                             <th t-if="display_discount" t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                                <span>Disc.%</span>
+                            </th> -->
+                            <th class="text-right" >
+                                <!-- <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span> -->
+                                <span>Unit Price</span>
+                            </th>
+                            <!-- <th t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                <span>Taxes</span>
+                            </th> -->
+                            <th class="text-right" >
+                                <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+
+                        <t t-set="current_subtotal" t-value="0"/>
+
+                        <t t-foreach="sale_order.order_line.filtered(lambda x: not x.product_id.is_gain_forex and not x.product_id.is_loss_forex)" t-as="line">
+
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t t-if="not line.display_type">
+                                    <td id="product_name"><span t-field="line.product_id.name"/></td>
+                                    <td><span t-field="line.product_id.container_size"/></td>
+                                    <td>
+                                        <t t-set="container_type" t-value="line.product_id.container_type"/>
+                                        <t t-if="line.product_id.import_charge">
+                                            <t t-if="container_type == 'gp'">
+                                                <span>GP</span>
+                                            </t>
+                                            <t t-elif="container_type == 'hc'">
+                                                <span>HC</span>
+                                            </t>
+                                            <t t-elif="container_type == 'tunne'">
+                                                <span>Tunne Type</span>
+                                            </t>
+                                            <t t-elif="container_type == 'ot'">
+                                                <span>OT</span>
+                                            </t>
+                                            <t t-elif="container_type == 'fr'">
+                                                <span>FR</span>
+                                            </t>
+                                            <t t-elif="container_type == 'reefer'">
+                                                <span>RF</span>
+                                            </t>
+                                            <t t-elif="container_type == 'rh'">
+                                                <span>RH</span>
+                                            </t>
+                                            <t t-elif="container_type == 'barge'">
+                                                <span>Barge Container</span>
+                                            </t>
+                                            <t t-elif="container_type == 'breakbulk'">
+                                                <span>Bulk Container</span>
+                                            </t>
+                                            <t t-elif="container_type == 'tk'">
+                                                <span>TK</span>
+                                            </t>
+                                            <t t-elif="container_type == 'other'">
+                                                <span>Other</span>
+                                            </t>
+                                        </t>
+                                    </td>
+                                    <td class="text-right">
+                                        <div id="quote_qty">
+                                            <span t-field="line.product_uom_qty"/>
+                                            <span t-field="line.product_uom"/>
+                                        </div>
+                                    </td>
+<!--                                     <td t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                                        <div
+                                            t-if="line.discount &gt;= 0"
+                                            t-field="line.price_unit"
+                                            t-att-style="line.discount and 'text-decoration: line-through' or None"
+                                            t-att-class="(line.discount and 'text-danger' or '') + ' text-right'"
+                                        />
+                                        <div t-if="line.discount">
+                                            <t t-esc="(1-line.discount / 100.0) * line.price_unit" t-options='{"widget": "float", "decimal_precision": "Product Price"}'/>
+                                        </div>
+                                    </td>
+                                    <td t-if="display_discount" t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                                        <strong t-if="line.discount &gt; 0" class="text-info">
+                                            <t t-esc="((line.discount % 1) and '%s' or '%d') % line.discount"/>%
+                                        </strong>
+                                    </td> -->
+                                    <td class="text-right">
+                                        <t t-if='line.product_id.is_dollar'>
+                                            &#36; <span class="oe_order_line_price_total" t-field="line.price_unit_principal_currency"/>
+                                        </t>
+                                        <t t-if='not line.product_id.is_dollar'>
+                                            <span class="oe_order_line_price_total" t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/>
+                                        </t>
+                                    </td>
+                                    <!-- <td t-attf-class="text-right">
+                                        <t t-if='line.price_tax > 0.0'>
+                                            <span t-field="line.price_tax" t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/>
+                                        </t>
+                                        <t t-if='line.price_tax == 0.0'>
+                                            <span t-field="line.price_tax"/>
+                                        </t>
+                                    </td> -->
+                                    <td class="text-right">
+                                        <t t-if="(line.do_not_merge or not line.product_set_id) and not line.product_id.is_dollar">
+                                            <span class="oe_order_line_price_total" t-field="line.price_subtotal"/>
+                                        </t>
+                                        <t t-else="">
+                                            &#36; <span class="oe_order_line_price_total" t-esc="line.price_unit_principal_currency * line.product_uom_qty"/>
+                                        </t>
+                                    </td>
+                                </t>
+                                <t t-if="line.display_type == 'line_section'">
+                                    <td colspan="99">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                </t>
+                                <t t-if="line.display_type == 'line_note'">
+                                    <td colspan="99">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                </t>
+                            </tr>
+
+                            <!-- <t t-if="current_section and (line_last or sale_order.order_line[line_index+1].display_type == 'line_section')">
+                                <tr class="is-subtotal text-right">
+                                    <td colspan="99">
+                                        <strong class="mr16">Subtotal</strong>
+                                        <span
+                                            t-esc="current_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'
+                                        />
+                                    </td>
+                                </tr>
+                            </t> -->
+                        </t>
+                    </tbody>
+                    <!-- <tr class="is-subtotal text-right">
+                        <td colspan="99">
+                            <strong class="mr16">Subtotal</strong>
+                            <span
+                                t-field="sale_order.amount_untaxed"
+                                t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'
+                            />
+                        </td>
+                    </tr> -->
+                </table>
+
+
+                <div>
+                    <h3 class="float-left">Container Despoit Charges</h3>
+                </div>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">Items</th>
+                            <th class="text-right">Size</th>
+                            <th class="text-right">Type</th>
+                            <th class="text-right">Quantity</th>
+                            <th t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">Unit Price</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-set="amount_total" t-value="0"/>
+                        <t t-foreach="deposit_charges" t-as="line">
+                            <tr>
+                                <td id="container_deposit">Container Deposit</td>
+                                <td class="text-right"><span t-esc="line['prod'].container_size"/></td>
+                                <td class="text-right">
+                                    <t t-set="container_type" t-value="line['prod'].container_type"/>
+                                    <t t-if="line['prod'].is_container">
+                                        <t t-if="container_type == 'gp'">
+                                            <span>GP</span>
+                                        </t>
+                                        <t t-elif="container_type == 'hc'">
+                                            <span>HC</span>
+                                        </t>
+                                        <t t-elif="container_type == 'tunne'">
+                                            <span>Tunne Type</span>
+                                        </t>
+                                        <t t-elif="container_type == 'ot'">
+                                            <span>OT</span>
+                                        </t>
+                                        <t t-elif="container_type == 'fr'">
+                                            <span>FR</span>
+                                        </t>
+                                        <t t-elif="container_type == 'reefer'">
+                                            <span>RF</span>
+                                        </t>
+                                        <t t-elif="container_type == 'rh'">
+                                            <span>RH</span>
+                                        </t>
+                                        <t t-elif="container_type == 'barge'">
+                                            <span>Barge Container</span>
+                                        </t>
+                                        <t t-elif="container_type == 'breakbulk'">
+                                            <span>Bulk Container</span>
+                                        </t>
+                                        <t t-elif="container_type == 'tk'">
+                                            <span>TK</span>
+                                        </t>
+                                        <t t-elif="container_type == 'other'">
+                                            <span>Other</span>
+                                        </t>
+                                    </t>
+                                </td>
+                                <td class="text-right">
+                                    <div id="quote_qty">
+                                        <span t-esc="line['qty']"/>
+                                        <span>Units</span>
+                                    </div>
+                                </td>
+                                <td class="text-right"><span t-esc="line['deposit']" t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/></td>
+                            </tr>
+                            <t t-set="amount_total" t-value="amount_total + line['deposit']"/>
+                        </t>
+                    </tbody>
+                    <tr class="is-subtotal text-right">
+                        <td colspan="99">
+                            <!--  -->
+                            <strong class="mr16">Subtotal</strong>
+                            <span
+                                t-esc="amount_total"
+                                t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'
+                            />
+                        </td>
+                    </tr>
+                </table>
+
+                <br/>
+
+                <div>
+                    <h3 class="float-left">Detention</h3>
+                </div>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="import_manifest_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">Container</th>
+                            <th class="text-left">Qty</th>
+                            <th class="text-left">Date Of Arrival</th>
+                            <th class="text-left">Free Time</th>
+                            <th class="text-left">DO Expired</th>
+                            <th class="text-left">Extend DO</th>
+                            <th class="text-left">Detention Days</th>
+                            <th class="text-left">Total Detention Deposit</th>
+                            <th class="text-left"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="detention_ids" t-as="line">
+                            <tr>
+                                <td id="container_product"><span t-field="line.no_container_id"/></td>
+                                <td id="quantity"><span t-field="line.quantity"/></td>
+                                <td id="date_of_arrival"><span t-field="line.date_of_arrival"/></td>
+                                <td id="free_time"><span t-field="line.free_time"/></td>
+                                <td id="last_date"><span t-field="line.last_date"/></td>
+                                <td id="request_extend_do"><span t-field="line.request_extend_do"/></td>
+                                <td id="detention_days"><span t-field="line.detention_days"/></td>
+                                <td id="detention_days"><span t-field="line.total_detention_deposit"/></td>
+                                <td id="button"><button type="submit" data-toggle="modal" data-target="#modalimportcontainerinfo" t-att-data-modalimportcontainerinfo_id="line.id" t-att-data-modalimport-container-product-name="line.no_container_id.name" t-att-data-modalimportquantity="line.quantity" t-att-data-modalimportdatearrival="line.date_of_arrival" t-att-data-modalimportfreetime="line.free_time" t-att-data-modalimportlastdate="line.last_date" t-att-data-modalimportextend_do="line.request_extend_do" t-att-data-modalimportdetentiondays="line.detention_days" t-att-data-modalimportnonslab="line.non_slab" t-att-data-modalimportslab1="line.slab1" t-att-data-modalimportslab2="line.slab2" t-att-data-modalimportslab3="line.slab3" t-att-data-modalimportslab4="line.slab4" t-att-data-modalimportotaldetentiondeposit="line.total_detention_deposit" t-att-data-modalimportgatein="line.actual_gate" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/> Show Details</button></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div>
+                    <h3 class="float-left">Actual Detention</h3>
+                </div>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="import_manifest_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">Container</th>
+                            <th class="text-left">Qty</th>
+                            <th class="text-left">Actual Gate In Depo</th>
+                            <th class="text-left">Total Days</th>
+                            <th class="text-left">Total Detention Days</th>
+                            <th class="text-left">Actual Detention Charge</th>
+                            <th class="text-left">Refund Detention</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="detention_ids" t-as="line">
+                            <tr>
+                                <td id="container_product"><span t-field="line.no_container_id"/></td>
+                                <td id="quantity"><span t-field="line.quantity"/></td>
+                                <td id="actual_gate"><span t-field="line.actual_gate"/></td>
+                                <td id="total_days"><span t-field="line.total_days"/></td>
+                                <td id="total_detention_days"><span t-field="line.total_detention_days"/></td>
+                                <td id="actual_detention_charge"><span t-field="line.actual_detention_charge"/></td>
+                                <td id="refund_detention"><span t-field="line.refund_detention"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <br/>
+
+                <div>
+                    <h3 class="float-left">Repair</h3>
+                </div>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="import_manifest_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">Container</th>
+                            <th class="text-left">Container Number</th>
+                            <th class="text-left">File</th>
+                            <th class="text-left">Repair Cost</th>
+                            <th class="text-left">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="repair_ids" t-as="line">
+                            <tr>
+                                <td id="product_id"><span t-field="line.product_id"/></td>
+                                <td id="lot_id"><span t-field="line.lot_id"/></td>
+                                <td><span t-if="line.photo" t-field="line.filename"/><a t-if="line.photo" class="btn btn-link" t-attf-href='/web/content/stock.move.line/#{line.id}/photo/#{line.filename}?download=true' target="_blank"><i class="fa fa-download"></i></a></td>
+                                <td><span t-field="line.repair_value"/></td>
+                                <td><span t-field="line.remark"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <br/>
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="float-left">Refund Deposit</h3>
+                        <button type="submit" data-toggle="modal" data-target="#modaluploadrefunddocument" class="btn btn-link btn-sm"><i class="fa fa-upload mr-1"/> Upload Document</button>
+                    </div>
+                </div>
+                <table style="width:100%;">
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd;background-color:#DEE2E6;">
+                        <th width="40%">Container Deposit</th>
+                        <th width="20%" class="text-center">
+                            Docs Submited
+                        </th>
+                        <th width="20%" class="text-center">
+                            Date Submited
+                        </th>
+                        <th width="40%">
+                        </th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">KTP</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.ktp">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.ktp_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">Surat Kuasa</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.surat_kuasa">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.surat_kuasa_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">BL</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.bl">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.bl_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">EIR</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.eir">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.eir_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">SP2</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.sp2">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.sp2_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">Bukti Bayar</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.bukti_bayar">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.bukti_bayar_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">Official Receipt</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.official_receipt">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.official_receipt_date_submit"/></td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd;background-color:#DEE2E6;">
+                        <th width="40%">Detention Deposit</th>
+                        <th width="20%" class="text-center">
+                            Docs Submited
+                        </th>
+                        <th width="20%" class="text-center">
+                            Date Submited
+                        </th>
+                        <th width="40%">
+                        </th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">Invoice Detention &amp; Bukti Bayar</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.invoice_detention">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.invoice_detention_date_submit"/>
+                        </td>
+                        <td width="40%"></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid; border-color:#dddddd">
+                        <td width="40%">Official Receipt</td>
+                        <td width="20%" class="text-center">
+                            <t t-if="sale_order.official_receipt_detention">
+                                &#x2714;
+                            </t>
+                        </td>
+                        <td width="20%" class="text-center"><span t-field="sale_order.official_receipt_detention_date_submit"/>
+                        </td>
+                        <td width="40%"></td>
+                    </tr>
+                </table>
+
+                <br/>
+                <table width="100%">
+                    <tr>
+                        <th width="20%">
+                            <span>Invoice Detention Status</span>
+                        </th>
+                        <td width="80%">
+                            :
+                            <t t-if="sale_order.refund_invocie_detention">
+                                <span>Refunded</span>
+                            </t>
+                            <t t-else="">
+                                <span>In Progress</span>
+                            </t>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="25%">
+                            <span>Official Receipt Status</span>
+                        </th>
+                        <td width="75%">
+                            :
+                            <t t-if="sale_order.refund_official_receipt_detention">
+                                <span>Refunded</span>
+                            </t>
+                            <t t-else="">
+                                <span>In Progress</span>
+                            </t>
+                        </td>
+                    </tr>
+                </table>
+
+                <br/>
+                <table width="100%" style="border: 1px solid black; background-color:black; color:white;">
+                    <tr>
+                        <td>
+                            Note : Refund Deposit will be processed within 14 calendar days after complete docs submitted
+                        </td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+    </template>
+    <template id="import_manifest_portal_template" name="import manifest Portal Template">
+        <t t-call="portal.portal_layout">
+            <div class="row mt16 o_portal_sale_sidebar">
+                <!-- Sidebar -->
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-auto d-print-none'"/>
+
+                    <t t-set="entries">
+                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                            <li t-if="sale_order.noa and not sale_order.noa_confirmed and sale_order.state == 'sale'" class="list-group-item flex-grow-1">
+                                <a role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalconfirm" href="#">Confirm NOA
+                                </a>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <a t-if="sale_order.hbl" class="btn btn-secondary btn-block o_download_btn" t-attf-href='/web/content/sale.order/#{sale_order.id}/hbl/#{sale_order.filename_hbl}?download=true' target="_blank" title="Download HBL"><i class="fa fa-download"/> Download HBL</a>
+                                <a t-if="sale_order.import_manifest" class="btn btn-secondary btn-block o_download_btn" t-attf-href='/web/content/sale.order/#{sale_order.id}/import_manifest/#{sale_order.filename_import_manifest}?download=true' target="_blank" title="Download Inward Manifest"><i class="fa fa-download"/> Download Inward Manifest</a>
+                                <a t-if="sale_order.noa" class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='noa', download=True)" target="_blank" title="Download NOA"><i class="fa fa-download"/> Download NOA</a>
+                                <a t-if="sale_order.release_spdo"  class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='spdo', download=True)" target="_blank" title="Download SPDO"><i class="fa fa-download"/> Download SPDO</a>
+                                <a t-if="sale_order.noa_confirmed" class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='invoice', download=True)" target="_blank" title="Download Invoice"><i class="fa fa-download"/> Download Invoice</a>
+                                <a t-if="sale_order.state == 'done'" class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='deposit', download=True)" target="_blank" title="Invoice Deposit Container"><i class="fa fa-download"/> Invoice Deposit Container</a>
+                                <a t-if="sale_order.state == 'done'" class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='detention', download=True)" target="_blank" title="Invoice Deposit Detention"><i class="fa fa-download"/> Invoice Deposit Detention</a>
+                            </li>
+                        </ul>
+                    </t>
+                </t>
+                <!-- Page content -->
+                <div id="import_content" class="col-12 col-lg justify-content-end">
+                    <!-- main content -->
+                    <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}" id="portal_import_content">
+                        <div t-call="forecastle_module.import_manifest_portal_content"/>
+                    </div>
+
+                    <div role="dialog" class="modal fade" id="modaluploadrefunddocument">
+                        <div class="modal-dialog">
+                            <form id="uploadrefunddocument" method="post" enctype="multipart/form-data" t-attf-action="/my/orders/#{sale_order.id}/uploadrefunddocument?access_token=#{sale_order.access_token}" class="modal-content">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <!-- <input type="hidden" name="import_container_id" id="import_container_id" class="import-container-line"/> -->
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Upload Document</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                </header>
+                                <main class="modal-body">
+                                    <div class="form-group">
+                                        <table width="100%">
+                                            <tr>
+                                                <th width="40%">
+                                                    <label class="col-form-label">Container Deposit</label>
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    KTP
+                                                </td>
+                                                <td>
+                                                    <input id="upload_ktp" type="file" class="form-control s_website_form_input" name="upload_ktp"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    Surat Kuasa
+                                                </td>
+                                                <td>
+                                                    <input id="upload_surat_kuasa" type="file" class="form-control s_website_form_input" name="upload_surat_kuasa"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    BL
+                                                </td>
+                                                <td>
+                                                    <input id="upload_bl" type="file" class="form-control s_website_form_input" name="upload_bl"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    EIR
+                                                </td>
+                                                <td>
+                                                    <input id="upload_eir" type="file" class="form-control s_website_form_input" name="upload_eir"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    SP2
+                                                </td>
+                                                <td>
+                                                    <input id="upload_sp2" type="file" class="form-control s_website_form_input" name="upload_sp2"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    Bukti Bayar
+                                                </td>
+                                                <td>
+                                                    <input id="upload_bukti_bayar" type="file" class="form-control s_website_form_input" name="upload_bukti_bayar"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    Official Receipt
+                                                </td>
+                                                <td>
+                                                    <input id="upload_official_receipt" type="file" class="form-control s_website_form_input" name="upload_official_receipt"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th width="40%">
+                                                    <label class="col-form-label">Detention Deposit</label>
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    Invoice Detention &amp; Bukti Bayar
+                                                </td>
+                                                <td>
+                                                    <input id="upload_invoice_detention" type="file" class="form-control s_website_form_input" name="upload_invoice_detention"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%">
+                                                    Official Receipt
+                                                </td>
+                                                <td>
+                                                    <input id="upload_official_receipt_detention" type="file" class="form-control s_website_form_input" name="upload_official_receipt_detention"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </main>
+                                <footer class="modal-footer">
+                                    <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div role="dialog" class="modal fade" id="modalconfirm">
+                        <div class="modal-dialog">
+                            <form id="siconfirm" method="POST" t-attf-action="/my/orders/#{sale_order.id}/confirm?access_token=#{sale_order.access_token}" class="modal-content">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Confirm</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                </header>
+                                <main class="modal-body">
+                                    <p><center>Are You Sure?</center>
+                                    </p>
+                                    </main>
+                                <footer class="modal-footer">
+                                    <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                    <div role="dialog" class="modal fade" id="modalimportcontainerinfo">
+                        <div class="modal-dialog">
+                            <form id="importcontainerinfo" method="POST" t-attf-action="/my/orders/#{sale_order.id}/importcontainerinfo?access_token=#{sale_order.access_token}" class="modal-content">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="import_container_id" id="import_container_id" class="import-container-line"/>
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Edit Detention</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                </header>
+                                <main class="modal-body">
+                                    <div class="form-group">
+                                        <table width="100%">
+                                            <tr>
+                                                <td width="25%">
+                                                    <label class="col-form-label">Container Product</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-container-product"/>
+                                                </td>
+
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Non Slab</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-non-slab"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">Qty</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <span class="import-quantity"/>
+                                                </td>
+
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Slab 1</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-slab1"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">Date Of Arrival</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <span class="import-date-arrival"/>
+                                                </td>
+
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Slab 2</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-slab2"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">Free Time</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <span class="import-free-time"/>
+                                                </td>
+
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Slab 3</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-slab3"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">DO Expired</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <span class="import-last-date"/>
+                                                </td>
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Slab 4</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                   <span class="import-slab4"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">Request Extend DO</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <input type="date" name="import-extend-do" id="import-extend-do" class="form-control import-extend-do"/>
+                                                    <span class="import-extend-do-text"/>
+                                                </td>
+
+                                                <td style="padding:10px" width="25%">
+                                                    <label class="col-form-label">Total Detention Deposit</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td width="25%">
+                                                    <span class="import-total-detention-deposit"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="col-form-label">Detention Days</label>
+                                                </td>
+                                                <td>
+                                                    :
+                                                </td>
+                                                <td>
+                                                    <span class="import-detention-days"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </main>
+                                <footer class="modal-footer">
+                                    <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- chatter -->
+                    <div id="import_manifest_communication" class="mt-4">
+                        <h2>History</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="sale_order"/>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_import" name="My Import Manifest">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Import Manifest</t>
+            </t>
+            <t t-if="not quotations">
+                <p>There are currently no import manifest for your account.</p>
+            </t>
+            <t t-if="quotations" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Nomor BL #</th>
+                        <th class="text-right">Date</th>
+                        <th class="text-right">Valid Until</th>
+                        <th class="text-center"/>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <t t-foreach="quotations" t-as="quotation">
+                    <tr>
+                        <td><a t-att-href="quotation.get_portal_url()"><t t-esc="quotation.no_master_bl or quotation.name"/></a></td>
+                        <td class="text-right"><span t-field="quotation.date_order"/></td>
+                        <td class="text-right"><span t-field="quotation.validity_date"/></td>
+                        <td class="text-center">
+                            <span t-if="quotation.state == 'cancel'" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-remove"/> Cancelled</span>
+                            <span t-if="quotation.is_expired" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-clock-o"/> Expired</span>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="quotation.amount_total"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_home_menu_sale" name="Portal layout : sales menu entries" inherit_id="sale.portal_my_home_menu_sale" priority="20">
+        <xpath expr="//a[@t-attf-href='/my/quotes?{{ keep_query() }}']/.." position="after">
+            <li t-if="page_name == 'import_manifest' or sale_order and sale_order.is_import" t-attf-class="breadcrumb-item #{'active ' if not sale_order else ''}">
+                <a t-if="sale_order and sale_order.is_import" t-attf-href="/my/import_manifest?{{ keep_query() }}">Import Manifest</a>
+                <t t-else="">Import Manifest</t>
+            </li>
+        </xpath>
+
+        <xpath expr="//a[@t-attf-href='/my/quotes?{{ keep_query() }}']/.." position="attributes">
+            <attribute name="t-if">page_name == 'quote' or sale_order and not sale_order.is_import and sale_order.state in ('sent', 'cancel')</attribute>
+        </xpath>
+        <xpath expr="//a[@t-attf-href='/my/orders?{{ keep_query() }}']/.." position="attributes">
+            <attribute name="t-if">page_name == 'order' or sale_order and not sale_order.is_import and sale_order.state not in ('sent', 'cancel')</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_menu_invoiceimport" name="Portal layout : invoice menu entries" inherit_id="account.portal_my_home_menu_invoice" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'invoice_import'" t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <a t-if="invoice" t-attf-href="/my/invoicesimport?{{ keep_query() }}">Invoices &amp; Bills Import</a>
+                <t t-else="">Invoices &amp; Bills Import</t>
+            </li>
+            <li t-if="invoice" class="breadcrumb-item active">
+                <t t-esc="invoice.name" t-if="invoice.name != '/'"/>
+                <t t-else=""><em>Draft Invoice</em></t>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_import_manifest" name="Show Import Manifest" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Quotations</t>
+                <t t-set="url" t-value="'/my/quotes'"/>
+                <t t-set="placeholder_count" t-value="'quotation_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Bookings</t>
+                <t t-set="url" t-value="'/my/orders'"/>
+                <t t-set="placeholder_count" t-value="'order_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Import Manifest</t>
+                <t t-set="url" t-value="'/my/import_manifest'"/>
+                <t t-set="placeholder_count" t-value="'import_manifest_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_sale_export" name="Show Export" customize_show="True" inherit_id="sale.portal_my_home_sale" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]/t" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]/t" position="replace">
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_invoice_export" name="Show Export" customize_show="True" inherit_id="account.portal_my_home_invoice" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]/t[4]" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Invoices &amp; Bills Export</t>
+                <t t-set="url" t-value="'/my/invoices'"/>
+                <t t-set="placeholder_count" t-value="'invoice_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Invoices &amp; Bills Import</t>
+                <t t-set="url" t-value="'/my/invoicesimport'"/>
+                <t t-set="placeholder_count" t-value="'invoiceimport_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa -->
+    <template id="sale_order_portal_template_inherit_xpath" inherit_id="sale.portal_my_quotations">
+        <xpath expr="//tr[@class='active']/th[2]" position="replace">
+            <th class="text-right">Principal</th>
+        </xpath>
+        <xpath expr="//td/span[@t-field='quotation.date_order']" position="replace">
+            <span t-field="quotation.principal_id"/>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[2]" position="after">
+            <th class="text-right">POL</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']/t[4]/t/tr/td[2]" position="after">
+            <td class="text-right"><span t-field="quotation.pol_id"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[3]" position="after">
+            <th class="text-right">POD</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']/t[4]/t/tr/td[3]" position="after">
+            <td class="text-right"><span t-field="quotation.pod_id"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[6]" position="replace">
+            <th class="text-center">Status</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']/t[4]/t/tr/td[6]" position="replace">
+            <td class="text-center"><span class='badge badge-pill badge-secondary' t-field="quotation.state"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[7]" position="replace">
+
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']/t[4]/t/tr/td[7]" position="replace">
+
+        </xpath>
+
+    </template>
+    <!-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+
+    <!-- BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB -->
+    <template id="sale_order_portal_template_inherit_xpath2" inherit_id="sale.portal_my_orders">
+        <xpath expr="//tr[@class='active']/th[1]" position="replace">
+            <th>
+                <span class='d-none d-md-inline'>Bookings</span>
+                <span class='d-block d-md-none'>Ref.</span>
+            </th>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[2]" position="replace">
+            <th class="text-right">Principal</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_table']/t/tr/td[2]" position="replace">
+            <td class="text-right"><span t-field="order.principal_id"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[3]" position="replace">
+            <th class="text-right">POL</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_table']/t/tr/td[3]" position="replace">
+            <td class="text-right"><span t-field="order.pol_id"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[4]" position="replace">
+            <th class="text-right">POD</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_table']/t/tr/td[4]" position="replace">
+            <td class="text-right"><span t-field="order.pod_id"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[4]" position="after">
+            <th class="text-right">Valid Until</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_table']/t/tr/td[4]" position="after">
+            <td class="text-right"><span t-field="order.validity_date"/></td>
+        </xpath>
+
+        <xpath expr="//tr[@class='active']/th[5]" position="after">
+            <th class="text-right">Status</th>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_table']/t/tr/td[5]" position="after">
+            <td class="text-right">
+                <!-- <span t-if="order.state == 'cancel'" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-remove"/> Cancelled</span>
+                <span t-if="order.is_expired" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-clock-o"/> Expired</span> -->
+                <span t-field='order.state' class="badge badge-pill badge-secondary"/>
+            </td>
+        </xpath>
+        <!-- <xpath expr="//t/t[4]/t/tr/td[1]" position="after">
+            <td class="text-right"><span t-field="quotation.principal_id"/></td>
+        </xpath> -->
+    </template>
+
+
+    <!-- SIDEBAR -->
+    <template id="sale_order_portal_template_inherit" inherit_id="sale.sale_order_portal_template">
+        <!-- Remove Title of Quotation Total -->
+        <xpath expr="//b[@t-field='sale_order.amount_total']" position="replace">
+            <b t-if='sale_order.booking == False'>Scheduling</b>
+            <b t-elif="sale_order.booking == True and not sale_order.state == 'cancel'">Booked</b>
+            <b t-elif="sale_order.state == 'cancel'">Cancel</b>
+        </xpath>
+        <!-- Replace the top of side bar (Button Accept & Sign & Download & Print) -->
+        <xpath expr="//t[@t-set='entries']/ul[1]/li[1]" position="replace">
+            <li class="list-group-item flex-grow-1" t-if="sale_order.booking_email_send">
+                <div t-if="sale_order.booking_email_send and not sale_order.state == 'cancel'" class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='bc', download=True)" title="Download"><i class="fa fa-download"/> Download <br/>Booking Confirmation</a>
+                    </div>
+<!--                     <div class="btn-group flex-grow-1 mb-1">
+                        <a class="btn btn-secondary btn-block o_print_btn o_portal_invoice_print" t-att-href="sale_order.get_portal_url(report_type='bc')" id="print_bc" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
+                    </div> -->
+                </div>
+            </li>
+            <li t-if="sale_order.proforma_send" class="list-group-item flex-grow-1">
+                <a t-if="not sale_order.proforma_confirmed or sale_order.confirmed_draft_bl == False and not sale_order.state == 'cancel' and not sale_order.confirmed_draft_bl == False" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalconfirm" href="#">Confirm
+                </a>
+                <div t-if="sale_order.proforma_send and not sale_order.proforma_confirmed and not sale_order.state == 'cancel'" class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='proforma', download=True)" title="Download"><i class="fa fa-download"/> Download <br/>Proforma Invoice</a>
+                    </div>
+                </div>
+                <div t-if="sale_order.proforma_confirmed and not sale_order.state == 'cancel'" class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.get_portal_url(report_type='invoice', download=True)" title="Download"><i class="fa fa-download"/> Download Invoice</a>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item flex-grow-1">
+                <a t-if="sale_order.state == 'sent' and sale_order.booking == False" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalbooking" href="#">
+                    <i class="fa fa-check"/>Book
+                </a>
+                <a t-if="sale_order.confirmed_draft_bl and sale_order.surendered == False and not sale_order.state == 'cancel'" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalsurendered" href="#">
+                    <i class="fa fa-check"/>Surendered
+                </a>
+                <a t-if="sale_order.confirmed_draft_bl and sale_order.seawaybill == False and not sale_order.state == 'cancel'" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalseawaybill" href="#">
+                    <i class="fa fa-check"/>Seawaybill
+                </a>
+                <a t-if="sale_order.state == 'sale' and sale_order.booking_email_send == True and sale_order.final_si == False" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalconfirmfinalsi" href="#">
+                    <i class="fa fa-check"/>Submit Final SI
+                </a>
+                <a t-if="sale_order.state in ['sale', 'done'] and sale_order.final_si and sale_order.confirmed_draft_bl == False" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalconfirmdraftbl" href="#">
+                    <i class="fa fa-check"/>Confirm Draft BL
+                </a>
+                <a t-if="sale_order.state in ['sale', 'done'] and sale_order.final_si" class="btn btn-secondary btn-block o_download_btn" t-att-href="sale_order.generate_draft_bl()" target="_blank" title="Download"><i class="fa fa-download"/> Preview Draft BL</a>
+            </li>
+            <li class="list-group-item flex-grow-1">
+                <a t-if="sale_order.validity_date >= datetime.date.today() and sale_order.state != 'cancel'" role="button" class="btn btn-danger btn-block mb8" data-toggle="modal" data-target="#modalbookingshipment" href="#">
+                    <i class="fa fa-check"/>Book New Shipment<br></br>
+                                             with same Quotation
+                </a>
+            </li>
+        </xpath>
+        <!-- Page Content -->
+        <xpath expr="//div[@id='quote_content']" position="inside">
+            <!-- Seawaybill -->
+            <div role="dialog" class="modal fade" id="modalseawaybill">
+                <div class="modal-dialog">
+                    <form id="seawaybill" method="POST" t-attf-action="/my/orders/#{sale_order.id}/seawaybill?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Seawaybill</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Surendered -->
+            <div role="dialog" class="modal fade" id="modalsurendered">
+                <div class="modal-dialog">
+                    <form id="surendered" method="POST" t-attf-action="/my/orders/#{sale_order.id}/surendered?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Surendered</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Booking -->
+            <div role="dialog" class="modal fade" id="modalbooking">
+                <div class="modal-dialog">
+                    <form id="si" method="POST" t-attf-action="/my/orders/#{sale_order.id}/booking?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Book</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Booking Shipment -->
+            <div role="dialog" class="modal fade" id="modalbookingshipment">
+                <div class="modal-dialog">
+                    <form id="si" method="POST" t-attf-action="/my/orders/#{sale_order.id}/bookshipment?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Book Shipment</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure Want to Create New Shipment?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Booking -->
+            <div role="dialog" class="modal fade" id="modalconfirm">
+                <div class="modal-dialog">
+                    <form id="siconfirm" method="POST" t-attf-action="/my/orders/#{sale_order.id}/confirm?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Confirm</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Delete Contact -->
+<!--             <div role="dialog" class="modal fade" id="modaldeletecontact">
+                <div class="modal-dialog">
+                    <form id="siconfirm" method="POST" t-attf-action="/my/orders/#{sale_order.id}/contact?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Confirm</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure Delete This Contact?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" class="btn btn-primary o_contact_delete">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div> -->
+            <!-- FinalSI -->
+            <div role="dialog" class="modal fade" id="modalconfirmfinalsi">
+                <div class="modal-dialog">
+                    <form id="si" method="POST" t-attf-action="/my/orders/#{sale_order.id}/final_si?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Finalized SI</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Draft BL -->
+            <div role="dialog" class="modal fade" id="modalconfirmdraftbl">
+                <div class="modal-dialog">
+                    <form id="si" method="POST" t-attf-action="/my/orders/#{sale_order.id}/confirm_draft_bl?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Confirm Draft BL</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p><center>Are You Sure?</center>
+                            </p>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Update Quantity -->
+            <div role="dialog" class="modal fade" id="modalcontainer">
+                <div class="modal-dialog">
+                    <form id="container" method="POST" t-attf-action="/my/orders/#{sale_order.id}/container?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="sale_line_id" id="sale_line_id" class="sale-line"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Change Quantity</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <h5 class="container-quantity">Container</h5>
+                            <div class="form-group">
+                                <input type="number" name="Quantity" id="Quantity" class="form-control set-qty"/>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Schedule -->
+            <div role="dialog" class="modal fade" id="schedule">
+                <div class="modal-dialog">
+                    <form id="schedule" method="POST" t-attf-action="/my/orders/#{sale_order.id}/schedule?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Input Schedule</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p>
+                            Schedule
+                            </p>
+                            <select class="form-control voyage_id" name="voyage_id">
+                                <t t-foreach="voyage_ids" t-as="voyage">
+                                <option t-att-data="voyage.id" t-att-value="voyage.id">
+                                    <t t-esc="voyage.name "/> -
+                                    <t t-esc="voyage.vessel_id.name "/>
+                                </option>
+                                </t>
+                            </select>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- copy countainer -->
+            <div role="dialog" class="modal fade" id="modalcopycontainer">
+                <div class="modal-dialog">
+                    <form id="schedule" method="POST" t-attf-action="/my/orders/#{sale_order.id}/copycontainer?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Copy Container</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <p>
+                            Container
+                            </p>
+                            <select class="form-control container_id" name="container_id">
+                                <t t-foreach="cro_ids" t-as="container">
+                                <option t-att-data="container.id" t-att-value="container.id">
+                                    <t t-esc="container.sequence"/> -
+                                    <t t-esc="container.commodity_type"/>-[
+                                    <t t-esc="container.container_type_id.name"/>]
+                                </option>
+                                </t>
+                            </select>
+                            <p>
+                            Copy To Container
+                            </p>
+                            <select class="form-control container_id" name="container_id_apply">
+                                <t t-foreach="cro_ids" t-as="container">
+                                <option t-att-data="container.id" t-att-value="container.id">
+                                    <t t-esc="container.sequence"/> -
+                                    <t t-esc="container.commodity_type"/>-[
+                                    <t t-esc="container.container_type_id.name"/>]
+                                </option>
+                                </t>
+                            </select>
+                            </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Charges -->
+            <div role="dialog" class="modal fade" id="modalcharges">
+                <div class="modal-dialog">
+                    <form id="charges" method="POST" t-attf-action="/my/orders/#{sale_order.id}/charges?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="charge_info_id" id="charge_info_id" class="charges-line"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Charges Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <h5 class="chargeinfo-name">charge info</h5>
+                            <div class="form-group">
+                                <label class="col-form-label" for="line.fce_payment_term">Payment Term</label>
+                                <select class="form-control order" name="fce_payment_term" id="fce_payment_term">
+                                    <option t-att-data="prepaid" t-att-value="prepaid" id="prepaid" name="prepaid" class="prepaid">prepaid</option>
+                                    <option t-att-data="collect" t-att-value="collect" id="collect" name="collect" class="collect">collect</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="line.bill_to_id">Bill To</label>
+                                <select class="form-control bill_to_id" name="bill_to_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="bill_to_ids" t-as="bill_to_id">
+                                        <option t-att-data="bill_to_id.id" t-att-value="bill_to_id.id"><t t-esc="bill_to_id.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                        </main>
+
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Shipping -->
+            <div role="dialog" class="modal fade" id="modalshipping">
+                <div class="modal-dialog">
+                    <form id="shipper" method="POST" t-attf-action="/my/orders/#{sale_order.id}/shipper?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Input Shipping</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="form-group">
+                                <label class="col-form-label" for="sale_order.shipper_id">Shipper</label>
+                                <select class="form-control shipper_id" name="shipper_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="shipper_id" t-as="shipper">
+                                    <option t-att-data="shipper" t-att-value="shipper.id" t-att-selected="shipper.id == sale_order.shipper_id.id"><t t-esc="shipper.name"/></option>
+                                    </t>
+                                </select>
+                                <label class="col-form-label" for="sale_order.shipper_address">Shipper Address</label>
+                                <textarea rows="4" name="shipper_address" id="shipper_address" class="form-control shipper-address"><t t-esc="sale_order.shipper_address"/></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="sale_order.consignee_id">Consignee</label>
+                                <select class="form-control consignee_id" name="consignee_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="consignee_id" t-as="consignee">
+                                    <option t-att-data="consignee.id" t-att-value="consignee.id" t-att-selected="consignee.id == sale_order.consignee_id.id"><t t-esc="consignee.name"/></option>
+                                    </t>
+                                </select>
+                                <label class="col-form-label" for="sale_order.consignee_address">Consignee Address</label>
+                                <textarea required='1' rows="4" name="consignee_address" id="consignee_address" class="form-control consignee-address"><t t-esc="sale_order.consignee_address"/></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="sale_order.consignee_id">Notify</label>
+                                <select class="form-control notify_id" name="notify_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="notify_id" t-as="notify">
+                                    <option t-att-data="notify.id" t-att-value="notify.id" t-att-selected="notify.id == sale_order.notify_id.id"><t t-esc="notify.name"/></option>
+                                    </t>
+                                </select>
+                                <label class="col-form-label" for="sale_order.notify_address">Notify Address</label>
+                                <textarea rows="4" name="notify_address" id="notify_address" class="form-control notify-address"><t t-esc="sale_order.notify_address"/></textarea>
+                            </div>
+                            <div class="form-group"  t-if="sale_order.internal_confirm">
+                                <label class="col-form-label" for="sale_order.package_code_id">Package</label>
+                                <select class="form-control package_code_id" name="package_code_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="package_code_id" t-as="package">
+                                    <option t-att-data="package.id" t-att-value="package.id" t-att-selected="sale_order.package_code_id.id">
+                                        <t t-esc="package.code"/> - <t t-esc="package.name"/>
+                                    </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="form-group" t-if="sale_order.internal_confirm">
+                                <label class="col-form-label" for="unit">Unit</label>
+                                <input type="number" name="unit" id="unit" t-att-value="sale_order.unit" class="form-control"/>
+                            </div>
+                        <t t-if="sale_order.state == 'sale'">
+                            <div class="form-group">
+                                <label class="col-form-label" for="peb_no">PEB No</label>
+                                <input type="text" name="peb_no" id="peb_no" t-att-value="sale_order.peb_no" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="peb_date">PEB Date</label>
+                                <input type="date" name="peb_date" id="peb_date" t-att-value="sale_order.peb_date" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="sale_order.peb_no">KPBC</label>
+                                <select class="form-control kpbc_code_id" name="kpbc_code_id">
+                                    <option data="0" value="0"></option>
+                                    <t t-foreach="kpbc_code_id" t-as="kpbc_code_id">
+                                    <option t-att-data="kpbc_code_id.id" t-att-value="kpbc_code_id.id" t-att-selected="sale_order.kpbc_code_id.id">
+                                        <t t-esc="kpbc_code_id.kpbc_code"/> - <t t-esc="kpbc_code_id.name"/>
+                                    </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </t>
+
+<!--                             <t t-if="sale_order.final_si">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="peb_no">PEB No</label>
+                                    <input type="text" name="peb_no" id="peb_no" t-att-value="sale_order.peb_no" class="form-control"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label" for="peb_date">PEB Date</label>
+                                    <input type="date" name="peb_date" id="peb_date" t-att-value="sale_order.peb_date" class="form-control"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label" for="kppbc">KPPBC</label>
+                                    <input type="text" name="kppbc" id="kppbc" t-att-value="sale_order.kppbc" class="form-control"/>
+                                </div>
+                            </t> -->
+                            <div class="form-group">
+                                <label class="col-form-label" for="goods">Goods Description</label>
+                                <textarea rows="4" name="goods" id="goods" class="form-control"><t t-esc="sale_order.good_description"/></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="remarks">Remarks</label>
+                                <textarea rows="4" name="remarks" id="remarks" class="form-control"><t t-esc="sale_order.remarks"/></textarea>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Create New / Edit Contact -->
+            <div role="dialog" class="modal fade modal-contact" id="modalcontact">
+                <div class="modal-dialog">
+                    <form id="contact" method="POST" t-attf-action="/my/orders/#{sale_order.id}/contact?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Create New/Edit Contact</h4>
+                        </header>
+                        <main class="modal-body">
+                            <div class="form-group">
+                                <label class="col-form-label" for="sale_order.shipper_id">Existing <font size="2px">** please choose the blank one to create new contact **</font></label>
+                                <select class="form-control related_booking_party" name="related_booking_party" id="related_booking_party.id">
+                                    <option t-att-data="create" t-att-value="create" id="create" name="create" class='create-contact'></option>
+                                <t t-foreach="booking_party" t-as="contact">
+                                        <option t-att-data="contact" t-att-value="contact.id" id="contact" name="contact" class='edit-contact'><t t-esc="contact.name"/></option>
+                                </t>
+                                </select>
+                                <label class="col-form-label" for="booking_party">Name</label>
+                                <textarea rows="4" name="contact_name" id="booking_party" class="form-control contact-name"></textarea>
+                                <label class="col-form-label" for="booking_party">Address</label>
+                                <textarea rows="4" name="contact_street" id="booking_party" class="form-control contact-street"></textarea>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary button-create">Confirm</button>
+                            <button type="button" class="btn btn-danger o_contact_delete" data-dismiss="modal"><i class="fa fa-times"></i> Delete</button>
+                            <!-- <a data-toggle="modal" href="#modaldeletecontact" class="btn btn-danger o_delete">Delete</a> -->
+                        </footer>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Update Container Reefer -->
+            <div role="dialog" class="modal fade" id="modalcontainerinforeefer">
+                <div class="modal-dialog">
+                    <form id="containerreleaseorder" method="POST" t-attf-action="/my/orders/#{sale_order.id}/containerreleaseorder?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="container_info_id" id="container_info_id" class="container-line"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Edit Container Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="form-group">
+                                <h5 class="container-name">Reefer/Refrigerated</h5>
+                                <label for="commodity_type">Cargo Type</label>
+                                <select class="form-control order" name="commodity_type" id="commodity_type">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select>
+<!--                                 <select class="form-control order" name="commodity_type" id="commodity_type" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select> -->
+                                <label for="container_categ">Container Category</label>
+                                <select class="form-control order" name="container_categ" id="container_categ">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select>
+<!--                                 <select class="form-control order" name="container_categ" id="container_categ" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select> -->
+                                <label for="gross">Gross Weight</label>
+                                <input type="float" name="gross" id="gross" class="form-control container-gross"/>
+                                <label for="nett">Net Weight</label>
+                                <input type="float" name="nett" id="nett" class="form-control container-net"/>
+                                <label for="measure">Measure</label>
+                                <input type="float" name="measure" id="measure" class="form-control container-measure"/>
+                                <label for="imdg" class="container-imdg">IMDG</label>
+                                <input type="text" name="imdg" id="imdg" class="form-control container-imdg"/>
+                                <label for="ems" class="container-ems">EMS</label>
+                                <input type="text" name="ems" id="ems" class="form-control container-ems"/>
+                                <label for="un" class="container-un">UN</label>
+                                <input type="text" name="un" id="un" class="form-control container-un"/>
+                                <label for="temp">Temp°</label>
+                                <input type="text" name="temp" id="temp" class="form-control container-temp"/>
+                                <label for="hs_code">HS Code</label>
+                                <div>
+                                    <select class="form-control order col-3 float-left container-hs1" name="hs">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs1-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs2" name="hs2">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs2-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs3" name="hs3">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs3-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs4" name="hs4">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs4-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <label for="seal">Seal</label>
+                                    <input type="text" name="seal" id="seal" class="form-control container-seal"/>
+                                    <label for="contno">Cont. No</label>
+                                    <div>
+                                        <select class="form-control order col-3 float-left container-contno" name="contno">
+                                            <option data="0" value="0">Select...</option>
+                                            <t t-foreach="lot_ids" t-as="lot">
+                                                <option t-att-data="lot.id" t-att-value="lot.id" t-att-class="'container-lot' + str(lot.id)"><t t-esc="lot.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </t>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Update Container Breakbulk -->
+            <div role="dialog" class="modal fade" id="modalcontainerinfobreakbulk">
+                <div class="modal-dialog">
+                    <form id="containerreleaseorder" method="POST" t-attf-action="/my/orders/#{sale_order.id}/containerreleaseorder?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="container_info_id" id="container_info_id" class="container-line"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Edit Container Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="form-group">
+                                <h5 class="container-name">BreakBulk</h5>
+                                <label for="commodity_type">Cargo Type</label>
+                                <select class="form-control order" name="commodity_type" id="commodity_type" t-if="sale_order.booking == False">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select>
+                                <select class="form-control order" name="commodity_type" id="commodity_type" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select>
+                                <label for="container_categ">Container Category</label>
+                                <select class="form-control order" name="container_categ" id="container_categ" t-if="sale_order.booking == False">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select>
+                                <select class="form-control order" name="container_categ" id="container_categ" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select>
+                                <label for="imdg" class="container-imdg">IMDG</label>
+                                <input type="text" name="imdg" id="imdg" class="form-control container-imdg"/>
+                                <label for="ems" class="container-ems">EMS</label>
+                                <input type="text" name="ems" id="ems" class="form-control container-ems"/>
+                                <label for="un" class="container-un">UN</label>
+                                <input type="text" name="un" id="un" class="form-control container-un"/>
+                                <label for="lenth">Lenght</label>
+                                <input type="text" name="lenth" id="lenth" class="form-control container-lenght"/>
+                                <label for="height">Height</label>
+                                <input type="text" name="height" id="height" class="form-control container-height"/>
+                                <label for="width">Width</label>
+                                <input type="text" name="width" id="width" class="form-control container-width"/>
+                                <label for="dimension">Dimension</label>
+                                <input type="text" name="dimension" id="dimension" class="form-control container-dimension"/>
+                                <label for="hs_code">HS Code</label>
+                                <div>
+                                    <select class="form-control order col-3 float-left container-hs1" name="hs">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs1-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs2" name="hs2">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs2-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs3" name="hs3">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs3-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <select class="form-control order col-3 float-left container-hs4" name="hs4">
+                                        <option data="0" value="0">Select...</option>
+                                        <t t-foreach="hs_ids" t-as="hs_id">
+                                            <option t-att-data="hs_id.id" t-att-value="hs_id.id" t-att-class="'container-hs4-' + str(hs_id.id)"><t t-esc="hs_id.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <label for="seal">Seal</label>
+                                    <input type="text" name="seal" id="seal" class="form-control container-seal"/>
+                                    <label for="contno">Cont. No</label>
+                                    <div>
+                                        <select class="form-control order col-3 float-left container-contno" name="contno">
+                                            <option data="0" value="0">Select...</option>
+                                            <t t-foreach="lot_ids" t-as="lot">
+                                                <option t-att-data="lot.id" t-att-value="lot.id" t-att-class="'container-lot' + str(lot.id)"><t t-esc="lot.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </t>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <!-- Update Container Other -->
+            <div role="dialog" class="modal fade" id="modalcontainerinfoother">
+                <div class="modal-dialog">
+                    <form id="containerreleaseorder" method="POST" t-attf-action="/my/orders/#{sale_order.id}/containerreleaseorder?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="container_info_id" id="container_info_id" class="container-line"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Edit Container Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="form-group">
+                                <h5 class="container-name">Other</h5>
+                                <label for="commodity_type">Cargo Type</label>
+                                <select class="form-control order" name="commodity_type" id="commodity_type" t-if="sale_order.booking == False">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select>
+                                <select class="form-control order" name="commodity_type" id="commodity_type" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="dg" t-att-value="dg" id="dg" name="dg" class='cargo_dg'>Dangerous Good</option>
+                                    <option t-att-data="standard" t-att-value="standard" id="standard" name="standard" class='cargo_std'>Standard</option>
+                                </select>
+                                <label for="container_categ">Container Category</label>
+                                <select class="form-control order" name="container_categ" id="container_categ" t-if="sale_order.booking == False">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select>
+                                <select class="form-control order" name="container_categ" id="container_categ" t-if="sale_order.booking == True" disabled="1">
+                                    <option t-att-data="soc" t-att-value="soc" id="soc" name="soc" class="soc" selected="selected">SOC</option>
+                                    <option t-att-data="coc" t-att-value="coc" id="coc" name="coc" class="coc">COC</option>
+                                </select>
+                                <label for="gross">Gross Weight(Kgs)</label>
+                                <input type="float" name="gross" id="gross" class="form-control container-gross"/>
+                                <label for="nett">Net Weight(Kgs)</label>
+                                <input type="float" name="nett" id="nett" class="form-control container-net"/>
+                                <label for="measure">Measure(Mbc)</label>
+                                <input type="float" name="measure" id="measure" class="form-control container-measure"/>
+                                <label for="imdg" class="container-imdg">IMDG</label>
+                                <input type="text" name="imdg" id="imdg" class="form-control container-imdg"/>
+                                <label for="ems" class="container-ems">EMS</label>
+                                <input type="text" name="ems" id="ems" class="form-control container-ems"/>
+                                <label for="un" class="container-un">UN</label>
+                                <input type="text" name="un" id="un" class="form-control container-un"/>
+                                <label for="pg_class" class='container-pg-class'>Pg Class</label>
+                                <input type="text" name="pg_class" id="pg_class" class="form-control container-pg-class"/>
+                                <label for="hs_code">HS Code</label>
+                                <div>
+                                    <input type="text" name="hs" id="hs_code" class="form-control order col-2 float-left container-hs1"/>
+                                    <input type="text" name="hs2" id="hs_code" class="form-control order col-2 float-left container-hs2"/>
+                                    <input type="text" name="hs3" id="hs_code" class="form-control order col-2 float-left container-hs3"/>
+                                    <input type="text" name="hs4" id="hs_code" class="form-control order col-3 float-left container-hs4"/>
+                                    <input type="text" name="hs5" id="hs_code" class="form-control order col-3 float-left container-hs5"/>
+                                </div>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <label for="seal">Seal</label>
+                                    <input type="text" name="seal" id="seal" class="form-control container-seal"/>
+                                    <label for="contno">Cont. No</label>
+                                    <div>
+                                        <select class="form-control order col-3 float-left container-contno" name="contno">
+                                            <option data="0" value="0">Select...</option>
+                                            <t t-foreach="lot_ids" t-as="lot">
+                                                <option t-att-data="lot.id" t-att-value="lot.id" t-att-class="'container-lot' + str(lot.id)"><t t-esc="lot.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </t>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </xpath>
+        <!-- Replace Bottom Action -->
+        <!-- TO DO -->
+        <!-- When should we have action for Accept & Sign? -->
+        <xpath expr="//div[@t-if='sale_order.has_to_be_signed(True) or sale_order.has_to_be_paid(True)']" position="replace">
+            <div t-if="sale_order.has_to_be_signed(True) or sale_order.has_to_be_paid(True)" class="row justify-content-center text-center d-print-none pt-1 pb-4">
+                <t t-if="sale_order.has_to_be_signed(True)">
+                    <div class="col-sm-auto mt8">
+                        <a t-if="sale_order.state == 'sale' and sale_order.booking == True" role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalbooking" href="#"><i class="fa fa-check"/>Confirm Final SI</a>
+                    </div>
+                    <div class="col-sm-auto mt8">
+                        <a role="button" class="btn btn-secondary" href="#discussion"><i class="fa fa-comment"/> Feedback</a>
+                    </div>
+                    <div class="col-sm-auto mt8">
+                        <a role="button" class="btn btn-danger" data-toggle="modal" data-target="#modaldecline" href="#"> <i class="fa fa-times"/> Reject</a>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+
+    <template id="sale_order_portal_content_template_inherit_sale_stock" inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock">
+        <xpath expr="//t[@t-if='sale_order.picking_ids']" position="replace">
+            <t t-if="sale_order.picking_ids">
+                <div class="row">
+                    <t t-foreach="sale_order.picking_ids.filtered(lambda picking: picking.picking_type_id.code != 'internal')" t-as="i">
+                        <div class="col-3">
+                            <strong>Delivery Orders</strong>
+                        </div>
+                        <div class="col-3">
+                            : <span class="text-muted" t-field="i.date_done" t-options="{'date_only': True}"/>
+                              <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
+                        </div>
+                        <div class="col-6">
+                            <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align"><i class="fa fa-fw fa-truck"/> <b>Shipped</b></span>
+                            <span t-if="i.state == 'cancel'" class="small badge badge-danger orders_label_text_align"><i class="fa fa-fw fa-times"/> <b>Cancelled</b></span>
+                            <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge badge-info orders_label_text_align"><i class="fa fa-fw fa-clock-o"/> <b>Preparation</b></span>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- MAIN FORM -->
+    <template id="sale_order_portal_content_template_inherit" inherit_id="sale.sale_order_portal_content">
+        <!-- JAVASCRIPT INJECT -->
+
+        <!-- Modify Date Info -->
+        <xpath expr="//div[@id='so_date']" position="replace">
+            <div class="row">
+                <div class="col-3">
+                    <t t-if="sale_order.state in ['sale', 'done', 'cancel']">
+                        <strong>Order Date</strong>
+                    </t>
+                    <t t-else="">
+                        <strong>Quotation Date</strong>
+                    </t>
+                </div>
+                <div class="col-9">
+                    : <span t-field="sale_order.date_order" t-options='{"widget": "date"}'/>
+                </div>
+            </div>
+            <div class="row" t-if="sale_order.validity_date">
+                <div class="col-3">
+                    <strong>Expiration Date</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-field="sale_order.validity_date" t-options='{"widget": "date"}'/>
+                </div>
+            </div>
+        </xpath>
+
+
+        <xpath expr="//div[@t-if='invoices']" position="replace">
+            <div t-if="invoices" class="row">
+                <t t-foreach="invoices" t-as="i">
+                    <div class="col-3">
+                        <strong class="d-block mb-1">Invoices</strong>
+                    </div>
+                    <div class="col-3">
+                        : <span t-field="i.invoice_date" t-options='{"widget": "date"}'/>
+                    </div>
+                    <div class="col-6">
+                         <span t-if="i.payment_state in ('paid', 'in_payment')" class="small badge badge-success orders_label_text_align"><i class="fa fa-fw fa-check"/> <b>Paid</b></span>
+                        <span t-else="" class="small badge badge-info orders_label_text_align"><i class="fa fa-fw fa-clock-o"/> <b>Waiting Payment</b></span>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+<!--         <xpath expr="//thead[hasclass('bg-100')]/tr/th[5]" position="replace">
+        </xpath> -->
+
+        <xpath expr="//thead[hasclass('bg-100')]/tr/th[1]" position="replace">
+            <th class="text-left">Items</th>
+        </xpath>
+
+        <xpath expr="//thead[hasclass('bg-100')]/tr/th[1]" position="after">
+            <th class="text-left">Size</th>
+            <th class="text-left">Type</th>
+        </xpath>
+
+
+        <!-- Modify Invoicing & Shipping Info -->
+        <xpath expr="//div[@id='shipping_address']/../.." position="replace">
+        </xpath>
+        <!-- Modify Pricing Table -->
+        <xpath expr="//div[@t-field='line.price_unit']/.." position="replace">
+            <t t-if="(line.do_not_merge or not line.product_set_id) and not line.product_id.import_charge">
+                <td t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                    <div>
+                        <t t-esc="line.price_unit" t-options='{"widget": "monetary", "decimal_precision": "Product Price", "display_currency": sale_order.pricelist_id.currency_id}'/>
+                    </div>
+                </td>
+            </t>
+            <t t-else="">
+                <td t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                    <div>
+                        <t t-esc="line.price_unit_principal_currency" t-options='{"widget": "monetary", "decimal_precision": "Product Price", "display_currency": line.principal_currency_id}'/>
+                    </div>
+                </td>
+            </t>
+        </xpath>
+        <!-- Add button to modify Qty -->
+        <xpath expr="//t[@t-set='current_section']/..//span" position="after">
+            <button t-if="sale_order.state == 'sent' and sale_order.booking == False and line.product_set_id.customer_portal_edit" type="submit" data-toggle="modal" data-target="#modalcontainer" t-att-data-modalcontainerline_name="line.name" t-att-data-modalcontainerline_id="line.id" t-att-data-modalcontainerline_setqty="line.product_set_qty" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/> Edit Quantity</button>
+        </xpath>
+        <!-- Remove Pricing Table Tax & Subtotal -->
+        <xpath expr="//table[@id='sales_order_table']/tbody//tr//td[4]" position="replace">
+            <td class="text-right">
+                <span t-field="line.price_tax" t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/>
+            </td>
+        </xpath>
+        <xpath expr="//table[@id='sales_order_table']/tbody//tr//td[5]" position="replace">
+            <td class="text-right">
+                <t t-if="(line.do_not_merge or not line.product_set_id) and not line.product_id.import_charge">
+                    <span class="oe_order_line_price_total" t-field="line.price_total"/>
+                </t>
+                <t t-else="">
+                    &#36; <span class="oe_order_line_price_total" t-esc="line.price_unit_principal_currency * line.product_uom_qty"/>
+                </t>
+            </td>
+        </xpath>
+
+        <!-- Remove subtotal & Total -->
+        <xpath expr="//span[@t-esc='current_subtotal']/../../.." position="replace">
+        </xpath>
+        <xpath expr="//div[@id='total']" position="replace">
+        </xpath>
+
+        <xpath expr="//tbody[hasclass('sale_tbody')]" position="after">
+            <tr class="is-subtotal text-right">
+                <td colspan="99" style='visibility: hidden;'>
+                    <!--  -->
+                    <strong class="mr16">Subtotal</strong>
+                    <span
+                        t-field="sale_order.amount_total"
+                        t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'
+                    />
+                </td>
+            </tr>
+        </xpath>
+
+        <!-- Filter SO Line -->
+        <xpath expr="//tbody[hasclass('sale_tbody')]/t[2]" position="attributes">
+            <attribute name="t-foreach">sale_order.order_line.filtered(lambda x: (not x.product_id.is_gain_forex and not x.product_id.is_loss_forex) and
+                (x.do_not_merge or not x.product_set_id or x.display_type in ['line_section', 'line_note']))</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='current_section']/../td" position="attributes">
+            <attribute name="colspan">1</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='current_section']" position="before">
+            <t t-set="quantity_set" t-value="0"/>
+            <t t-set="quantity_set_uom" t-value="0"/>
+            <t t-set="total_price_usd_currency" t-value="False"/>
+            <t t-set="container_size" t-value="False"/>
+            <t t-set="container_type" t-value="False"/>
+            <t t-foreach="sale_order.order_line.filtered(lambda x: x.id != line.id and x.product_set_id == line.product_set_id)" t-as="so_line">
+                <t t-if="so_line.product_id.type == 'product'">
+                    <t t-set="quantity_set" t-value="so_line.product_uom_qty"/>
+                    <t t-set="quantity_set_uom" t-value="so_line.product_uom.name"/>
+                </t>
+                <t t-if="so_line.product_set_id and not so_line.do_not_merge">
+                    <t t-set="total_price_usd_currency" t-value="so_line.principal_currency_id"/>
+                </t>
+                <t t-if="so_line.product_id.is_container">
+                    <t t-set="container_size" t-value="so_line.product_id.container_size"/>
+                    <t t-set="container_type" t-value="so_line.product_id.container_type"/>
+                </t>
+
+            </t>
+            <td class="text-left">
+                <t t-if="container_size">
+                    <span t-esc="container_size"/>
+                </t>
+            </td>
+            <td class="text-left">
+                <t t-if="container_type == 'gp'">
+                    <span>GP</span>
+                </t>
+                <t t-elif="container_type == 'hc'">
+                    <span>HC</span>
+                </t>
+                <t t-elif="container_type == 'tunne'">
+                    <span>Tunne Type</span>
+                </t>
+                <t t-elif="container_type == 'ot'">
+                    <span>OT</span>
+                </t>
+                <t t-elif="container_type == 'fr'">
+                    <span>FR</span>
+                </t>
+                <t t-elif="container_type == 'reefer'">
+                    <span>RF</span>
+                </t>
+                <t t-elif="container_type == 'rh'">
+                    <span>RH</span>
+                </t>
+                <t t-elif="container_type == 'barge'">
+                    <span>Barge Container</span>
+                </t>
+                <t t-elif="container_type == 'breakbulk'">
+                    <span>Bulk Container</span>
+                </t>
+                <t t-elif="container_type == 'tk'">
+                    <span>TK</span>
+                </t>
+                <t t-elif="container_type == 'other'">
+                    <span>Other</span>
+                </t>
+            </td>
+            <td class="text-right">
+                <t t-if="quantity_set">
+                    <div id="set_qty">
+                        <span t-esc="quantity_set" t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>
+                        <span t-esc="quantity_set_uom"/>
+                    </div>
+                </t>
+            </td>
+            <td class="text-right">
+                <t t-if="total_price_usd_currency and quantity_set">
+                    <t t-set="price_unit_container" t-value="line.total_by_product_set"/>
+                    <span t-esc="price_unit_container" t-options='{"widget": "monetary", "decimal_precision": "Product Price", "display_currency": total_price_usd_currency}'/>
+                </t>
+
+            </td>
+            <td>
+            </td>
+            <td class="text-right">
+                <t t-if="total_price_usd_currency">
+                    <t t-set="subtotal_by_product_set" t-value="line.total_by_product_set * quantity_set"/>
+                    <span t-esc="subtotal_by_product_set" t-options='{"widget": "monetary", "decimal_precision": "Product Price", "display_currency": total_price_usd_currency}'/>
+                </t>
+                <!-- <t t-else="">
+                    <span t-esc="line.total_by_product_set" t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/>
+                </t> -->
+            </td>
+            <td t-if="display_discount" t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+            </td>
+        </xpath>
+
+        <xpath expr="//td[@id='product_name']" position="after">
+            <td></td>
+            <td></td>
+        </xpath>
+
+        <xpath expr="//td[@id='product_name']/span" position="replace">
+            <span t-field="line.product_id.name"/>
+        </xpath>
+
+        <!-- Add Freight Information at the bottom of Pricing -->
+        <xpath expr="//section[@id='details']" position="inside">
+            <div></div>
+            <div></div>
+            <t t-if="sale_order.state != 'sale'">
+                <div>
+                    <h3 id="details" class="float-left">Schedule</h3>
+                    <button t-if="sale_order.state == 'sent' and sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#schedule" t-att-id="sale_order.id" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/>Select Schedule</button>
+                </div>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th width="7%"></th>
+                            <th width="10%" class="text-left">Port Code</th>
+                            <th width="15%" class="text-left">Voyage ID</th>
+                            <th width="15%" class="text-left">Vessel</th>
+                            <th class="text-left">ETD</th>
+                            <th class="text-left">ETA</th>
+                            <th class="text-left">Time Departure</th>
+                            <th class="text-left">Time Arrival</th>
+                            <th class="text-left"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="voyage_ids" t-as="line">
+                            <tr>
+                                <td></td>
+                                <td id="port_code"><span t-field="line.re_port_code_id"/></td>
+                                <td id="voyage_id"><span t-field="line.name"/></td>
+                                <td id="vessel_id"><span t-field="line.vessel_id.vessel_full_name"/></td>
+                                <td id="date_etd"><span t-field="line.date_etd"/></td>
+                                <td id="date_eta"><span t-field="line.date_eta"/></td>
+                                <td id="time_departure"><span t-field="line.date_td"/></td>
+                                <td id="time_arrival"><span t-field="line.date_ta"/></td>
+                                <td id="submit"></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-if="sale_order.voyage_id">
+                <h3 id="details">Schedule Submitted</h3>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th width="7%"></th>
+                            <th width="10%" class="text-left">Port Code</th>
+                            <th width="15%" class="text-left">Voyage ID</th>
+                            <th width="15%" class="text-left">Vessel</th>
+                            <th class="text-left">ETD</th>
+                            <th class="text-left">ETA</th>
+                            <th class="text-left">Time Departure</th>
+                            <th class="text-left">Time Arrival</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="sale_order.voyage_id" t-as="line">
+                            <tr>
+                                <td></td>
+                                <td id="port_code"><span t-field="line.re_port_code_id"/></td>
+                                <td id="voyage_id"><span t-field="line.name"/></td>
+                                <td id="vessel_id"><span t-field="line.vessel_id.vessel_full_name"/></td>
+                                <td id="date_etd"><span t-field="line.date_etd"/></td>
+                                <td id="date_eta"><span t-field="line.date_eta"/></td>
+                                <td id="time_departure"><span t-field="line.date_td"/></td>
+                                <td id="time_arrival"><span t-field="line.date_ta"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-if="sale_order.voyage_id">
+                <h3 id="details">Port Of Call</h3>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th width="7%" class="text-left">Port Type</th>
+                            <th width="10%" class="text-left">Port Code</th>
+                            <th width="15%" class="text-left">Opening Date</th>
+                            <th width="15%" class="text-left">Closing Date</th>
+                            <th class="text-left">ETD</th>
+                            <th class="text-left">ETA</th>
+                            <th class="text-left">Time Departure</th>
+                            <th class="text-left">Time Arrival</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="sale_order.voyage_id.port_of_call_ids" t-as="line">
+                            <tr>
+                                <t t-if='line.port_type == "pol"'>
+                                    <td id="port_type">
+                                        <span t-field="line.port_type"/>
+                                    </td>
+                                    <td id="port_code"><span t-field="line.port_code_id"/></td>
+                                    <td id="opening_date"><span t-field="line.opening_date"/></td>
+                                    <td id="closing_date"><span t-field="line.closing_date"/></td>
+                                    <td id="date_etd"><span t-field="line.date_etd"/></td>
+                                    <td id="date_eta"><span t-field="line.date_eta"/></td>
+                                    <td id="date_td"><span t-field="line.date_td"/></td>
+                                    <td id="date_ta"><span t-field="line.date_ta"/></td>
+                                </t>
+                            </tr>
+                        </t>
+                        <t t-foreach="sale_order.voyage_id.port_of_call_ids" t-as="line">
+                            <tr>
+                                <t t-if='line.port_type == "pod" and line.port_code_id == sale_order.pod_id'>
+                                    <td id="port_type">
+                                        <span t-field="line.port_type"/>
+                                    </td>
+                                    <td id="port_code"><span t-field="line.port_code_id"/></td>
+                                    <td id="opening_date"><span t-field="line.opening_date"/></td>
+                                    <td id="closing_date"><span t-field="line.closing_date"/></td>
+                                    <td id="date_etd"><span t-field="line.date_etd"/></td>
+                                    <td id="date_eta"><span t-field="line.date_eta"/></td>
+                                    <td id="date_td"><span t-field="line.date_td"/></td>
+                                    <td id="date_ta"><span t-field="line.date_ta"/></td>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-if="sale_order.state in ['sale', 'done']">
+                <h3 id="details">Connecting Vessel</h3>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th width="10%" class="text-left">Port Code</th>
+                            <th width="10%" class="text-left">Port Type</th>
+                            <th width="10%" class="text-left">Vessel</th>
+                            <th width="10%" class="text-left">Voyage</th>
+                            <th class="text-left">ETD</th>
+                            <th class="text-left">ETA</th>
+                            <th class="text-left">Time Departure</th>
+                            <th class="text-left">Time Arrival</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="sale_order.connecting_vessel_id" t-as="line">
+                                <tr>
+                                    <td id="port_code_id"><span t-field="line.port_code_id"/></td>
+                                    <td id="port_code_id"><span t-field="line.port_type"/></td>
+                                    <td id="port_code_id"><span t-field="line.vessel_id.vessel_full_name"/></td>
+                                    <td id="port_code_id"><span t-field="line.voyage_id"/></td>
+                                    <td id="date_etd"><span t-field="line.date_etd"/></td>
+                                    <td id="date_eta"><span t-field="line.date_eta"/></td>
+                                    <td id="time_departure"><span t-field="line.time_departure"/></td>
+                                    <td id="time_arrival"><span t-field="line.time_arrival"/></td>
+                                </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <div class="row">
+                <div class="col-12">
+                    <div>
+                        <h3 id="details" class="float-left"><span t-if="sale_order.booking_email_send == False">Shipping Instruction</span><span t-if="sale_order.booking_email_send == True">Final Shipping Instruction</span></h3>
+                        <button t-if="sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#modalshipping" t-att-id="sale_order.id" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/>Edit SI</button>
+                        <button t-if="sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#modalcontact" t-att-id="sale_order.id" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/>Create New/Edit Contact</button>
+                    </div>
+                    <br/>
+                    <hr/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    <strong>Shipper</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.shipper_id.name"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    Address
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.shipper_address"/>
+                </div>
+            </div>
+
+            <br/>
+            <div class="row">
+                <div class="col-3">
+                    <strong>Consignee</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.consignee_id.name"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    Address
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.consignee_address"/>
+                </div>
+            </div>
+
+            <br/>
+            <div class="row">
+                <div class="col-3">
+                    <strong>Notify Party</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.notify_id.name"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    Address
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.notify_address"/>
+                </div>
+            </div>
+
+            <br/>
+            <t t-if="sale_order.state == 'sale'">
+                <div class="row">
+                    <div class="col-3">
+                        <strong>PEB Number</strong>
+                    </div>
+                    <div class="col-9">
+                        : <span t-esc="sale_order.peb_no"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <strong>PEB Date</strong>
+                    </div>
+                    <div class="col-9">
+                        : <span t-esc="sale_order.peb_date"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <strong>KPBC Code</strong>
+                    </div>
+                    <div class="col-9">
+                        : <span t-esc="sale_order.kpbc_code_id.kpbc_code"/> - <span t-esc="sale_order.kpbc_code_id.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Package</strong>
+                    </div>
+                    <div class="col-9">
+                        : <span t-esc="sale_order.package_code_id.code"/> - <span t-esc="sale_order.package_code_id.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Unit</strong>
+                    </div>
+                    <div class="col-9">
+                        : <span t-esc="sale_order.unit"/>
+                    </div>
+                </div>
+            </t>
+
+            <div class="row">
+                <div class="col-3">
+                    <strong>Goods</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.good_description"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    <strong>Remarks</strong>
+                </div>
+                <div class="col-9">
+                    : <span t-esc="sale_order.remarks"/>
+                </div>
+            </div>
+            <br/>
+
+            <t t-if="sale_order.cro_ids">
+                <t t-if="any(cro.container_type_id.container_type in ['reefer', 'rh'] for cro in sale_order.cro_ids)">
+                    <h5 id="details" class="float-left">Reefer Container Information</h5>
+                    <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                        <thead class="bg-100">
+                            <tr>
+                                <th class="text-left">#</th>
+                                <th class="text-left">Cargo Type</th>
+                                <th class="text-left">Container</th>
+                                <th class="text-left">Container Category</th>
+                                <th class="text-left">Gross</th>
+                                <th class="text-left">Net</th>
+                                <th class="text-left">Measure</th>
+                                <th class="text-left">IMDG</th>
+                                <th class="text-left">EMS</th>
+                                <th class="text-left">UN</th>
+                                <th class="text-left">Temp°</th>
+                                <th class="text-left">Pg Class</th>
+                                <th class="text-left">HS</th>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <th class="text-left">Cont. No.</th>
+                                    <th class="text-left">Seal TEST</th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="sale_order.cro_ids.filtered(lambda x: x.container_type_id.container_type in ['reefer', 'rh'])" t-as="line">
+                                <tr>
+                                    <td id="button"><button t-if="sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#modalcontainerinforeefer" t-att-data-modalcontainerinfo_id="line.id" t-att-data-modalcontainerinfo_name="line.name" t-att-data-modalcontainerinfo_commodity_type="line.commodity_type" t-att-data-modalcontainerinfo_container_categ="line.container_categ" t-att-data-modalcontainerinfo_gross="line.gross" t-att-data-modalcontainerinfo_nett="line.nett" t-att-data-modalcontainerinfo_measure="line.measure" t-att-data-modalcontainerinfo_commodity="line.commodity.ids" t-att-data-modalcontainerinfo_hs="line.hs_code.ids" t-att-data-modalcontainerinfo_seal="line.seal_number.name" t-att-data-modalcontainerinfo_imdg_class="line.imdg_class" t-att-data-modalcontainerinfo_lot="line.container_number_id.id" t-att-data-modalcontainerinfo_lotname="line.container_number_id.name" t-att-data-modalcontainerinfo_ems_number="line.ems_number" t-att-data-modalcontainerinfo_un="line.un_number" t-att-data-modalcontainerinfo_temp="line.set_temp" t-att-data-modalcontainerinfo_pgclass="line.pg_class" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/></button></td>
+                                    <td id="commodity_type"><span t-field="line.commodity_type"/></td>
+                                    <td id="container_type_id"><span t-field="line.container_type_id"/></td>
+                                    <td id="container_categ"><span t-field="line.container_categ"/></td>
+                                    <td id="gross"><span t-field="line.gross"/></td>
+                                    <td id="nett"><span t-field="line.nett"/></td>
+                                    <td id="measure"><span t-field="line.measure"/></td>
+                                    <td id="imdg"><span t-field="line.imdg_class"/></td>
+                                    <td id="ems"><span t-field="line.ems_number"/></td>
+                                    <td id="un"><span t-field="line.un_number"/></td>
+                                    <td id="temp"><span t-field="line.set_temp"/></td>
+                                    <td id="pg_class"><span t-field="line.pg_class"/></td>
+                                    <td id="hs_code"><span t-field="line.hs_code"/></td>
+                                    <t t-if="sale_order.state in ['sale', 'done']">
+                                        <td id="cotainer_no"><span t-field="line.container_number_id"/></td>
+                                        <td id="seal_no"><span t-field="line.seal_number"/></td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-elif="any(cro.container_type_id.container_type == 'breakbulk' for cro in sale_order.cro_ids)">
+                    <h5 id="details" class="float-left">Breakbulk Container Information</h5>
+                    <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                        <thead class="bg-100">
+                            <tr>
+                                <th class="text-left">#</th>
+                                <th class="text-left">Cargo Type</th>
+                                <th class="text-left">Container</th>
+                                <th class="text-left">Container Category</th>
+                                <th class="text-left">IMDG</th>
+                                <th class="text-left">EMS</th>
+                                <th class="text-left">UN</th>
+                                <th class="text-left">Length</th>
+                                <th class="text-left">Height</th>
+                                <th class="text-left">Width</th>
+                                <th class="text-left">Dim.</th>
+                                <th class="text-left">Pg Class</th>
+                                <th class="text-left">HS</th>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <th class="text-left">Cont. No.</th>
+                                    <th class="text-left">Seal</th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="sale_order.cro_ids.filtered(lambda x: x.container_type_id.container_type == 'breakbulk')" t-as="line">
+                                <tr>
+                                    <td id="button"><button t-if="sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#modalcontainerinfobreakbulk" t-att-data-modalcontainerinfo_id="line.id" t-att-data-modalcontainerinfo_name="line.name" t-att-data-modalcontainerinfo_commodity_type="line.commodity_type" t-att-data-modalcontainerinfo_container_categ="line.container_categ" t-att-data-modalcontainerinfo_gross="line.gross" t-att-data-modalcontainerinfo_nett="line.nett" t-att-data-modalcontainerinfo_measure="line.measure" t-att-data-modalcontainerinfo_commodity="line.commodity.ids" t-att-data-modalcontainerinfo_hs="line.hs_code.ids" t-att-data-modalcontainerinfo_seal="line.seal_number.name" t-att-data-modalcontainerinfo_lot="line.container_number_id.id" t-att-data-modalcontainerinfo_lotname="line.container_number_id.name" t-att-data-modalcontainerinfo_imdg_class="line.imdg_class" t-att-data-modalcontainerinfo_ems_number="line.ems_number" t-att-data-modalcontainerinfo_un="line.un_number" t-att-data-modalcontainerinfo_lenght="line.length" t-att-data-modalcontainerinfo_height="line.height" t-att-data-modalcontainerinfo_width="line.width" t-att-data-modalcontainerinfo_dimension="line.total_outer_dimension" t-att-data-modalcontainerinfo_pgclass="line.pg_class" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/></button></td>
+                                    <td id="commodity_type"><span t-field="line.commodity_type"/></td>
+                                    <td id="container_type_id"><span t-field="line.container_type_id"/></td>
+                                    <td id="container_categ"><span t-field="line.container_categ"/></td>
+                                    <td id="imdg"><span t-field="line.imdg_class"/></td>
+                                    <td id="emss"><span t-field="line.ems_number"/></td>
+                                    <td id="un"><span t-field="line.un_number"/></td>
+                                    <td id="length"><span t-field="line.length"/></td>
+                                    <td id="height"><span t-field="line.height"/></td>
+                                    <td id="width"><span t-field="line.width"/></td>
+                                    <td id="tod"><span t-field="line.total_outer_dimension"/></td>
+                                    <td id="pg_class"><span t-field="line.pg_class"/></td>
+                                    <td id="hs_code"><span t-field="line.hs_code"/></td>
+                                    <t t-if="sale_order.state in ['sale', 'done']">
+                                        <td id="cotainer_no"><span t-field="line.container_number_id"/></td>
+                                        <td id="seal_no"><span t-field="line.seal_number"/></td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <h5 id="details" class="float-left">Other Container Information</h5>
+                    <button type="submit" data-toggle="modal" data-target="#modalcopycontainer" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/>Copy Container Detail</button>
+                    <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                        <thead class="bg-100">
+                            <tr>
+                                <th class="text-left">#</th>
+                                <th class="text-left">No</th>
+                                <th class="text-left">Cargo Type</th>
+                                <th class="text-left">Container</th>
+                                <th class="text-left">Container Category</th>
+                                <th class="text-left">Gross</th>
+                                <th class="text-left">Net</th>
+                                <th class="text-left">Measure</th>
+                                <th class="text-left">IMDG</th>
+                                <th class="text-left">EMS</th>
+                                <th class="text-left">UN</th>
+                                <th class="text-left">Pg Class</th>
+                                <th class="text-left">HS</th>
+                                <t t-if="sale_order.state in ['sale', 'done']">
+                                    <th class="text-left">Cont. No.</th>
+                                    <th class="text-left">Seal</th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="sale_order.cro_ids.filtered(lambda x: x.container_type_id.container_type not in ['reefer', 'breakbulk'])" t-as="line">
+                                <tr>
+                                    <td id="button"><button t-if="sale_order.confirmed_draft_bl == False" type="submit" data-toggle="modal" data-target="#modalcontainerinfoother" t-att-data-modalcontainerinfo_id="line.id" t-att-data-modalcontainerinfo_name="line.name" t-att-data-modalcontainerinfo_commodity_type="line.commodity_type" t-att-data-modalcontainerinfo_container_categ="line.container_categ" t-att-data-modalcontainerinfo_gross="line.gross" t-att-data-modalcontainerinfo_nett="line.nett" t-att-data-modalcontainerinfo_measure="line.measure" t-att-data-modalcontainerinfo_commodity="line.commodity.ids" t-att-data-modalcontainerinfo_hs="line.hs_code.ids" t-att-data-modalcontainerinfo_seal="line.seal_number.name" t-att-data-modalcontainerinfo_lot="line.container_number_id.id" t-att-data-modalcontainerinfo_lotname="line.container_number_id.name" t-att-data-modalcontainerinfo_imdg_class="line.imdg_class" t-att-data-modalcontainerinfo_ems_number="line.ems_number" t-att-data-modalcontainerinfo_un="line.un_number" t-att-data-modalcontainerinfo_pgclass="line.pg_class" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/></button></td>
+                                    <td id="sequence"><span t-field="line.sequence"/></td>
+                                    <td id="commodity_type"><span t-field="line.commodity_type"/></td>
+                                    <td id="container_type_id"><span t-field="line.container_type_id"/></td>
+                                    <td id="container_categ"><span t-field="line.container_categ"/></td>
+                                    <td id="gross"><span t-field="line.gross"/></td>
+                                    <td id="nett"><span t-field="line.nett"/></td>
+                                    <td id="measure"><span t-field="line.measure"/></td>
+                                    <td id="imdg"><span t-field="line.imdg_class"/></td>
+                                    <td id="ems"><span t-field="line.ems_number"/></td>
+                                    <td id="un"><span t-field="line.un_number"/></td>
+                                    <td id="pg_class"><span t-field="line.pg_class"/></td>
+                                    <td id="hs_code"><span t-field="line.hs_code"/></td>
+                                    <t t-if="sale_order.state in ['sale', 'done']">
+                                        <td id="cotainer_no"><span t-field="line.container_number_id"/></td>
+                                        <td id="seal_no"><span t-field="line.seal_number"/></td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <div>
+                    <t t-if="sale_order.booking_email_send and sale_order.charge_info_ids">
+                    <h5 id="details" class="float-left">Charges Info</h5>
+                    <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                        <thead class="bg-100">
+                            <tr>
+                                <th class="text-left">#</th>
+                                <th class="text-left">Charge Item</th>
+                                <th class="text-left">Size</th>
+                                <th class="text-left">Type</th>
+                                <th class="text-left">Payment Term</th>
+                                <th class="text-left">Bill To</th>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="sale_order.charge_info_ids.filtered(lambda x: not x.name == 'Forex Gain' and not x.name == 'Forex Loss')" t-as="line">
+                                <tr>
+                                    <td id="button"><button type="submit" t-if="sale_order.confirmed_draft_bl == False" data-toggle="modal" data-target="#modalcharges" t-att-data-modalchargeinfo_id="line.id" t-att-data-modalchargeinfo_name="line.name" t-att-data-modalchargeinfo_payment_term="line.fce_payment_term" t-att-data-modalchargeinfo_bill_to_id="line.bill_to_id.id" class="btn btn-link btn-sm"><i class="fa fa-pencil mr-1"/></button></td>
+                                    <td id="charge_item">
+                                        <t t-foreach='line.sale_line_ids' t-as='ofr'>
+                                            <t t-if='ofr.product_id.is_ofr'>
+                                                <span t-field="ofr.product_id.default_code"/>
+                                            </t>
+                                            <t t-else=''>
+                                                <span t-field="line.name"/>
+                                            </t>
+                                        </t>
+                                    </td>
+                                    <t t-set="sale_line" t-value="line.sale_line_ids.filtered(lambda a: a.product_id.is_container)"/>
+                                    <td>
+                                        <span t-esc="sale_line.product_id.container_size"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="container_type" t-value="sale_line.product_id.container_type"/>
+                                        <t t-if="container_type == 'gp'">
+                                            <span>GP</span>
+                                        </t>
+                                        <t t-elif="container_type == 'hc'">
+                                            <span>HC</span>
+                                        </t>
+                                        <t t-elif="container_type == 'tunne'">
+                                            <span>Tunne Type</span>
+                                        </t>
+                                        <t t-elif="container_type == 'ot'">
+                                            <span>OT</span>
+                                        </t>
+                                        <t t-elif="container_type == 'fr'">
+                                            <span>FR</span>
+                                        </t>
+                                        <t t-elif="container_type == 'reefer'">
+                                            <span>RF</span>
+                                        </t>
+                                        <t t-elif="container_type == 'rh'">
+                                            <span>RH</span>
+                                        </t>
+                                        <t t-elif="container_type == 'barge'">
+                                            <span>Barge Container</span>
+                                        </t>
+                                        <t t-elif="container_type == 'breakbulk'">
+                                            <span>Bulk Container</span>
+                                        </t>
+                                        <t t-elif="container_type == 'tk'">
+                                            <span>TK</span>
+                                        </t>
+                                        <t t-elif="container_type == 'other'">
+                                            <span>Other</span>
+                                        </t>
+                                    </td>
+                                    <td id="payment_term"><span t-field="line.fce_payment_term"/></td>
+                                    <td id="bill_to_id"><span t-field="line.bill_to_id"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

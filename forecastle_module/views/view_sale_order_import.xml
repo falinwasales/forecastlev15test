@@ -1,0 +1,405 @@
+<odoo>
+    <!-- Revised -->
+    <record id="act_action_sale_order_import_revised" model="ir.actions.act_window">
+        <field name="name">Revised</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('parent_id', 'parent_of', active_id), ('active', '=', False), ('id', '!=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Revised.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_sales_order_import_filter" model="ir.ui.view">
+        <field name="name">sale.order.list.select</field>
+        <field name="model">sale.order</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Search Import">
+                <field name="name" string="Order" filter_domain="['|', ('name', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_sale_order_import_tree" model="ir.ui.view">
+        <field name="name">sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <tree string="Import" class="o_sale_order" sample="1">
+                <field name="name" string="NO Host BL/AWB" readonly="1" decoration-bf="1"/>
+                <field name="partner_id" readonly="1" string="Nama Consignee"/>
+                <field name="no_master_bl"/>
+                <field name="no_host_bl"/>
+                <field name="no_voyage"/>
+                <field name="mother_vessel"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sale_order_import_form" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+            <form string="Sales Order" class="o_sale_order" js_class="sale_discount_form">
+                <header>
+                    <button name="action_quotation_send" string="Update Container Details" type="object" states="draft" class="btn-primary"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible':['|', ('state', '=', 'draft'), ('fal_approve_sale', '=', True)]}"/>
+                    <button name="action_confirm" class="btn-primary" string="Confirm" type="object" attrs="{'invisible':['|', ('fal_approve_sale', '=', False), ('state', 'not in', ['sent'])]}"/>
+                    <button class="btn-primary" type="action" name="%(sale_product_set.act_open_wizard_product_set_add)d" icon="fa-cubes" groups="base.group_user" string="Add set"/>
+                    <button name="so_revision_quote" string="Revise Import"
+                    type="object" class="btn-primary" attrs="{'invisible':['|', ('state', 'not in', ('sent')), ('active', '=', False)]}"/>
+                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False)]}"/>
+                    <button name="action_create_manual_purchase_order_principal" class="btn-primary" type="object" string="Create PO To Principal" attrs="{'invisible': ['|', ('repair', '!=', True), ('po_repair_count', '!=', 0)]}"/>
+                    <button name="action_create_manual_purchase_order_consignee" class="btn-primary" type="object" string="Create PO To Consignee" attrs="{'invisible': ['|', ('repair', '!=', True), ('po_repair_consignee_count', '!=', 0)]}"/>
+<!--                     <button name="action_repair" class="btn-primary" type="object" string="Repair" attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('fce_repair_id', '!=', False)]}"/> -->
+                    <button name="action_send_noa" type="object" string="Send Noa" attrs="{'invisible': ['|', ('state', 'in', ['draft','done']), ('noa', '=', True)]}"/>
+                    <button name="action_release_spdo" type="object" string="Release SPDO" attrs="{'invisible': ['|', ('state', 'in', ['draft','sale','sent']), ('release_spdo', '=', True)]}"/>
+                    <button name="action_draft" states="cancel" type="object" string="Set to Quotation"/>
+                    <field name="fal_approve_sale" invisible="1"/>
+                    <field name="confirmed_draft_bl" invisible="1"/>
+                    <field name="noa" invisible="1"/>
+                    <field name="repair" invisible="1"/>
+                    <field name="release_spdo" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="preview_sale_order"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-globe icon">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Customer</span>
+                                <span class="o_stat_text">Preview</span>
+                            </div>
+                        </button>
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_create_vendor_bill_import" type="object" icon="fa-pencil-square-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="so_vendor_bill_count"/></span>
+                                <span class="o_stat_text">Cust. Refund</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" name="action_create_purchase_c2c" type="object" icon="fa-credit-card">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="c2c_purchase_count"/></span>
+                                <span class="o_stat_text">C2C Feeder Slot </span>
+                            </div>
+                        </button>
+                        <button class="oe_inline oe_stat_button" type="action"
+                            name="%(forecastle_module.act_action_sale_order_import_revised)d" icon="fa-bars"
+                            attrs="{'invisible':[('fal_order_revised_count','=', 0)]}">
+                            <field string="Revised Quotation" name="fal_order_revised_count"
+                                widget="statinfo" />
+                        </button>
+                        <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card" groups="purchase.group_purchase_user" attrs="{'invisible': [('is_import', '=', True)]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                            <span class="o_stat_text">Purchase</span>
+                        </div>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_purchase_repair_principal" type="object" icon="fa-credit-card" groups="purchase.group_purchase_user" attrs="{'invisible': [('po_repair_count', '=', 0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="po_repair_count"/></span>
+                                <span class="o_stat_text">PO To Principal</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_purchase_repair_consignee" type="object" icon="fa-credit-card" groups="purchase.group_purchase_user" attrs="{'invisible': [('po_repair_consignee_count', '=', 0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="po_repair_consignee_count"/></span>
+                                <span class="o_stat_text">PO To Consignee</span>
+                            </div>
+                        </button>
+                        <field name="picking_ids" invisible="1"/>
+                        <button type="object" name="action_view_purchase_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('purchase_delivery_count', '=', 0)]}" groups="base.group_user">
+                            <field name="purchase_delivery_count" widget="statinfo" string="Receipt"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <label for="name" string="NO Host BL/AWB"/>
+                    <!-- string="NO Host BL/AWB" -->
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required='1'/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer'}" options='{"always_reload": True}' string="Nama Consignee" domain="[('is_consignee', '=', True)]"/>
+                            <field name="partner_invoice_id" invisible="1"/>
+                            <field name="almt_consignee"/>
+                            <field name="npwp_consignee"/>
+                            <field name="nama_shipper"/>
+                            <field name="almt_shipper"/>
+                            <field name="nama_notify"/>
+                            <field name="almt_notify"/>
+                            <field name="is_import" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="pricelist_id" invisible="0" required='1' domain="[('currency_id.name', '=', 'IDR')]"/>
+                            <field name="currency_id" invisible="0"/>
+                            <field name="customer_status"/>
+                        </group>
+                        <group>
+                            <field name="mother_vessel"/>
+                            <field name="nama_sarana_angkut"/>
+                            <field name="tgl_tiba"/>
+                            <field name="jam_tiba"/>
+                            <field name="no_master_bl"/>
+                            <field name="tgl_master_bl"/>
+                            <field name="no_host_bl" string='No AJU'/>
+                            <field name="tgl_host_bl"/>
+                            <!-- attrs="{'invisible': [('confirmed_draft_bl', '!=', True)]} -->
+                            <label for="start_date" string = 'Invoice Date' attrs="{'invisible':[('state', 'not in', ['sent', 'sale'])]}"/>
+                            <div attrs="{'invisible':[('state', 'not in', ['sent', 'sale'])]}">
+                                    <field name="start_date"/>
+                                    <button string='Submit Invoice Date' name="action_change_start_date" type="object" icon="fa-plus" class="oe_stat_button oe_inline"/>
+                            </div>
+                            <label for="fal_rate_currency" attrs="{'invisible':[('state', 'not in', ['sent', 'sale'])]}"/>
+                            <div attrs="{'invisible':[('state', 'not in', ['sent', 'sale'])]}">
+                                <field name="fal_rate_currency" class="oe_inline" attrs="{'readonly': [('fal_forex', '=', True)]}"/>
+                                <button string='Generate Gain/Loss' name="generate_forex" type="object" icon="fa-plus" class="oe_stat_button oe_inline" attrs="{'invisible': [('fal_forex', '=', True)]}"/>
+                                <field name="fal_forex" invisible='1'/>
+                            </div>
+                            <field name="no_voyage" invisible='1'/>
+                            <field name="voyage_id" required='1'/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group>
+                            
+                            <field name="no_pos"/>
+                            <field name="no_sub_pos"/>
+                            <field name="no_sub_sub_pos"/>
+                        </group>
+                        <group>
+                            <field name="pelabuhan_asal"/>
+                            <field name="pelabuhan_transit"/>
+                            <field name="pelabuhan_bongkar"/>
+                            <field name="pelabuhan_akhir"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="jumlah_kemasan"/>
+                            <field name="jenis_kemasan"/>
+                            <field name="uraian_barang"/>
+                            <field name='fal_route'/>
+                        </group>
+                        <group>
+                            <field name="bruto"/>
+                            <field name="volume"/>
+                            <field name="hs_code"/>
+                            <field name="ofr" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Order Lines" name="order_lines">
+                            <field name="order_line" widget="section_and_note_one2many" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('sale','done','cancel'))]}">
+                                <tree string="Sales Order Lines" editable="bottom">
+                                    <control>
+                                        <create name="add_product_control" string="Add a product"/>
+                                        <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+
+                                    <field name="sequence" widget="handle"/>
+                                    <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+
+                                    <field name="product_updatable" invisible="1"/>
+                                    <field name="product_id" attrs="{                                             'readonly': [('product_updatable', '=', False)],                                             'required': [('display_type', '=', False)],                                         }" options="{'no_open': True}" force_save="1" context="{                                             'partner_id': parent.partner_id,                                             'quantity': product_uom_qty,                                             'pricelist': parent.pricelist_id,                                             'uom':product_uom,                                             'company_id': parent.company_id,                                             'default_lst_price': price_unit,                                             'default_description_sale': name                                         }" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                                    <field name="product_template_id" string="Product" invisible="1" attrs="{                                           'readonly': [('product_updatable', '=', False)],                                           'required': [('display_type', '=', False)],                                       }" options="{'no_open': True}" context="{                                           'partner_id': parent.partner_id,                                           'quantity': product_uom_qty,                                           'pricelist': parent.pricelist_id,                                           'uom':product_uom,                                           'company_id': parent.company_id,                                           'default_list_price': price_unit,                                           'default_description_sale': name                                       }" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                                    <field name="name" widget="section_and_note_text" optional="show"/>
+                                    <field name="analytic_tag_ids" optional="hide" groups="analytic.group_analytic_tags" widget="many2many_tags" options="{'color_field': 'color'}" domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                                    <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" context="{                                             'partner_id': parent.partner_id,                                             'quantity': product_uom_qty,                                             'pricelist': parent.pricelist_id,                                             'uom': product_uom,                                             'company_id': parent.company_id                                         }"/>
+                                    <field name="qty_delivered" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Delivered" attrs="{                                             'column_invisible': [('parent.state', 'not in', ['sale', 'done'])],                                             'readonly': [('qty_delivered_method', '!=', 'manual')]                                         }" optional="show"/>
+                                    <field name="qty_delivered_manual" invisible="1"/>
+                                    <field name="qty_delivered_method" invisible="1"/>
+                                    <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" optional="show"/>
+                                    <field name="qty_to_invoice" invisible="1"/>
+                                    <field name="product_uom_readonly" invisible="1"/>
+                                    <field name="product_uom" force_save="1" string="UoM" attrs="{                                             'readonly': [('product_uom_readonly', '=', True)],                                             'required': [('display_type', '=', False)],                                         }" context="{'company_id': parent.company_id}" groups="uom.group_uom" options="{&quot;no_open&quot;: True}" optional="show"/>
+                                    <field name="customer_lead" optional="hide" attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"/>
+                                    <field name="principal_currency_id" invisible="1"/>
+                                    <field name="price_unit_principal_currency" widget="monetary" options="{'currency_field': 'principal_currency_id'}"/>
+                                    <field name="price_unit" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
+                                    <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}" optional="show"/>
+                                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show" widget="product_discount"/>
+                                    <field name="price_subtotal" widget="monetary" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <field name="price_total" widget="monetary"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="invoice_status" invisible="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="price_tax" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                <group colspan="4">
+                                    <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                    <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="amount_total"/>
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <div class="oe_clear"/>
+                            </group>
+                        </page>
+                        <page string="Update Detention Info">
+                            <button name="action_set_ofr" type="object" class="btn btn-primary" string="Set OFR" attrs="{'invisible': [('state', 'in', ('sale', 'done'))]}"/>
+                            <field name="import_container_info_ids" attrs="{'readonly': [('state', 'in', ('sale', 'done'))],'required': [('state', '=', 'sent')]}"/>
+                        </page>
+                        <page string="Document Info">
+                            <group>
+                                <group>
+                                    <label for="imp_principal_id" required='1'/>
+                                    <div>
+                                        <field name="imp_principal_id" required='1'/>
+                                        <button name="update_detention_info" type="object" class="oe_inline" string="=> Update Detention Info"/>
+                                    </div>
+                                    <field name="imp_terminal_code_id" required='1'/>
+                                    <field name="imp_depot_code_id" invisible='1'/>
+                                    <field name="depot_name_id" invisible='0' attrs="{'required': [('state', '=', 'draft')]}" required='1'/>
+                                    <field name="attn"/>
+                                    <field name="filename_hbl" invisible="1"/>
+                                    <field name="hbl" filename="filename_hbl"/>
+                                    <field name="filename_import_manifest" invisible="1"/>
+                                    <field name="import_manifest" filename="filename_import_manifest" required='1'/>
+                                </group>
+                                <group>
+                                    <field name="ata_jkt"/>
+                                    <field name="batas_pengembalian"/>
+                                    <field name="create_date"/>
+                                    <field name="create_uid"/>
+                                    <field name="discharge_date"/>
+                                    <field name="gate_out_cy_date"/>
+                                </group>
+                            </group>
+                            <group>
+                                <!-- <group string="Repair">
+                                    <field name="fce_repair_id" readonly="1"/>
+                                </group> -->
+                                <group string="Invoices">
+                                    <field name="commission_invoice_id" readonly="1"/>
+                                    <field name="deposit_invoice_id" readonly="1"/>
+                                    <field name="detention_invoice_id" readonly="1"/>
+                                    <field name="deposit_detention_invoice_id" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <field name="po_comision_ehs" readonly="1"/>
+                                    <field name="po_detention_id" readonly="1"/>
+                                </group>
+                                <group>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Refund Deposit">
+                            <group>
+                                <group string="Container Despoit">
+                                    <field name="filename_ktp" invisible="1"/>
+                                    <field name="ktp" filename="filename_ktp"/>
+                                    <field name="filename_surat_kuasa"  invisible="1"/>
+                                    <field name="surat_kuasa" filename="filename_surat_kuasa"/>
+                                    <field name="filename_bl"  invisible="1"/>
+                                    <field name="bl" filename="filename_bl"/>
+                                    <field name="filename_eir" invisible="1"/>
+                                    <field name="eir" filename="filename_eir"/>
+                                    <field name="filename_sp2" invisible="1"/>
+                                    <field name="sp2" filename="filename_sp2"/>
+                                    <field name="filename_bukti_bayar" invisible="1"/>
+                                    <field name="bukti_bayar" filename="filename_bukti_bayar"/>
+                                    <field name="filename_official_receipt" invisible="1"/>
+                                    <field name="official_receipt" filename="filename_official_receipt"/>
+                                </group>
+                                <group string="Date Submited">
+                                    <field name="ktp_date_submit" nolabel="1"/> <div></div>
+                                    <field name="surat_kuasa_date_submit" nolabel="1"/> <div></div>
+                                    <field name="bl_date_submit" nolabel="1"/> <div></div>
+                                    <field name="eir_date_submit" nolabel="1"/> <div></div>
+                                    <field name="sp2_date_submit" nolabel="1"/> <div></div>
+                                    <field name="bukti_bayar_date_submit" nolabel="1"/> <div></div>
+                                    <field name="official_receipt_date_submit" nolabel="1"/> <div></div>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Detention Deposit">
+                                    <field name="filename_invoice_detention" invisible="1"/>
+                                    <field name="invoice_detention" filename="filename_invoice_detention"/>
+                                    <field name="filename_official_receipt_detention" invisible="1"/>
+                                    <field name="official_receipt_detention" string="Official Receipt" filename="filename_official_receipt_detention"/>
+                                    <field name="refund_invocie_detention"/>
+                                    <field name="refund_official_receipt_detention" string="Refund Official Receipt"/>
+                                </group>
+                                <group string="Date Submited">
+                                    <field name="invoice_detention_date_submit" nolabel="1"/> <div></div>
+                                    <field name="official_receipt_detention_date_submit" nolabel="1"/> <div></div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Charges Info">
+                            <field name="charge_info_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="bill_to_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="forecastle_module.act_action_sale_order_import_revised" model="ir.actions.act_window">
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('forecastle_module.view_sale_order_import_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('forecastle_module.view_sale_order_import_form')})]"/>
+    </record>
+
+    <record id="sale_order_import_action" model="ir.actions.act_window">
+        <field name="name">Import</field>
+        <field name="res_model">sale.order</field>
+        <field name="search_view_id" ref="view_sales_order_import_filter"/>
+        <field name="context">{'default_is_import':1}</field>
+        <field name="domain">[('is_import', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('forecastle_module.view_sale_order_import_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('forecastle_module.view_sale_order_import_form')})]"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Import
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="sale_order_import_menu"
+            name="Import"
+            parent="forecastle_module.liner_agency_menu"
+            sequence="2"/>
+
+    <menuitem id="sale_order_import_menu_action"
+            name="Import Manifest"
+            parent="sale_order_import_menu"
+            sequence="1"
+            action="sale_order_import_action"/>
+</odoo>

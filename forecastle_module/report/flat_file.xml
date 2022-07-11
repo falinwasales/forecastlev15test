@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<template id="forecastle_flat_file"><t t-name="forecastle_module.forecastle_flat_file"><t t-foreach="docs" t-as="sale">
+HDR0111OS<t t-esc="sale.flat_vessel_name"/><t t-esc="sale.flat_voyage_name"/><t t-esc="sale.flat_date_td"/>00V30MEM31
+DTL01<t t-esc="sale.group_code_id.code"/>00010000   <t t-esc="sale.flat_pol_pod_name"/><t t-esc="sale.flat_bl_number"/><t t-esc="sale.flat_bl_issue_date"/>  <t t-esc="sale.code_flat_file"/>
+DTL02SNM01<t t-esc="sale.shipper_id.display_name"/>
+DTL02SNA01<t t-esc="sale.shipper_address"/>
+DTL02CNM01<t t-esc="sale.consignee_id.display_name"/>
+DTL02CNA01<t t-esc="sale.consignee_address"/>
+DTL02CNM01<t t-esc="sale.notify_id.display_name"/>
+DTL02CNA01<t t-esc="sale.notify_address"/>
+DTL02SMR01<t t-esc="sale.remarks"/>
+DTL02HSC01<t t-esc="sale.cro_ids[0].hs_code.digit_categories"/>
+DTL02DES01<t t-esc="sale.good_description"/>
+DOK01PEB001<t t-esc="sale.kpbc_code_id.kpbc_code"/><t t-esc="sale.peb_no"/><t t-esc="sale.flat_peb_date"/>
+<t t-foreach="sale.cro_ids" t-as="cro">CNT01<t t-esc="cro.code_sequence"/><t t-esc="cro.container_number_id.name"/> <t t-esc="cro.container_type_id.container_size"/><t t-esc="sale.container_load"/> <t t-esc="cro.seal_number.name"/>
+</t></t></t></template>
+    </data>
+        
+    <record id="action_label_transfer_template_zpl" model="ir.actions.report">
+        <field name="name">Flat file</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">forecastle_module.forecastle_flat_file</field>
+        <field name="report_file">forecastle_module.forecastle_flat_file</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+    

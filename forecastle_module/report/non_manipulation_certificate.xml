@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_non">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t>
+                    <div class="page">
+                        <style>
+                            html *{
+                                word-wrap: break-word;
+                                font-family:font-family: Arial, Helvetica, sans-serif;
+                                font-size: 0.38cm;
+                            }
+
+                            table{
+                                margin-left: 1.6cm;
+                            }
+
+                            .table_report_header_string{
+                                text-transform: uppercase;
+                                font-size: 0.6cm;
+                                font-weight: bold;
+                            }
+
+                            .table_report_main_field{
+                                text-transform: uppercase;
+                            }
+                        </style>
+
+                        <table style='width: 100%; margin-top: 3cm;'>
+                            <tr>
+                                <td style='text-transform: uppercase; font-size: 0.6cm; font-weight: bold;'>
+                                    non manipulation certificate
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='text-transform: uppercase;'>
+                                    confirmation status
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:0.9cm; width: 100%;'>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                    To : Whom it may concern
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:1.3cm; width: 100%;'>
+                            <td class='table_report_main_string'>
+                                Refer to the shipment of following details:
+                            </td>
+                        </table>
+
+                        <table style='margin-top:0.6cm; width: 70%;'>
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    HBL No
+                                </td>
+                                <td class='table_report_main_field'>
+                                   : <span t-field='o.name'/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    POL
+                                </td>
+                                <td class='table_report_main_field'>
+                                   :  <span t-field='o.pelabuhan_asal.port_full_name'/>, <span t-field='o.pelabuhan_asal.coutry_id'/> 
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    POT
+                                </td>
+                                <td class='table_report_main_field'>
+                                   : <span t-field='o.pelabuhan_transit.port_full_name'/>, <span t-field='o.pelabuhan_transit.coutry_id'/> 
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    POD
+                                </td>
+                                <td class='table_report_main_field'>
+                                   : <span t-field='o.pelabuhan_akhir.port_full_name'/>, <span t-field='o.pelabuhan_akhir.coutry_id'/> 
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    Vessel
+                                </td>
+                                <td class='table_report_main_field'>
+                                   : <span t-field='o.nama_sarana_angkut'/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width='8%'>
+                                    <span style='visibility: hidden;'>
+                                        thq
+                                    </span>
+                                </td>
+                                <td class='table_report_main_string' width='30%'>
+                                    Voyage
+                                </td>
+                                <td class='table_report_main_field'>
+                                   : <span t-field='o.voyage_id.name'/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:0.7cm; width: 22cm;'>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                    We hereby certify that the carrying vessel sailed to
+                                    <span style='text-transform: uppercase;' t-field='o.pelabuhan_akhir.port_full_name'/>, , 
+                                    <span style='text-transform: uppercase;' t-field='o.pelabuhan_akhir.coutry_id.name'/> 
+                                    T/S <span t-field='o.pelabuhan_transit'/>
+                                    and without opening containers or charging
+                                    it's contents, thus attaches to the containers.
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:3%; width: 70%;'>
+                            <tr>
+                                <td class='table_report_main_string'>Route for the carrying vessel is as below :</td>
+                            </tr>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                    <span t-field='o.fal_route'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                    (Continued with second vessel from <span t-field='o.pelabuhan_transit'/>)
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:4.3cm; width: 70%;'>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                    Jakarta, <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style='margin-top:2.7cm; width: 40%; font-size: 12px; text-decoration: overline;'>
+                            <tr>
+                                <td class='table_report_main_string'>
+                                   As agent PT Forecastle Indonesia 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='header'>
+                        <table style="width:100%; height: 2.75cm; border-bottom-style: solid; border-bottom-color: rgb(169,169,169);">
+                            <tr>
+                                <td>
+                                    <img t-if="o.imp_principal_id.image_1920" t-att-src="image_data_uri(o.imp_principal_id.image_1920)" 
+                                    style="width:6.2cm; height:1.6cm; margin-right: 3.15cm; margin-top: 0.25cm;" alt="Logo" align="right"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class='footer'>
+                        <table style="border-collapse: separate; text-align: justify; margin-left: 1.6cm; margin-top:1.2cm;">
+                            <tr>
+                                <td style='line-height: 1;'>
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:5cm; height:0.95cm;" alt="Logo"/>
+                                    <br/>
+                                    <span style="font-size:0.34cm;">as agent</span>
+                                    <br/>
+                                    <b><span t-field="o.company_id.name" style="font-size:0.38cm;"/></b>
+                                    <br/>
+                                    <span t-field="o.company_id.street" style="font-size:0.38cm;"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; height: 0.7cm; border-collapse: separate; margin-top:0.9cm; border-top: 1px solid black; border-bottom: 1px solid black;">
+                            <tr>
+                                <td style="font-size: 0.34cm; padding-top: 0.4cm; padding-bottom: 0.3cm;" align="center">
+                                    <i class="fa fa-phone"/> <span t-field="o.company_id.phone" style="padding-right : 0.5cm;"/>
+                                    <i class="fa fa-envelope"/> <span class="o_force_ltr" t-field="o.company_id.email"/>
+                                    <i class="fa fa-globe" style="padding-left : 0.5cm;"/> <span class="o_force_ltr" t-field="o.company_id.website"/>
+                                </td>
+                            </tr>
+                        </table>
+        
+                        <table style="width:100%; border-collapse: separate; padding-top: 0.3cm;">
+                            <tr>
+                                <td align="center" style="font-size: 0.34cm">
+                                    Thank you for supporting Forecastle Indonesia
+                                </td>
+                            </tr>
+                        </table>
+                    </div>  
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_non" model="ir.actions.report">
+            <field name="name">Non manipulation certificate</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_non</field>
+            <field name="report_file">forecastle_module.forecastle_non</field>
+            <field name="print_report_name">'Non manipulation certificate - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_forecastle_non_manipulation" model="report.paperformat">
+        <field name="name">Non Manipulation</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">50</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">28</field>
+        <field name="dpi">90</field>
+        <field name="report_ids" eval="[(4, ref('action_forecastle_non'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="forecastle_notice_of_arrival">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="forecastle_module.custom_forecastle_header_footer_free_time_certificate">
+                    <div class="page">
+                        <div class="group_1">
+                            <div class="row">
+                                <div class="col-12" style="width:100%; padding-top:3%; padding-right:5%; font-size: 18px; text-align: right;">
+                                    <h2 style="text-transform: uppercase;"><b>notice of arrival</b></h2>
+                                </div>
+
+                                <table style="width:100%; border-collapse: separate; text-align: right; font-size:12px; padding-top:4%;
+                                    margin-right:12%;">
+                                    <td>To : <span t-field="o.partner_id.name"/></td>
+                                </table>
+
+                                <table style="width:100%; border-collapse: separate; text-align: right; font-size:12px; padding-top:1%;
+                                margin-right:8%;">
+                                    <td>
+                                        <span t-field="o.partner_id.street"></span>
+                                    </td>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; margin-top:6%;">
+                                    <td style="text-transform: uppercase;">
+                                        <b>shipments details:</b>
+                                    </td>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; border: 3px solid black; margin-top:2%;">
+                                    <tr>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">b/l number</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">qty</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">size</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">type</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">vessel</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">voy</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">pol</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">pod</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">eta pod</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">terminal</th>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.no_master_bl"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.jumlah_kemasan"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;">size</td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.jenis_kemasan"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.nama_sarana_angkut"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.no_voyage"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.pelabuhan_asal"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.pelabuhan_akhir"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.tgl_tiba"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:12px; border: 3px solid black; text-align: center;"><span t-field="o.imp_terminal_code_id"/></td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; margin-top:6%;">
+                                    <td style="text-transform: uppercase;">
+                                        <b>import charges:</b>
+                                    </td>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; border: 3px solid black; margin-top:2%;">
+                                    <tr>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">charges</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">currency</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">rate</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">qty</th>
+                                        <th style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">amount</th>
+                                    </tr>
+
+                                    <tr t-foreach="o.order_line" t-as="loop">
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;"><span t-field="loop.product_id"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;">IDR</td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;"><span t-field="loop.price_unit"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;"><span t-field="loop.product_uom_qty"/></td>
+                                        <td style="text-transform: uppercase; border-collapse: separate; font-size:15px; border: 3px solid black; text-align: center;"><span t-field="loop.price_subtotal"/></td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; margin-top:8%;">
+                                    <td style="text-transform: uppercase;">
+                                        <b><u>notes:</u></b>
+                                    </td>
+                                </table>
+
+                                <table style="width:100%; border-collapse: collapse; text-align: justify; font-size:15px; margin-top:2%;">
+                                    <tr>
+                                        <td>
+                                            <ul>
+                                                <li> 
+                                                    Please note the deadline for manifest submission is 1 day from ETA for shipments originated from Singapore/Malaysia, and 2 days prior ETA for other port f origin. Otherwise, penalty fee of USD 30/doc will be applied.
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    You are advised to present us your endorsed Bill of Landing/Seaway bill/Telex Release in exchange for which we will issue our Delivery Order.
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <ul>    
+                                                <li> 
+                                                    Any local charges such as storage demurrage or detention charges that may incur on your cargo will be under consignee responsibility
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:100%; border-collapse: separate; text-align: justify; font-size:12px; margin-top:6%;">
+                                    <tr>
+                                        <td>
+                                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="width:150px; height:30px;" alt="Logo"></img>
+                                            <br></br>
+                                            As agent
+                                            <br></br>
+                                            <b><span t-field="o.company_id.name"/></b>
+                                            <br></br>
+                                            <span t-field="o.company_id.street"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div> 
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_forecastle_noa" model="ir.actions.report">
+            <field name="name">Forecastle Notice of arrival</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">forecastle_module.forecastle_notice_of_arrival</field>
+            <field name="report_file">forecastle_module.forecastle_notice_of_arrival</field>
+            <field name="print_report_name">'Forecastle Notice of arrival - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+    </record>
+
+</odoo>

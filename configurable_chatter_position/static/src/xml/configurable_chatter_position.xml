@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Create button on forms on click of which chatter position gets changed -->
+<templates>
+    <t t-extend="FormView.buttons">
+        <t t-jquery=".o_form_buttons_view" t-operation="prepend">
+            <button
+                type="button"
+                class="btn btn-secondary fa fa-arrows-h o_chatter_position_bottom_right"
+            />
+        </t>
+        <t t-jquery=".o_form_buttons_edit" t-operation="prepend">
+            <button
+                type="button"
+                class="btn btn-secondary fa fa-arrows-h o_chatter_position_bottom_right"
+            />
+        </t>
+    </t>
+</templates>

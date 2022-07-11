@@ -1,0 +1,28 @@
+<odoo>
+    <record id="fal_view_soa_wizard" model="ir.ui.view">
+        <field name="name">fal.soa.wizard.form</field>
+        <field name="model">fce.soa.wizard</field>
+        <field name="arch" type="xml">
+            <form string="SOA Wizard">
+                <p style='font-size: 20px;'>
+                    The following invoices due date will be move to next month.
+                </p>
+                <field name='fal_soa_id' invisible='1'/>
+                <field name='soa_line_ids_wizard' readonly='1' widget="section_and_note_one2many">
+                    <tree string="SOA Line">
+                        <field name='move_id'/>
+                        <field name='fal_invoice_mode'/>
+                        <field name="sale_source_id"/>
+                        <field name="no_bl"/>
+                        <field name="vessel_id"/>
+                        <field name="mother_vessel_id"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="process" string="Proceed" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

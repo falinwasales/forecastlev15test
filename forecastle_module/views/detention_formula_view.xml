@@ -1,0 +1,74 @@
+<odoo>
+	<record id="view_detention_formula_tree" model="ir.ui.view">
+        <field name="name">detention.formula.tree</field>
+        <field name="model">detention.formula</field>
+        <field name="arch" type="xml">
+        	<tree>
+                <field name="name"/>
+                <field name="principal_id"/>
+                <field name="product_category"/>
+                <field name="unit_price"/>
+                <field name="remarks"/>
+        	</tree>
+        </field>
+    </record>
+
+    <record id="view_detention_formula_form" model="ir.ui.view">
+        <field name="name">detention.formula.form</field>
+        <field name="model">detention.formula</field>
+        <field name="arch" type="xml">
+        	<form>
+        		<sheet>
+        			<label for="name" string="Description"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                    	<group>
+			                <field name="principal_id"/>
+			                <field name="free_time"/>
+			                <field name="product_category"/>
+			                <field name="unit_price"/>
+			                <field name="remarks"/>
+                    	</group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="slab1"/>
+                            <field name="slab2"/>
+                            <field name="slab3"/>
+                            <field name="slab4"/>
+                        </group>
+                        <group>
+                            <field name="slab_value1"/>
+                            <field name="slab_value2"/>
+                            <field name="slab_value3"/>
+                            <field name="slab_value4"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="python_formula"/>
+                    </group>
+                </sheet>
+        	</form>
+        </field>
+    </record>
+
+	<record id="detention_formula_action" model="ir.actions.act_window">
+        <field name="name">Detention Formula</field>
+        <field name="res_model">detention.formula</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create Detention Formula
+          </p>
+        </field>
+    </record>
+
+	<menuitem id="detention_formula_menu"
+        name="Detention Formula"
+        parent="sale.menu_sale_config"
+        action="detention_formula_action"
+        sequence="10"/>
+</odoo>

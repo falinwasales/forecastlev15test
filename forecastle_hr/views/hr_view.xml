@@ -1,0 +1,857 @@
+<odoo>
+    <record id="res_company_view_form_forecastle" model="ir.ui.view">
+        <field name="name">res.company.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <page name="general_info" position="after">
+                <page string="Terms And Condition">
+                    <field name="term_and_condition" widget="pdf_viewer"/>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="forecastle_signature_res_user_form_inherit" model="ir.ui.view">
+        <field name="name">forecastle_signature_res_user_form_inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='references']" position="after">
+                <page string="Signature" name="forecastle_signature">
+                    <group>
+                        <field name="filename_personal_sign" options="{'accepted_file_extensions':'image/png'}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_users_view_form_profile_forecastle" model="ir.ui.view">
+        <field name="name">res.users.inherit.forecastle</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile"/>
+        <field name="arch" type="xml">
+            <form position="attributes">
+                <attribute name="edit">false</attribute>
+            </form>
+            <field name="coach_id" position="after">
+                <field name="functional_reports" widget="many2many_tags"/>
+            </field>
+            <field name="address_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="work_location" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="department_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="address_id" position="after">
+                <field name="work_address_id"/>
+                <field name="work_location_id"/>
+                <field name="employment_status"/>
+                <field name="end_employment_date" attrs="{'invisible': [('employment_status', '=', 'permanent')], 'required': [('employment_status', '!=', 'permanent')]}"/>
+                <label for="join_date"/>
+                <div>
+                    <field name="join_date" class="oe_inline"/> - 
+                    <field name="duration_join_date" class="oe_inline"/>
+                </div>
+                <field name="level"/>
+            </field>
+
+            <!-- Private Information -->
+            <field name="private_email" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="private_email" position="after">
+                <field name="personal_email" widget="email"/>
+            </field>
+            <xpath expr="//field[@name='km_home_work']" position="after">
+                <field name="blood_type"/>
+                <field name="religion"/>
+                <field name="other_religion" attrs="{'invisible': [('religion', '!=', 'others')]}"/>
+                <field name="ethnicity_id"/>
+            </xpath>
+
+            <field name="passport_id" position="after">
+                <field name="passport_expire_date"/>
+            </field>
+
+            <xpath expr="//field[@name='certificate']/.." position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='personal_information']" position="inside">
+                <group string="Education">
+                    <field name="formal_education_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="jenjang_study"/>
+                            <field name="jurusan"/>
+                            <field name="tahun_lulus"/>
+                            <field name="ipk"/>
+                        </tree>
+                    </field>
+                    <field name="informal_education_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="degree"/>
+                            <field name="jurusan"/>
+                            <field name="tahun_lulus"/>
+                        </tree>
+                    </field>
+                </group>
+                <group string="Working Experience">
+                    <field name="working_experience_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="posisi"/>
+                            <field name="jenis_pekerjaan"/>
+                            <field name="location_id"/>
+                            <field name="tgl_mulai"/>
+                            <field name="tgl_berakhir"/>
+                            <field name="salary_history"/>
+                            <field name="reference_letter"/>
+                            <field name="deskripsi"/>
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+            <field name="address_home_id" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </field>
+            <field name="address_home_id" position="after">
+                <field name="current_address"/>
+                <field name="id_card_address"/>
+            </field>
+            <field name="private_email" position="attributes">
+                <attribute name="widget">email</attribute>
+            </field>
+            <field name="employee_phone" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="widget">phone</attribute>
+                <attribute name="string">Mobile Number</attribute>
+            </field>
+            <field name="employee_phone" position="after">
+                <field name="home_number"/>
+            </field>
+
+            <field name="emergency_contact" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="emergency_phone" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="emergency_phone" position="after">
+                <field name="emergency_contact_ids">
+                    <tree editable="bottom">
+                        <field name="name"/>
+                        <field name="phone"/>
+                        <field name="relationship"/>
+                    </tree>
+                </field>
+            </field>
+
+            <xpath expr="//page[@name='personal_information']" position="after">
+                <page string="Personal Information">
+                    <group>
+                        <group>
+                            <field name="ktp" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="kartu_keluarga" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="pas_foto" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="npwp" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                        </group>
+                        <group>
+                            <field name="kartu_bpjstk" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="kartu_bpjskes" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="copy_cover_buku_tabungan" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="offering_later" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="confirmation_later" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Curriculum Vitae">
+                    <field name="cv" widget="pdf_viewer" nolabel="1"/>
+                </page>
+
+                <page string="Predictive Index">
+                    <group string="Predictive Index 1">
+                        <group>
+                            <field name="filename_predictive_index"/>
+                        </group>
+                        <field name="predictive_index" filename="filename_predictive_index" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 2">
+                        <group>
+                            <field name="filename_predictive_index2"/>
+                        </group>
+                        <field name="predictive_index2" filename="filename_predictive_index2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 3">
+                        <group>
+                            <field name="filename_predictive_index3"/>
+                        </group>
+                        <field name="predictive_index3" filename="filename_predictive_index3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 4">
+                        <group>
+                            <field name="filename_predictive_index4"/>
+                        </group>
+                        <field name="predictive_index4" filename="filename_predictive_index4" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+
+                <page string="Formal Certificate">
+                    <group string="Formal Certificate 1">
+                        <group>
+                            <field name="filename_formal_certificate1"/>
+                        </group>
+                        <field name="formal_certificate1" filename="filename_formal_certificate1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Formal Certificate 2">
+                        <group>
+                            <field name="filename_formal_certificate2"/>
+                        </group>
+                        <field name="formal_certificate2" filename="filename_formal_certificate2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Formal Certificate 3">
+                        <group>
+                            <field name="filename_formal_certificate3"/>
+                        </group>
+                        <field name="formal_certificate3" filename="filename_formal_certificate3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+                <page string="Informal Certificate">
+                    <group string="Informal Certificate 1">
+                        <group>
+                            <field name="filename_informal_certificate1"/>
+                        </group>
+                        <field name="informal_certificate1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 2">
+                        <group>
+                            <field name="filename_informal_certificate2"/>
+                        </group>
+                        <field name="informal_certificate2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 3">
+                        <group>
+                            <field name="filename_informal_certificate3"/>
+                        </group>
+                        <field name="informal_certificate3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 4">
+                        <group>
+                            <field name="filename_informal_certificate4"/>
+                        </group>
+                        <field name="informal_certificate4" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 5">
+                        <group>
+                            <field name="filename_informal_certificate5"/>
+                        </group>
+                        <field name="informal_certificate5" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+
+                <page string="Academic Transcript">
+                    <group string="Academic Transcript 1">
+                        <group>
+                            <field name="filename_academic_transcript1"/>
+                        </group>
+                        <field name="academic_transcript1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Academic Transcript 2">
+                        <group>
+                            <field name="filename_academic_transcript2"/>
+                        </group>
+                        <field name="academic_transcript2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Academic Transcript 3">
+                        <group>
+                            <field name="filename_academic_transcript3"/>
+                        </group>
+                        <field name="academic_transcript3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+	<record id="forecastle_hr_employee_view_form" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <field name="coach_id" position="after">
+                <field name="functional_reports" widget="many2many_tags"/>
+            </field>
+            <field name="address_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="work_location" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="work_location" position="after">
+                <field name="work_address_id"/>
+                <field name="work_location_id"/>
+                <field name="employment_status"/>
+                <field name="end_employment_date" attrs="{'invisible': [('employment_status', '=', 'permanent')], 'required': [('employment_status', '!=', 'permanent')]}"/>
+                <label for="join_date"/>
+                <div>
+                    <field name="join_date" class="oe_inline"/> - 
+                    <field name="duration_join_date" class="oe_inline"/>
+                </div>
+                <field name="level"/>
+            </field>
+
+            <!-- Private Information -->
+            <field name="private_email" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="private_email" position="after">
+                <field name="personal_email" widget="email"/>
+            </field>
+            <xpath expr="//div[@name='div_km_home_work']" position="after">
+                <field name="blood_type"/>
+                <field name="religion"/>
+                <field name="other_religion" attrs="{'invisible': [('religion', '!=', 'others')]}"/>
+                <field name="ethnicity_id"/>
+            </xpath>
+
+            <field name="passport_id" position="after">
+                <field name="passport_expire_date"/>
+            </field>
+
+            <xpath expr="//field[@name='certificate']/.." position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='personal_information']" position="inside">
+                <group string="Education">
+                    <field name="formal_education_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="jenjang_study"/>
+                            <field name="jurusan"/>
+                            <field name="tahun_lulus"/>
+                            <field name="ipk"/>
+                        </tree>
+                    </field>
+                    <field name="informal_education_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="degree"/>
+                            <field name="jurusan"/>
+                            <field name="tahun_lulus"/>
+                        </tree>
+                    </field>
+                </group>
+                <group string="Working Experience">
+                    <field name="working_experience_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="posisi"/>
+                            <field name="jenis_pekerjaan"/>
+                            <field name="location_id"/>
+                            <field name="tgl_mulai"/>
+                            <field name="tgl_berakhir"/>
+                            <field name="salary_history"/>
+                            <field name="reference_letter"/>
+                            <field name="deskripsi"/>
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+            <field name="address_home_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="address_home_id" position="after">
+                <field name="current_address"/>
+                <field name="id_card_address"/>
+            </field>
+            <field name="private_email" position="attributes">
+                <attribute name="widget">email</attribute>
+            </field>
+            <field name="phone" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="widget">phone</attribute>
+                <attribute name="string">Mobile Number</attribute>
+            </field>
+            <field name="phone" position="after">
+                <field name="home_number"/>
+            </field>
+
+            <field name="emergency_contact" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="emergency_phone" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="emergency_phone" position="after">
+                <field name="emergency_contact_ids">
+                    <tree editable="bottom">
+                        <field name="name"/>
+                        <field name="phone"/>
+                        <field name="relationship"/>
+                    </tree>
+                </field>
+            </field>
+
+            <xpath expr="//page[@name='personal_information']" position="after">
+                <page string="Personal Information">
+                    <group>
+                        <group>
+                            <field name="ktp" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="kartu_keluarga" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="pas_foto" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="npwp" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                        </group>
+                        <group>
+                            <field name="kartu_bpjstk" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="kartu_bpjskes" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="copy_cover_buku_tabungan" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="offering_later" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                            <field name="confirmation_later" widget="image" class="oe_avatar float-left" options='{"zoom": true}'/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Curriculum Vitae">
+                    <field name="cv" widget="pdf_viewer" nolabel="1"/>
+                </page>
+
+                <page string="Predictive Index">
+                    <group string="Predictive Index 1">
+                        <group>
+                            <field name="filename_predictive_index"/>
+                        </group>
+                        <field name="predictive_index" filename="filename_predictive_index" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 2">
+                        <group>
+                            <field name="filename_predictive_index2"/>
+                        </group>
+                        <field name="predictive_index2" filename="filename_predictive_index2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 3">
+                        <group>
+                            <field name="filename_predictive_index3"/>
+                        </group>
+                        <field name="predictive_index3" filename="filename_predictive_index3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                    <group string="Predictive Index 4">
+                        <group>
+                            <field name="filename_predictive_index4"/>
+                        </group>
+                        <field name="predictive_index4" filename="filename_predictive_index4" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+
+                <page string="Formal Certificate">
+                    <group string="Formal Certificate 1">
+                        <group>
+                            <field name="filename_formal_certificate1"/>
+                        </group>
+                        <field name="formal_certificate1" filename="filename_formal_certificate1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Formal Certificate 2">
+                        <group>
+                            <field name="filename_formal_certificate2"/>
+                        </group>
+                        <field name="formal_certificate2" filename="filename_formal_certificate2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Formal Certificate 3">
+                        <group>
+                            <field name="filename_formal_certificate3"/>
+                        </group>
+                        <field name="formal_certificate3" filename="filename_formal_certificate3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+                <page string="Informal Certificate">
+                    <group string="Informal Certificate 1">
+                        <group>
+                            <field name="filename_informal_certificate1"/>
+                        </group>
+                        <field name="informal_certificate1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 2">
+                        <group>
+                            <field name="filename_informal_certificate2"/>
+                        </group>
+                        <field name="informal_certificate2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 3">
+                        <group>
+                            <field name="filename_informal_certificate3"/>
+                        </group>
+                        <field name="informal_certificate3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 4">
+                        <group>
+                            <field name="filename_informal_certificate4"/>
+                        </group>
+                        <field name="informal_certificate4" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Informal Certificate 5">
+                        <group>
+                            <field name="filename_informal_certificate5"/>
+                        </group>
+                        <field name="informal_certificate5" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+
+                <page string="Academic Transcript">
+                    <group string="Academic Transcript 1">
+                        <group>
+                            <field name="filename_academic_transcript1"/>
+                        </group>
+                        <field name="academic_transcript1" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Academic Transcript 2">
+                        <group>
+                            <field name="filename_academic_transcript2"/>
+                        </group>
+                        <field name="academic_transcript2" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+
+                    <group string="Academic Transcript 3">
+                        <group>
+                            <field name="filename_academic_transcript3"/>
+                        </group>
+                        <field name="academic_transcript3" widget="pdf_viewer" nolabel="1"/>
+                    </group>
+                </page>
+                <page string="Buku Dosa">
+                    <field name="buku_dosa_line_ids">
+                        <tree>
+                            <field name='employee_id' invisible ='1'/>
+                            <field name='name'/>
+                            <field name='date'/>
+                            <field name='level'/>
+                            <field name='attachment'/>
+                            <field name='description'/>
+                        </tree>
+                        <form>
+                            <group>
+                                <field name='employee_id' invisible ='1'/>
+                                <field name='name'/>
+                                <field name='date'/>
+                                <field name='level'/>
+                                <field name='attachment'/>
+                                <field name='description'/>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//page[@name='hr_settings']" position="inside">
+                <group string="Terms And Condition">
+                    <field name="fal_i_agree" invisible="1"/>
+                    <div>
+                        <button name="action_agree" type="object" icon="fa-square-o" attrs="{'invisible': [('fal_i_agree', '=', True)]}"/>
+                        <button name="action_agree" type="object" icon="fa-check-square" attrs="{'invisible': [('fal_i_agree', '!=', True)]}"/>
+                        <label for="fal_i_agree" string="I Agree To The Terms And Conditions"/>
+                    </div>
+                    <group>
+                    </group>
+                    <field name="term_and_condition" widget="pdf_viewer" nolabel="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ethnicity -->
+    <record id="forecastle_hr_employee_ethnicity_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.ethnicity.form</field>
+        <field name="model">fce.hr.ethnicity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="name"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_ethnicity_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.ethnicity.tree</field>
+        <field name="model">fce.hr.ethnicity</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_ethnicity_action" model="ir.actions.act_window">
+        <field name="name">Ethnicity</field>
+        <field name="res_model">fce.hr.ethnicity</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new ethnicity
+          </p>
+        </field>
+    </record>
+
+    <!-- education -->
+    <record id="forecastle_hr_employee_education_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.education.form</field>
+        <field name="model">fce.hr.education</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="degree"/>
+                            <field name="jenjang_study"/>
+                            <field name="jurusan"/>
+                            <field name="tahun_lulus"/>
+                            <field name="ipk"/>
+                            <field name="employee_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_education_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.education.tree</field>
+        <field name="model">fce.hr.education</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="degree"/>
+                <field name="jenjang_study"/>
+                <field name="jurusan"/>
+                <field name="tahun_lulus"/>
+                <field name="ipk"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_education_action" model="ir.actions.act_window">
+        <field name="name">Education</field>
+        <field name="res_model">fce.hr.education</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Education
+          </p>
+        </field>
+    </record>
+
+    <!--Work Experience -->
+    <record id="forecastle_hr_employee_exp_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.work.exp.form</field>
+        <field name="model">fce.hr.work.exp</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="posisi"/>
+                            <field name="jenis_pekerjaan"/>
+                            <field name="location_id"/>
+                        </group>
+                        <group>
+                            <field name="tgl_mulai"/>
+                            <field name="tgl_berakhir"/>
+                            <field name="salary_history"/>
+                            <field name="reference_letter"/>
+                            <field name="deskripsi"/>
+                            <field name="employee_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_exp_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.work.exp.tree</field>
+        <field name="model">fce.hr.work.exp</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="posisi"/>
+                <field name="jenis_pekerjaan"/>
+                <field name="location_id"/>
+                <field name="tgl_mulai"/>
+                <field name="tgl_berakhir"/>
+                <field name="salary_history"/>
+                <field name="reference_letter"/>
+                <field name="deskripsi"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_exp_action" model="ir.actions.act_window">
+        <field name="name">Work Experience</field>
+        <field name="res_model">fce.hr.work.exp</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Work Experience
+          </p>
+        </field>
+    </record>
+
+
+    <!-- Address -->
+    <record id="forecastle_hr_employee_address_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.work.address.form</field>
+        <field name="model">fce.hr.work.address</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="name"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_address_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.work.address.tree</field>
+        <field name="model">fce.hr.work.address</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_address_action" model="ir.actions.act_window">
+        <field name="name">Address</field>
+        <field name="res_model">fce.hr.work.address</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Address
+          </p>
+        </field>
+    </record>
+
+    <!-- Private Info -->
+    <record id="forecastle_hr_employee_info_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.priv.info.form</field>
+        <field name="model">fce.hr.priv.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="address_type"/>
+                            <field name="employee_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_info_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.priv.info.tree</field>
+        <field name="model">fce.hr.priv.info</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="address_type"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_info_action" model="ir.actions.act_window">
+        <field name="name">Private Info</field>
+        <field name="res_model">fce.hr.priv.info</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Private Info
+          </p>
+        </field>
+    </record>
+
+
+    <!-- Emergency Contact -->
+    <record id="forecastle_hr_employee_emergency_view_form" model="ir.ui.view">
+        <field name="name">fce.hr.emergency.contact.form</field>
+        <field name="model">fce.hr.emergency.contact</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="phone"/>
+                            <field name="employee_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_emergency_view_tree" model="ir.ui.view">
+        <field name="name">fce.hr.emergency.contact.tree</field>
+        <field name="model">fce.hr.emergency.contact</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="phone"/>
+            </tree>
+        </field>
+    </record>
+    <record id="forecastle_hr_employee_emergency_action" model="ir.actions.act_window">
+        <field name="name">Emergency Contact</field>
+        <field name="res_model">fce.hr.emergency.contact</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new Private Info
+          </p>
+        </field>
+    </record>
+
+    <menuitem name="Master Data Employee" id="menu_master_data_employee" parent="hr.menu_human_resources_configuration" sequence="99"/>
+
+    <menuitem name="Ethnicity" id="menu_ethnicity" parent="menu_master_data_employee" action="forecastle_hr_employee_ethnicity_action"/>
+    <menuitem name="Education" id="menu_education" parent="menu_master_data_employee" action="forecastle_hr_employee_education_action"/>
+    <menuitem name="Work Experience" id="menu_work_exp" parent="menu_master_data_employee" action="forecastle_hr_employee_exp_action"/>
+    <menuitem name="Address" id="menu_address" parent="menu_master_data_employee" action="forecastle_hr_employee_address_action"/>
+    <menuitem name="Private Info" id="menu_private_info" parent="menu_master_data_employee" action="forecastle_hr_employee_info_action"/>
+    <menuitem name="Emergency Contact" id="menu_private_emergency_contact" parent="menu_master_data_employee" action="forecastle_hr_employee_emergency_action"/>
+
+    <!-- Hide Menu -->
+    <record id="hr.menu_hr_employee" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
+
+    <!-- Add Asset JS -->
+<!--     <template id="assets_backend_forecastle" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/forecastle_hr/static/src/js/basic_fields.js"></script>
+        </xpath>
+    </template> -->
+
+<!--     <template id="assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/forecastle_hr/static/src/snippets/s_website_form/image_specify.js"></script>
+            <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+            </script>
+            <script type="text/javascript" src="/forecastle_hr/static/src/js/easy-number-separator.js"></script>
+        </xpath>
+    </template> -->
+</odoo>

@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- formats -->
+
+        <record id="printnode_content_type_pdf" model="printnode.format">
+            <field name="name">PDF</field>
+            <field name="qweb">qweb-pdf</field>
+        </record>
+        <record id="printnode_content_type_raw" model="printnode.format">
+            <field name="name">TXT</field>
+            <field name="qweb">qweb-text</field>
+        </record>
+
+        <!-- papers -->
+
+        <record id="printnode_paper_a4" model="printnode.paper">
+            <field name="name">A4</field>
+            <field name="width">210</field>
+            <field name="height">297</field>
+        </record>
+        <record id="printnode_paper_a6" model="printnode.paper">
+            <field name="name">A6</field>
+            <field name="width">105</field>
+            <field name="height">148</field>
+        </record>
+
+        <!-- system parameters -->
+
+        <record model="ir.config_parameter" id="skip_methods">
+            <field name="key">printnode_base.skip_methods</field>
+            <field name="value">create,write,unlink,read,onchange,load_views,check_access_rights</field>
+        </record>
+
+         <!-- printnode methods -->
+
+        <record id="transfer_button_validate" model="printnode.action.method">
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="name">Validate</field>
+            <field name="method">button_validate</field>
+        </record>
+
+        <record id="sale_order_action_confirm" model="printnode.action.method">
+            <field name="model_id" eval="ref('sale.model_sale_order')"/>
+            <field name="name">Confirm</field>
+            <field name="method">action_confirm</field>
+        </record>
+
+        <!-- printnode action buttons -->
+
+        <record id="transfer_action_button_validate_dls_ups" model="printnode.action.button">
+            <field name="active">False</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="method_id" eval="ref('printnode_base.transfer_button_validate')"/>
+            <field name="domain">[["carrier_id.delivery_type","=","ups"]]</field>
+            <field name="description">Print Delivery Slip only for UPS Delivery Carrier</field>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="transfer_action_button_validate_dls_nl" model="printnode.action.button">
+            <field name="active">False</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="method_id" eval="ref('printnode_base.transfer_button_validate')"/>
+            <field name="domain">[["partner_id.country_id.code","=","NL"]]</field>
+            <field name="description">Print Delivery Slip only for Customers from Netherlands</field>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="transfer_action_button_validate_dls_after_doc" model="printnode.action.button">
+            <field name="active">False</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="method_id" eval="ref('printnode_base.transfer_button_validate')"/>
+            <field name="domain">[["picking_type_id.sequence_code","=","OUT"]]</field>
+            <field name="description">Print Delivery Slip after Delivery Order Confirmation</field>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="so_action_button_confirm" model="printnode.action.button">
+            <field name="active">False</field>
+            <field name="model_id" eval="ref('sale.model_sale_order')"/>
+            <field name="method_id" eval="ref('printnode_base.sale_order_action_confirm')"/>
+            <field name="description">Print Sale Order after it is validated</field>
+            <field name="report_id" eval="ref('sale.action_report_saleorder')"/>
+        </record>
+
+        <!-- printnode scenarios -->
+
+        <record id="transfer_confirm_ups_carrier_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_document_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print Delivery Slip only for UPS Delivery Carrier (after validation)</field>
+            <field name="domain">[["carrier_id.delivery_type","=","ups"]]</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="transfer_confirm_nl_only_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_document_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print Delivery Slip only for Customers from Netherlands (after validation)</field>
+            <field name="domain">[["partner_id.country_id.code","=","NL"]]</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="transfer_confirm_with_backorder_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_document_on_backorder')" />
+            <field name="active">False</field>
+            <field name="description">Print Delivery Slip after Delivery Order Confirmation for backorder (created after Transfer validation)</field>
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+            <field name="report_id" eval="ref('stock.action_report_delivery')"/>
+        </record>
+
+        <record id="sale_order_confirm_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_document_on_sales_order')" />
+            <field name="active">False</field>
+            <field name="description">Print document on Sales Order (after confirmation)</field>
+            <field name="model_id" eval="ref('sale.model_sale_order')"/>
+            <field name="report_id" eval="ref('sale.action_report_saleorder')"/>
+        </record>
+
+        <record id="purchase_order_confirm_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_document_on_purchase_order')" />
+            <field name="active">False</field>
+            <field name="description">Print document on Purchase Order (after confirmation)</field>
+            <field name="model_id" eval="ref('purchase.model_purchase_order')"/>
+            <field name="report_id" eval="ref('purchase.action_report_purchase_order')"/>
+        </record>
+
+<!--         <record id="print_product_labels_on_transfer_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_product_labels_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print product labels for validated transfer</field>
+            <field name="domain">[["picking_type_code","=","incoming"]]</field>
+            <field name="report_id" eval="ref('product.report_product_label')"/>
+        </record>
+ -->
+        <record id="print_picking_document_after_so_confirmation_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_picking_document_after_so_confirmation')" />
+            <field name="active">False</field>
+            <field name="description">Print Picking Document after Sales Order Validation</field>
+            <field name="report_id" eval="ref('stock.action_report_picking')"/>
+        </record>
+
+        <record id="print_picking_document_after_po_confirmation_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_picking_document_after_po_confirmation')" />
+            <field name="active">False</field>
+            <field name="description">Print Picking Document after Purchase Order Validation</field>
+            <field name="report_id" eval="ref('stock.action_report_picking')"/>
+        </record>
+
+<!--         <record id="print_single_product_label_on_transfer_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_single_product_label_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print single product label when processing Incoming Shipment</field>
+            <field name="domain">[["picking_type_code","=","incoming"]]</field>
+            <field name="report_id" eval="ref('product.report_product_label')"/>
+        </record>
+ -->
+        <record id="print_single_lot_label_on_transfer_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_single_lot_label_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print lot labels when processing Incoming Shipment</field>
+            <field name="domain">[["picking_type_code","=","incoming"]]</field>
+            <field name="report_id" eval="ref('stock.action_report_lot_label')"/>
+        </record>
+
+        <record id="print_packages_label_on_transfer_scenario" model="printnode.scenario">
+            <field name="action" eval="ref('printnode_base.print_packages_label_on_transfer')" />
+            <field name="active">False</field>
+            <field name="description">Print All Packages after Delivery Order is Validated</field>
+            <field name="domain">[["picking_type_code","=","outgoing"]]</field>
+            <field name="report_id" eval="ref('printnode_base.action_report_package_slip_zpl')"/>
+        </record>
+
+        <record id="printnode_map_action_server_transfer" model="printnode.map.action.server">
+            <field name="model_id" eval="ref('stock.model_stock_picking')"/>
+        </record>
+
+    </data>
+</odoo>
